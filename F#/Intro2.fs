@@ -90,7 +90,7 @@ let rec evalT e (env : (string * int) list) : int =
     | If (e1,e2,e3) ->
         if (evalT e1 env) <> 0 then (evalT e2 env) else (evalT e3 env);;
 
-let testIf = evalT (If(Var "a", CstI 11, CstI 22)) env
+let testIf = evalT (If(Var "a", CstI 11, CstI 22)) env;;
 
 //exercise 1.2
 //exercise 1.2 i
@@ -99,15 +99,15 @@ type aexpr =
   | Var of string
   | Add of aexpr * aexpr
   | Mul of aexpr * aexpr
-  | Sub of aexpr * aexpr
+  | Sub of aexpr * aexpr;;
 
 //exercise 1.2 ii
  //v − (w + z)
-let test1 = Sub(Var "v", Add(Var "w", Var"z"))
+let test1 = Sub(Var "v", Add(Var "w", Var"z"));;
  //2 ∗ (v − (w + z))
-let test2 = Mul(CstI 2,test1)
+let test2 = Mul(CstI 2,test1);;
  //x + y + z + v
-let test3 = Add(Var "x", Add(Var "y", Add(Var "z", Var"v")))
+let test3 = Add(Var "x", Add(Var "y", Add(Var "z", Var"v")));;
 
 //exercise 1.2 iii
 
@@ -117,6 +117,38 @@ let rec fmt a : string =
     |Var x -> x
     |Add (x,y) ->  $"({fmt x} + {fmt y})"
     |Sub (x,y) ->  $"({fmt x} - {fmt y})"
-    |Mul (x,y) ->  $"({fmt x} * {fmt y})"
+    |Mul (x,y) ->  $"({fmt x} * {fmt y})";;
 
-let converted = fmt test3
+let converted = fmt test3;;
+
+//exercise 1.2 iv
+
+//0 + e −→ e
+//e + 0 −→ e
+//e − 0 −→ e
+//1 ∗ e −→ e
+//e ∗ 1 −→ e
+//0 ∗ e −→ 0
+//e ∗ 0 −→ 0
+//e − e −→ 0
+
+let rec simplify a : aexpr = 
+    match a with 
+    | CstI x           -> CstI x
+    | Var x            -> Var x 
+    | Add (CstI 0 , x) -> simplify x   
+    | Add (x , CstI 0) -> simplify x
+    | Sub (x , CstI 0) -> simplify x   
+    | Mul (CstI 1 , x) -> simplify x
+    | Mul (x , CstI 1) -> simplify x
+    | Mul (CstI 0 , x) -> CstI 0
+    | Mul (x , CstI 0) -> CstI 0
+    | Sub (x , y) when x = y -> CstI 0
+    | x -> x;;
+
+let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
+let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));; //DOESNT WORK
+
+//exercise 1.2 iv
+
+let diff a str : aexpr = failwith ""
