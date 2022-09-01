@@ -45,8 +45,8 @@ if 3 < 4 then 117 else 118;;
 
 let title = "Prof.";;
 let name = "Lauesen";;
-let junk =  "Dear " + title + " " + name + ", You won $$$!";;
-junk.Length;;
+let junkmail =  "Dear " + title + " " + name + ", You won $$$!";;
+junkmail.Length;;
 
 
 (* Function declarations *)
@@ -131,7 +131,7 @@ let x2 = 7 :: 9 :: 13 :: [];;
 let equal = (x1 = x2);;
 
 let ss = ["Dear"; title; name; "you won $$$!"];;
-let junk2 = String.concat " " ss;;
+let junkmail2 = String.concat " " ss;;
 
 let rec sum xs = 
     match xs with 
@@ -347,7 +347,7 @@ fun x -> fun y -> x+y;;
 
 let increaseBoth = fun i (x, y) -> (x+i, y+i);;
 
-let isZeroFirst = function | (0::_) -> true | _ -> false;;
+let isZeroFirst = function | [0] -> true | _ -> false;;
 
 
 (* Higher-order functions on lists *)
@@ -411,17 +411,3 @@ arr.[1] <- 11;;
 arr;;
 
 arr.Length;;
-
-
-(* .NET types and functions *)
-
-let tomorrow = 
-    let nationalDebt = 14349539503882.02M
-    let perSecond = 45138.89M
-    nationalDebt + 86400M * perSecond;;
-
-
-let rec fac (n:bigint) = if n=0I then 1I else n * fac(n-1I);;
-
-fac 104I;;
-    

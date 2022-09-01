@@ -1,4 +1,5 @@
 package Java;
+
 // File Intro/SimpleExpr.java
 // Java representation of expressions as in lecture 1
 // sestoft@itu.dk * 2010-08-29
@@ -8,6 +9,8 @@ import java.util.HashMap;
 
 abstract class Expr { 
   abstract public int eval(Map<String,Integer> env);
+  abstract public String fmt();
+  abstract public String fmt2(Map<String,Integer> env);
 }
 
 class CstI extends Expr { 
@@ -20,6 +23,14 @@ class CstI extends Expr {
   public int eval(Map<String,Integer> env) {
     return i;
   } 
+
+  public String fmt() {
+    return ""+i;
+  }
+
+  public String fmt2(Map<String,Integer> env) {
+    return ""+i;
+  }
 }
 
 class Var extends Expr { 
@@ -32,6 +43,15 @@ class Var extends Expr {
   public int eval(Map<String,Integer> env) {
     return env.get(name);
   } 
+
+  public String fmt() {
+    return name;
+  } 
+
+  public String fmt2(Map<String,Integer> env) {
+    return ""+env.get(name);
+  } 
+
 }
 
 class Prim extends Expr { 
@@ -52,6 +72,15 @@ class Prim extends Expr {
     else
       throw new RuntimeException("unknown primitive");
   } 
+
+  public String fmt() {
+    return "(" + e1.fmt() + oper + e2.fmt() + ")";
+  } 
+
+  public String fmt2(Map<String,Integer> env) {
+    return "(" + e1.fmt2(env) + oper + e2.fmt2(env) + ")";
+  } 
+
 }
 
 public class SimpleExpr {
@@ -65,8 +94,11 @@ public class SimpleExpr {
     env0.put("c", 78);
     env0.put("baf", 666);
     env0.put("b", 111);
-    System.out.println(e1.eval(env0));
-    System.out.println(e2.eval(env0));
-    System.out.println(e3.eval(env0));
+
+    System.out.println("Env: " + env0.toString());
+
+    System.out.println(e1.fmt() + " = " + e1.fmt2(env0) + " = " + e1.eval(env0));
+    System.out.println(e2.fmt() + " = " + e2.fmt2(env0) + " = " + e2.eval(env0));
+    System.out.println(e3.fmt() + " = " + e3.fmt2(env0) + " = " + e3.eval(env0));
   }
 }

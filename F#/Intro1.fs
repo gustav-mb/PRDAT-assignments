@@ -8,6 +8,8 @@ type expr =
   | CstI of int
   | Prim of string * expr * expr;;
 
+let e0 = Prim("+", CstI 2, Prim("*", CstI 3, CstI 4))
+
 let e1 = CstI 17;;
 
 let e2 = Prim("-", CstI 3, CstI 4);;
@@ -25,6 +27,7 @@ let rec eval (e : expr) : int =
     | Prim("-", e1, e2) -> eval e1 - eval e2
     | Prim _            -> failwith "unknown primitive";;
 
+let e0v = eval e0;;
 let e1v = eval e1;;
 let e2v = eval e2;;
 let e3v = eval e3;;
@@ -44,3 +47,13 @@ let rec evalm (e : expr) : int =
 
 
 let e4v = evalm (Prim("-", CstI 10, CstI 27));;
+
+(* The Pretty Printer function *)
+
+let rec fmt (e : expr) : string =
+  match e with
+    CstI i -> i.ToString()
+  | Prim("+", e1, e2) -> "(" + fmt e1 + "+" + fmt e2 + ")"
+  | Prim("*", e1, e2) -> "(" + fmt e1 + "*" + fmt e2 + ")"
+  | Prim("-", e1, e2) -> "(" + fmt e1 + "-" + fmt e2 + ")"
+  | Prim _            -> failwith "fmt: unknown primitive";;
