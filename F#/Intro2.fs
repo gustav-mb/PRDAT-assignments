@@ -127,11 +127,11 @@ let converted = fmt test3;;
     0 + e −→ e
     e + 0 −→ e
     e − 0 −→ e
+    e − e −→ 0
     1 ∗ e −→ e
     e ∗ 1 −→ e
     0 ∗ e −→ 0
     e ∗ 0 −→ 0
-    e − e −→ 0
 *)
 
 // TODO FIX
@@ -142,11 +142,11 @@ let rec simplify a : aexpr =
     | Add (CstI 0 , x) -> simplify x   
     | Add (x , CstI 0) -> simplify x
     | Sub (x , CstI 0) -> simplify x   
+    | Sub (x , y) when x = y -> CstI 0
     | Mul (CstI 1 , x) -> simplify x
     | Mul (x , CstI 1) -> simplify x
     | Mul (CstI 0 , _) -> CstI 0
     | Mul (_ , CstI 0) -> CstI 0
-    | Sub (x , y) when x = y -> CstI 0
     | x -> x;;
 
 let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
