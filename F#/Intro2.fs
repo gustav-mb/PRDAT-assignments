@@ -22,12 +22,12 @@ let cvalue = lookup env "c";;
 
 (* Object language expressions with variables *)
 
+(* --- EXERCISE 1.1 --- *)
 type expr = 
   | CstI of int
   | Var of string
   | Prim of string * expr * expr
-  //exercise 1.1 iv
-  | If of expr * expr * expr;;
+  | If of expr * expr * expr;;  // Exercise 1.1 (iv)
 
 let e1 = CstI 17;;
 
@@ -45,7 +45,7 @@ let rec eval e (env : (string * int) list) : int =
     | Prim("+", e1, e2) -> eval e1 env + eval e2 env
     | Prim("*", e1, e2) -> eval e1 env * eval e2 env
     | Prim("-", e1, e2) -> eval e1 env - eval e2 env
-    //exercise 1.1 i
+    // Exercise 1.1 (i)
     | Prim("max", e1, e2) ->
         let first = eval e1 env
         let second = eval e2 env
@@ -58,26 +58,29 @@ let rec eval e (env : (string * int) list) : int =
         let first = eval e1 env
         let second = eval e2 env
         if first = second then 1 else 0
-    | Prim _            -> failwith "unknown primitive";;
+    | Prim _            -> failwith "unknown primitive"
+    // Excercise 1.1 (v)
+    | If(e1, e2, e3) -> if (eval e1 env) <> 0 then (eval e2 env) else (eval e3 env);;
 
-//exercise 1.1 ii
+// Exercise 1.1 (ii)
 let testMax = eval (Prim("max", Prim("*", CstI 2, CstI 9), CstI 19)) env;;
 let testMin = eval (Prim("min", Prim("*", CstI 2, CstI 9), CstI 10)) env;;
 let testEqualTrue = eval (Prim("==", Prim("*", CstI 2, CstI 5), CstI 10)) env;;
 let testEqualFalse = eval (Prim("==", Prim("*", CstI 2, CstI 9), CstI 10)) env;;
+
 let e1v  = eval e1 env;;
 let e2v1 = eval e2 env;;
 let e2v2 = eval e2 [("a", 314)];;
 let e3v  = eval e3 env;;
 
-//exercise 1.1 iii
-let rec evalT e (env : (string * int) list) : int =
+// Exercise 1.1 (iii)
+let rec eval2 e (env : (string * int) list) : int =
     match e with
     | CstI i            -> i
     | Var x             -> lookup env x 
     | Prim(ope, e1, e2) ->
-        let il1 = evalT e1 env
-        let il2 = evalT e2 env
+        let il1 = eval2 e1 env
+        let il2 = eval2 e2 env
         match ope with
         |"+" -> il1+il2
         |"-" -> il1-il2
@@ -86,14 +89,14 @@ let rec evalT e (env : (string * int) list) : int =
         |"min" -> if il1 > il2 then il2 else il1
         |"==" -> if il1 = il2 then 1 else 0
         | _   -> failwith "unknown primitive"
-    //excercise 1.1 v
-    | If (e1,e2,e3) ->
-        if (evalT e1 env) <> 0 then (evalT e2 env) else (evalT e3 env);;
+    // Excercise 1.1 (v)
+    | If(e1, e2, e3) ->
+        if (eval2 e1 env) <> 0 then (eval2 e2 env) else (eval2 e3 env);;
 
-let testIf = evalT (If(Var "a", CstI 11, CstI 22)) env;;
+let testIf = eval2 (If(Var "a", CstI 11, CstI 22)) env;;
 
-//exercise 1.2
-//exercise 1.2 i
+(* --- EXERCISE 1.2 --- *)
+// Exercise 1.2 (i)
 type aexpr = 
   | CstI of int
   | Var of string
@@ -101,36 +104,35 @@ type aexpr =
   | Mul of aexpr * aexpr
   | Sub of aexpr * aexpr;;
 
-//exercise 1.2 ii
- //v − (w + z)
-let test1 = Sub(Var "v", Add(Var "w", Var"z"));;
- //2 ∗ (v − (w + z))
-let test2 = Mul(CstI 2,test1);;
- //x + y + z + v
-let test3 = Add(Var "x", Add(Var "y", Add(Var "z", Var"v")));;
+// Exercise 1.2 (ii)
+let test1 = Sub(Var "v", Add(Var "w", Var"z"));;               // v − (w + z)
+let test2 = Mul(CstI 2,test1);;                                // 2 ∗ (v − (w + z))
+let test3 = Add(Var "x", Add(Var "y", Add(Var "z", Var"v")));; // x + y + z + v
 
-//exercise 1.2 iii
-
+// Exercise 1.2 (iii)
 let rec fmt a : string =
     match a with
-    |CstI x -> $"{x}"
-    |Var x -> x
-    |Add (x,y) ->  $"({fmt x} + {fmt y})"
-    |Sub (x,y) ->  $"({fmt x} - {fmt y})"
-    |Mul (x,y) ->  $"({fmt x} * {fmt y})";;
+    |CstI x   -> $"{x}"
+    |Var x    -> x
+    |Add(x,y) ->  $"({fmt x} + {fmt y})"
+    |Sub(x,y) ->  $"({fmt x} - {fmt y})"
+    |Mul(x,y) ->  $"({fmt x} * {fmt y})";;
 
 let converted = fmt test3;;
 
-//exercise 1.2 iv
+// Exercise 1.2 (iv)
 
-//0 + e −→ e
-//e + 0 −→ e
-//e − 0 −→ e
-//1 ∗ e −→ e
-//e ∗ 1 −→ e
-//0 ∗ e −→ 0
-//e ∗ 0 −→ 0
-//e − e −→ 0
+(*
+    EXPRESSION SIMPLIFICATIONS
+    0 + e −→ e
+    e + 0 −→ e
+    e − 0 −→ e
+    1 ∗ e −→ e
+    e ∗ 1 −→ e
+    0 ∗ e −→ 0
+    e ∗ 0 −→ 0
+    e − e −→ 0
+*)
 
 // TODO FIX
 let rec simplify a : aexpr = 
@@ -150,6 +152,6 @@ let rec simplify a : aexpr =
 let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
 let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));; //DOESNT WORK
 
-//exercise 1.2 iv
+// Exercise 1.2 (iv)
 
-let diff a str : aexpr = failwith ""
+let diff a str : aexpr = failwith "Not implemented"
