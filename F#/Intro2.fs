@@ -132,6 +132,7 @@ let converted = fmt test3;;
 //e ∗ 0 −→ 0
 //e − e −→ 0
 
+// TODO FIX
 let rec simplify a : aexpr = 
     match a with 
     | CstI x           -> CstI x
@@ -141,8 +142,8 @@ let rec simplify a : aexpr =
     | Sub (x , CstI 0) -> simplify x   
     | Mul (CstI 1 , x) -> simplify x
     | Mul (x , CstI 1) -> simplify x
-    | Mul (CstI 0 , x) -> CstI 0
-    | Mul (x , CstI 0) -> CstI 0
+    | Mul (CstI 0 , _) -> CstI 0
+    | Mul (_ , CstI 0) -> CstI 0
     | Sub (x , y) when x = y -> CstI 0
     | x -> x;;
 
