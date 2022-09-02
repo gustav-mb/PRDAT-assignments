@@ -1,4 +1,4 @@
-package Java;
+package Java.Intro;
 
 // File Intro/SimpleExpr.java
 // Java representation of expressions as in lecture 1
