@@ -82,13 +82,13 @@ let rec eval2 e (env : (string * int) list) : int =
         let il1 = eval2 e1 env
         let il2 = eval2 e2 env
         match ope with
-        |"+" -> il1+il2
-        |"-" -> il1-il2
-        |"*" -> il1*il2
-        |"max" -> if il1 > il2 then il1 else il2
-        |"min" -> if il1 > il2 then il2 else il1
-        |"==" -> if il1 = il2 then 1 else 0
-        | _   -> failwith "unknown primitive"
+        | "+"   -> il1 + il2
+        | "-"   -> il1 - il2
+        | "*"   -> il1 * il2
+        | "max" -> if il1 > il2 then il1 else il2
+        | "min" -> if il1 > il2 then il2 else il1
+        | "=="  -> if il1 = il2 then 1 else 0
+        | _     -> failwith "unknown primitive"
     // Excercise 1.1 (v)
     | If(e1, e2, e3) ->
         if (eval2 e1 env) <> 0 then (eval2 e2 env) else (eval2 e3 env);;
@@ -106,22 +106,21 @@ type aexpr =
 
 // Exercise 1.2 (ii)
 let test1 = Sub(Var "v", Add(Var "w", Var"z"));;               // v − (w + z)
-let test2 = Mul(CstI 2,test1);;                                // 2 ∗ (v − (w + z))
+let test2 = Mul(CstI 2, test1);;                               // 2 ∗ (v − (w + z))
 let test3 = Add(Var "x", Add(Var "y", Add(Var "z", Var"v")));; // x + y + z + v
 
 // Exercise 1.2 (iii)
 let rec fmt a : string =
     match a with
-    |CstI x   -> $"{x}"
-    |Var x    -> x
-    |Add(x,y) ->  $"({fmt x} + {fmt y})"
-    |Sub(x,y) ->  $"({fmt x} - {fmt y})"
-    |Mul(x,y) ->  $"({fmt x} * {fmt y})";;
+    | CstI i      -> i.ToString()
+    | Var x       -> x
+    | Add(a1, a2) -> $"({fmt a1} + {fmt a2})"
+    | Sub(a1, a2) -> $"({fmt a1} - {fmt a2})"
+    | Mul(a1, a2) -> $"({fmt a1} * {fmt a2})";;
 
 let converted = fmt test3;;
 
 // Exercise 1.2 (iv)
-
 (*
     EXPRESSION SIMPLIFICATIONS
     0 + e −→ e
@@ -136,21 +135,23 @@ let converted = fmt test3;;
 
 // TODO FIX
 let rec simplify a : aexpr = 
-    match a with 
-    | CstI x           -> CstI x
-    | Var x            -> Var x 
-    | Add (CstI 0 , x) -> simplify x   
-    | Add (x , CstI 0) -> simplify x
-    | Sub (x , CstI 0) -> simplify x   
-    | Sub (x , y) when x = y -> CstI 0
-    | Mul (CstI 1 , x) -> simplify x
-    | Mul (x , CstI 1) -> simplify x
-    | Mul (CstI 0 , _) -> CstI 0
-    | Mul (_ , CstI 0) -> CstI 0
-    | x -> x;;
+    match a with
+    | Add(CstI 0, a2)          -> simplify a2
+    | Add(a1, CstI 0)          -> simplify a1
+    // | Add(a1, a2)              -> Add(simplify a1, simplify a2)
+    | Sub(a1, CstI 0)          -> simplify a1
+    | Sub(a1, a2) when a1 = a2 -> CstI 0
+    // | Sub(a1, a2)              -> Sub(simplify a1, simplify a2)
+    | Mul(CstI 1, a2)          -> simplify a2
+    | Mul(a1, CstI 1)          -> simplify a1
+    | Mul(CstI 0, _)           -> CstI 0
+    | Mul(_, CstI 0)           -> CstI 0
+    // | Mul(a1, a2)              -> Mul(simplify a1, simplify a2)
+    | _                        -> a;;
 
 let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
 let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));; //DOESNT WORK
+let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt
 
 // Exercise 1.2 (iv)
 
