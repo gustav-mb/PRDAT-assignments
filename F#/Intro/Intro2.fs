@@ -153,6 +153,8 @@ let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
 let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));; //DOESNT WORK
 let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt
 
+//   ((0 * 1) + 10) - (10 + 10)
+
 // Exercise 1.2 (iv)
 
 let diff a str : aexpr = failwith "Not implemented"
