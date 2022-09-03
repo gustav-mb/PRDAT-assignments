@@ -199,13 +199,13 @@ Revise the function `freevars : expr -> string list` to work for the language as
 
 ## Exercise 2.3
 
-Revise the `expr`-to-`texpr` compiler `tcomp : expr -> texpr` from `Intcomp1.fs` to work for the extended `expr` langauge. There is no need to modify the ``texpr` language or the `teval` interpreter to accomodate multiple sequential let-bindings.
+Revise the `expr`-to-`texpr` compiler `tcomp : expr -> texpr` from `Intcomp1.fs` to work for the extended `expr` langauge. There is no need to modify the `texpr` language or the `teval` interpreter to accomodate multiple sequential let-bindings.
 
 </br>
 
 ## Exercise 2.6 (optional)
 
-Now modify the interpretation of te language from Exercise 2.1 so that multiple let-bindings are *simultaneous* rather than sequential. For instance,
+Now modify the interpretation of the language from Exercise 2.1 so that multiple let-bindings are *simultaneous* rather than sequential. For instance,
 
 `let x1 = 5+7` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `x2 = x1*2 in x1+x2 end`
 
