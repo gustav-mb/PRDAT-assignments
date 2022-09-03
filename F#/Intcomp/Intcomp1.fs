@@ -254,10 +254,12 @@ let rec tcomp (e : expr) (cenv : string list) : texpr =
     match e with
     | CstI i -> TCstI i
     | Var x  -> TVar (getindex cenv x)
-    | Let(x, erhs, ebody) -> 
-      let cenv1 = x :: cenv 
-      TLet(tcomp erhs cenv, tcomp ebody cenv1)
+    | Let(bindings, ebody) ->
+      let cenv1 = List.fold (fun acc x ->  (fst x) :: acc ) cenv bindings
+      
+      TLet(tcomp (snd (List.head bindings)) cenv, tcomp ebody cenv1)
     | Prim(ope, e1, e2) -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv);;
+
 
 (* Evaluation of target expressions with variable indexes.  The
    run-time environment renv is a list of variable values (ints).  *)
@@ -275,6 +277,7 @@ let rec teval (e : texpr) (renv : int list) : int =
     | TPrim("-", e1, e2) -> teval e1 renv - teval e2 renv
     | TPrim _            -> failwith "unknown primitive";;
 
+let example = teval (tcomp e1 [])   [0;2;1000]
 (* Correctness: eval e []  equals  teval (tcomp e []) [] *)
 
 
