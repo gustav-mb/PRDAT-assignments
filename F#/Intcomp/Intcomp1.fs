@@ -15,9 +15,7 @@ type expr =
 
 (* Some closed expressions: *)
 
-let e1 = Let([("x1", Prim("+", CstI 5, CstI 7)); ("x2", Prim("*", Var "x1", CstI 2))], Prim("+", Var "x1", Var "x2"))
-
-// let e1 = Let("z", CstI 17, Prim("+", Var "z", Var "y"));;
+// let e1 = Let("z", CstI 17, Prim("+", Var "z", Var "z"));;
 
 // let e2 = Let("z", CstI 17, 
 //              Prim("+", Let("z", CstI 22, Prim("*", CstI 100, Var "z")),
@@ -32,11 +30,37 @@ let e1 = Let([("x1", Prim("+", CstI 5, CstI 7)); ("x2", Prim("*", Var "x1", CstI
 
 // let e5 = Prim("*", CstI 2, Let("x", CstI 3, Prim("+", Var "x", CstI 4)));;
 
-let e6 = Let(["z", Var "x"], Prim("+", Var "z", Var "x"))
+// let e6 = Let("z", Var "x", Prim("+", Var "z", Var "x"))
+
 // let e7 = Let("z", CstI 3, Let("y", Prim("+", Var "z", CstI 1), Prim("+", Var "z", Var "y")))
+
 // let e8 = Let("z", Let("x", CstI 4, Prim("+", Var "x", CstI 5)), Prim("*", Var "z", CstI 2))
+
 // let e9 = Let("z", CstI 3, Let("y", Prim("+", Var "z", CstI 1), Prim("+", Var "x", Var "y")))
+
 // let e10 = Let("z", Prim("+", Let("x", CstI 4, Prim("+", Var "x", CstI 5)), Var "x"), Prim("*", Var "z", CstI 2))
+
+let e0 = Let([("x1", Prim("+", CstI 5, CstI 7)); ("x2", Prim("*", Var "x1", CstI 2))], Prim("+", Var "x1", Var "x2")) // 36
+
+let e1 = Let(["z", CstI 17], Prim("+", Var "z", Var "z")) // 34
+
+let e2 = Let(["z", CstI 17], Prim("+", Let(["z", CstI 22], Prim("*", CstI 100, Var "z")), Var "z")) // 2217
+
+let e3 = Let(["z", Prim("-", CstI 5, CstI 4)], Prim("*", CstI 100, Var "z")) // 100
+
+let e4 = Prim("+", Prim("+", CstI 20, Let(["z", CstI 17], Prim("+", Var "z", CstI 2))), CstI 30) // 69
+
+let e5 = Prim("*", CstI 2, Let(["x", CstI 3], Prim("+", Var "x", CstI 4)))  // 14
+
+let e6 = Let(["z", Var "x"], Prim("+", Var "z", Var "x")) // Fail has free variable "x"
+
+let e7 = Let(["z", CstI 3], Let(["y", Prim("+", Var "z", CstI 1)], Prim("+", Var "z", Var "y")))  // 7
+
+let e8 = Let(["z", Let(["x", CstI 4], Prim("+", Var "x", CstI 5))], Prim("*", Var "z", CstI 2))   // 18
+
+let e9 = Let(["z", CstI 3], Let(["y", Prim("+", Var "z", CstI 1)], Prim("+", Var "x", Var "y")))  // Fails has free variable "x"
+
+let e10 = Let(["z", Prim("+", Let(["x", CstI 4], Prim("+", Var "x", CstI 5)), Var "x")], Prim("*", Var "z", CstI 2))  // Fails has free variable "x"
 
 (* ---------------------------------------------------------------------- *)
 
@@ -64,7 +88,7 @@ let rec eval e (env : (string * int) list) : int =
     | Prim _            -> failwith "unknown primitive";;
 
 let run e = eval e [];;
-let res = List.map run [e1;e6]  (* e6 has free variables *)
+let res = List.map run [e0;e1;e2;e3;e4;e5;e7]  (* e6 has free variables *)
 
 
 (* ---------------------------------------------------------------------- *)
@@ -213,21 +237,22 @@ let rec minus (xs, ys) =
 
 (* Find all variables that occur free in expression e *)
 
+// Exercise 2.2
 let rec freevars e : string list =
     match e with
-    | CstI i -> []
+    | CstI _ -> []
     | Var x  -> [x]
     | Let(bindings, ebody) -> 
-        List.fold
-            (fun acc x -> acc @ union (freevars (snd x), minus (freevars ebody, [(fst x)]))) [] bindings
-    | Prim(ope, e1, e2) -> union (freevars e1, freevars e2);;
+        List.fold (fun acc x -> 
+          acc @ union (freevars (snd x), minus (freevars ebody, [(fst x)])) @ acc
+        ) [] bindings
+    | Prim(_, e1, e2) -> union (freevars e1, freevars e2);;
 
 (* Alternative definition of closed *)
 
 let closed2 e = (freevars e = []);;
-let _ = List.map closed2 [e6]
-let freevarseTest = freevars e6
-let lol = 5+5
+let closedTest = List.map closed2 [e0;e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
+let test = freevars e0
 
 (* ---------------------------------------------------------------------- *)
 
@@ -255,8 +280,8 @@ let rec tcomp (e : expr) (cenv : string list) : texpr =
     | CstI i -> TCstI i
     | Var x  -> TVar (getindex cenv x)
     | Let(bindings, ebody) ->
-      let cenv1 = List.fold (fun acc x ->  (fst x) :: acc ) cenv bindings
-      
+      let cenv1 = List.fold (fun acc x ->  (fst x) :: acc) cenv bindings
+      // List.fold (fun _ x -> TLet(tcomp (snd x) cenv, tcomp ebody cenv1)) (TCstI 0) bindings
       TLet(tcomp (snd (List.head bindings)) cenv, tcomp ebody cenv1)
     | Prim(ope, e1, e2) -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv);;
 
@@ -277,7 +302,14 @@ let rec teval (e : texpr) (renv : int list) : int =
     | TPrim("-", e1, e2) -> teval e1 renv - teval e2 renv
     | TPrim _            -> failwith "unknown primitive";;
 
-let example = teval (tcomp e1 [])   [0;2;1000]
+let testCorrectness e = 
+  let resultE = eval e []
+  let resultT = teval (tcomp e []) []
+  (resultE = resultT, (resultE, resultT));;
+let res = List.map testCorrectness [e1;e2;e3;e4;e5;e7;e8];;
+
+
+let example = [eval e8 []; teval (tcomp e8 []) []]
 (* Correctness: eval e []  equals  teval (tcomp e []) [] *)
 
 
