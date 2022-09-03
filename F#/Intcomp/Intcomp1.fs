@@ -32,7 +32,7 @@ let e1 = Let([("x1", Prim("+", CstI 5, CstI 7)); ("x2", Prim("*", Var "x1", CstI
 
 // let e5 = Prim("*", CstI 2, Let("x", CstI 3, Prim("+", Var "x", CstI 4)));;
 
-// let e6 = Let("z", Var "x", Prim("+", Var "z", Var "x"))
+let e6 = Let(["z", Var "x"], Prim("+", Var "z", Var "x"))
 // let e7 = Let("z", CstI 3, Let("y", Prim("+", Var "z", CstI 1), Prim("+", Var "z", Var "y")))
 // let e8 = Let("z", Let("x", CstI 4, Prim("+", Var "x", CstI 5)), Prim("*", Var "z", CstI 2))
 // let e9 = Let("z", CstI 3, Let("y", Prim("+", Var "z", CstI 1), Prim("+", Var "x", Var "y")))
@@ -64,7 +64,7 @@ let rec eval e (env : (string * int) list) : int =
     | Prim _            -> failwith "unknown primitive";;
 
 let run e = eval e [];;
-let res = List.map run [e1;]  (* e6 has free variables *)
+let res = List.map run [e1;e6]  (* e6 has free variables *)
 
 
 (* ---------------------------------------------------------------------- *)
@@ -217,14 +217,17 @@ let rec freevars e : string list =
     match e with
     | CstI i -> []
     | Var x  -> [x]
-    | Let(x, erhs, ebody) -> 
-          union (freevars erhs, minus (freevars ebody, [x]))
+    | Let(bindings, ebody) -> 
+        List.fold
+            (fun acc x -> acc @ union (freevars (snd x), minus (freevars ebody, [(fst x)]))) [] bindings
     | Prim(ope, e1, e2) -> union (freevars e1, freevars e2);;
 
 (* Alternative definition of closed *)
 
 let closed2 e = (freevars e = []);;
-let _ = List.map closed2 [e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
+let _ = List.map closed2 [e6]
+let freevarseTest = freevars e6
+let lol = 5+5
 
 (* ---------------------------------------------------------------------- *)
 
