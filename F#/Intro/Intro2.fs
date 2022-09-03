@@ -136,18 +136,21 @@ let converted = fmt test3;;
 // TODO FIX
 let rec simplify a : aexpr = 
     match a with
-    | Add(CstI 0, CstI 0) -> CstI 0
+    | Add(CstI 0, CstI 0)      -> CstI 0
     | Add(CstI 0, a2)          -> simplify a2
     | Add(a1, CstI 0)          -> simplify a1
-    | Add(a1, a2)              ->  simplify (Add(simplify a1, simplify a2))
+    | Add(CstI _, CstI _)      -> a
+    | Add(a1, a2)              -> Add(simplify a1, simplify a2) |> simplify
     | Sub(a1, CstI 0)          -> simplify a1
     | Sub(a1, a2) when a1 = a2 -> CstI 0
+    | Sub(CstI 0, CstI i)      -> CstI -i
+    | Sub(CstI _, CstI _)      -> a
     | Sub(a1, a2)              -> Sub(simplify a1, simplify a2)
     | Mul(CstI 1, a2)          -> simplify a2
     | Mul(a1, CstI 1)          -> simplify a1
     | Mul(CstI 0, _)           -> CstI 0
     | Mul(_, CstI 0)           -> CstI 0
-    | Mul(a1, a2)              -> Mul(simplify a1, simplify a2)
+    | Mul(a1, a2)              -> Mul(simplify a1, simplify a2) |> simplify
     | _                        -> a;;
 
 let testSub = simplify (Sub(CstI 0, Add(CstI 3, CstI 4)))
