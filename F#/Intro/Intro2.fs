@@ -133,7 +133,6 @@ let converted = fmt test3;;
     e ∗ 0 −→ 0
 *)
 
-// TODO FIX
 let rec simplify a : aexpr = 
     match a with
     | Add(CstI 0, CstI 0)      -> CstI 0
@@ -155,7 +154,7 @@ let rec simplify a : aexpr =
 
 let testSub = simplify (Sub(CstI 0, Add(CstI 3, CstI 4)))
 let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
-let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));; //DOESNT WORK
+let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));;
 let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt
 
 //   ((0 * 1) + 10) - (10 + 10)
