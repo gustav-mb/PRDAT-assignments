@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Intcomp1.fs" />
+    <Compile Include="Intcomp2.fs" />
   </ItemGroup>
 
 </Project>
