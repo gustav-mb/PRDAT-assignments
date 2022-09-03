@@ -136,19 +136,23 @@ let converted = fmt test3;;
 // TODO FIX
 let rec simplify a : aexpr = 
     match a with
+    | CstI i -> CstI i
+    | Var x -> Var x
+    | Add(CstI 0, CstI 0) -> CstI 0
     | Add(CstI 0, a2)          -> simplify a2
     | Add(a1, CstI 0)          -> simplify a1
-    // | Add(a1, a2)              -> Add(simplify a1, simplify a2)
+    | Add(a1, a2)              ->  simplify (Add(simplify a1, simplify a2))
     | Sub(a1, CstI 0)          -> simplify a1
     | Sub(a1, a2) when a1 = a2 -> CstI 0
-    // | Sub(a1, a2)              -> Sub(simplify a1, simplify a2)
+    | Sub(a1, a2)              -> Sub(simplify a1, simplify a2)
     | Mul(CstI 1, a2)          -> simplify a2
     | Mul(a1, CstI 1)          -> simplify a1
     | Mul(CstI 0, _)           -> CstI 0
     | Mul(_, CstI 0)           -> CstI 0
-    // | Mul(a1, a2)              -> Mul(simplify a1, simplify a2)
+    | Mul(a1, a2)              -> Mul(simplify a1, simplify a2)
     | _                        -> a;;
 
+let testSub = simplify (Sub(CstI 0, Add(CstI 3, CstI 4)))
 let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
 let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));; //DOESNT WORK
 let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt
@@ -157,4 +161,15 @@ let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI
 
 // Exercise 1.2 (iv)
 
-let diff a str : aexpr = failwith "Not implemented"
+let rec diff a x : aexpr =
+    match a with
+    | CstI _ -> CstI 0
+    | Var y when y <> x -> CstI 0
+    | Var _ -> CstI 1
+    | Add(a1,a2) -> Add(diff a1 x, diff a2 x)
+    | Sub(a1,a2) -> Sub(diff a1 x, diff a2 x)
+    | Mul(a1,a2) -> Add(Mul(diff a1 x, a2), Mul(a1, diff a2 x));;
+
+let diffTest1 = diff (Var "asd") "DET HER ER EN ANDEN STRING";;
+let diffTest2 = diff (Add(CstI 4, CstI 5)) "ligegyldigt"
+let diffTest3 = diff (Mul(CstI 5, CstI 4)) "Stadig ligegyldigt" |> simplify
