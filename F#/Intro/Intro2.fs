@@ -136,8 +136,6 @@ let converted = fmt test3;;
 // TODO FIX
 let rec simplify a : aexpr = 
     match a with
-    | CstI i -> CstI i
-    | Var x -> Var x
     | Add(CstI 0, CstI 0) -> CstI 0
     | Add(CstI 0, a2)          -> simplify a2
     | Add(a1, CstI 0)          -> simplify a1
