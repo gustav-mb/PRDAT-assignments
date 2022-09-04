@@ -152,24 +152,25 @@ let rec simplify a : aexpr =
     | Mul(a1, a2)              -> Mul(simplify a1, simplify a2) |> simplify
     | _                        -> a;;
 
-let testSub = simplify (Sub(CstI 0, Add(CstI 3, CstI 4)))
-let testSubSimplify1 = fmt (simplify (Add(CstI 0, CstI 2)));;
-let testSubSimplify2 = fmt (simplify (Sub(CstI 1, Add(CstI 0, CstI 2))));;
-let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt
-
-//   ((0 * 1) + 10) - (10 + 10)
+let testSubSimplify0 = simplify (Sub(CstI 0, Add(CstI 3, CstI 4))) |> fmt
+let testSubSimplify1 = simplify (Add(CstI 0, CstI 2)) |> fmt
+let testSubSimplify2 = simplify (Sub(CstI 1, Add(CstI 0, CstI 2))) |> fmt
+let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt //   ((0 * 1) + 10) - (10 + 10) => 10 - (10 + 10)
 
 // Exercise 1.2 (iv)
-
 let rec diff a x : aexpr =
     match a with
     | CstI _ -> CstI 0
     | Var y when y <> x -> CstI 0
     | Var _ -> CstI 1
-    | Add(a1,a2) -> Add(diff a1 x, diff a2 x)
-    | Sub(a1,a2) -> Sub(diff a1 x, diff a2 x)
-    | Mul(a1,a2) -> Add(Mul(diff a1 x, a2), Mul(a1, diff a2 x));;
+    | Add(a1, a2) -> Add(diff a1 x, diff a2 x)
+    | Sub(a1, a2) -> Sub(diff a1 x, diff a2 x)
+    | Mul(a1, a2) -> Add(Mul(diff a1 x, a2), Mul(a1, diff a2 x))
 
-let diffTest1 = diff (Var "asd") "DET HER ER EN ANDEN STRING";;
-let diffTest2 = diff (Add(CstI 4, CstI 5)) "ligegyldigt"
-let diffTest3 = diff (Mul(CstI 5, CstI 4)) "Stadig ligegyldigt" |> simplify
+let diffTest1 = diff (Var "x") "x"
+let diffTest2 = diff (Var "x") "y"
+let diffTest3 = diff (Add(Var "x", Add(Var "y", CstI 10))) "x"
+let diffTest4 = diff (Add(Var "x", Sub(Var "y", CstI 10))) "x"
+let diffTest5 = diff (Mul(Var "x", Add(Var "y", Var "x"))) "x"
+let diffTest6 = diff (Add(CstI 4, CstI 5)) "ligegyldigt"
+let diffTest7 = diff (Mul(CstI 5, CstI 4)) "Stadig ligegyldigt"
