@@ -244,7 +244,7 @@ let rec freevars e : string list =
     | Var x  -> [x]
     | Let(bindings, ebody) -> 
         List.fold (fun acc x -> 
-          acc @ union (freevars (snd x), minus (freevars ebody, [(fst x)])) @ acc
+          acc @ union (freevars (snd x), minus (freevars ebody, [(fst x)]))
         ) [] bindings
     | Prim(_, e1, e2) -> union (freevars e1, freevars e2);;
 
