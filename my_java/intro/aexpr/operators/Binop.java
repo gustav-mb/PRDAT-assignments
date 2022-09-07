@@ -1,6 +1,6 @@
-package java.intro.aexpr.operators;
+package my_java.intro.aexpr.operators;
 
-import java.intro.aexpr.AExpr;
+import my_java.intro.aexpr.AExpr;
 
 public abstract class Binop extends AExpr {
     protected final AExpr e1, e2;

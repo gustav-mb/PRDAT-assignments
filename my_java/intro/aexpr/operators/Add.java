@@ -1,7 +1,7 @@
-package java.intro.aexpr.operators;
+package my_java.intro.aexpr.operators;
 
-import java.intro.aexpr.AExpr;
-import java.intro.aexpr.syntax.CstI;
+import my_java.intro.aexpr.AExpr;
+import my_java.intro.aexpr.syntax.CstI;
 import java.util.Map;
 
 public class Add extends Binop {

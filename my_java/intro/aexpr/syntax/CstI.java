@@ -1,6 +1,6 @@
-package java.intro.aexpr.syntax;
+package my_java.intro.aexpr.syntax;
 
-import java.intro.aexpr.AExpr;
+import my_java.intro.aexpr.AExpr;
 import java.util.Map;
 
 public class CstI extends AExpr {
