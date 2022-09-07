@@ -19,7 +19,7 @@ public class Sub extends Binop {
         if(e2.equals(new CstI(0))){
             return e1.simplify();
         }
-        if(e1.equals(new CstI(0)) && e2 instanceof CstI)){
+        if(e1.equals(new CstI(0)) && e2 instanceof CstI){
             CstI constant = new CstI(-((CstI) e2).getI()); 
             return constant;
         }

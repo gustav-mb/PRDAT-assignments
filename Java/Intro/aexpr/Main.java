@@ -43,17 +43,25 @@ public class Main {
         System.out.println("--- SIMPLIFY ---");
         System.out.println(new Add(new CstI(17), new CstI(0)).simplify());
         System.out.println(new Add(new CstI(0), new CstI(10)).simplify());
+        System.out.println(new Add(new CstI(0), new CstI(0)).simplify());
+        System.out.println(new Add(new CstI(2), new CstI(10)).simplify());
+        System.out.println(new Add(new CstI(0), (new Add(new CstI(0), new CstI(10)))).simplify());
 
         System.out.println("* " + new Mul(new CstI(0), new CstI(10)).simplify());
         System.out.println("* " + new Mul(new CstI(10), new CstI(0)).simplify());
         System.out.println("* " + new Mul(new CstI(1), new CstI(10)).simplify());
         System.out.println("* " + new Mul(new CstI(10), new CstI(1)).simplify());
+        System.out.println(new Mul(new CstI(-2), new Sub(new CstI(10), new CstI(0))).simplify());
+        System.out.println(new Mul(new CstI(-2), new Sub(new CstI(10), new CstI(10))).simplify());
     
         System.out.println(new Sub(new CstI(17), new CstI(0)).simplify());
         System.out.println(new Sub(new CstI(0), new CstI(17)).simplify());
         System.out.println(new Sub(new CstI(10), new CstI(10)).simplify());
+        System.out.println(new Sub(new CstI(10), new CstI(2)).simplify());
+        System.out.println(new Sub(new Add(new Mul(new CstI(0), new CstI(1)), new CstI(10)), new Add(new CstI(10), new CstI(10))).simplify());
         
-        System.out.println(new Mul(new CstI(-2), new Sub(new CstI(10), new CstI(10))).simplify());
-        System.out.println(new Mul(new CstI(-2), new Sub(new CstI(10), new CstI(0))).simplify());
+
+
+
     }
 }
