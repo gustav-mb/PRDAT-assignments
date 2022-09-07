@@ -13,21 +13,21 @@ public class Sub extends Binop {
     
     @Override
     public AExpr simplify() {
-        var bCstIE2 = e2 instanceof CstI;
-
-        if (bCstIE2) {
-            var convertedE2 = (CstI) e2;
-
-            if (convertedE2.getI() == 0) {
-                return e1.simplify();
-            }
-        }
-
-        if (e1.equals(e2)){
+        if(e1.equals(e2)){
             return new CstI(0);
         }
-        
-        return this;
+        if(e2.equals(new CstI(0))){
+            return e1.simplify();
+        }
+        if(e1.equals(new CstI(0)) && e2 instanceof CstI)){
+            CstI constant = new CstI(-((CstI) e2).getI()); 
+            return constant;
+        }
+        if(e1 instanceof CstI && e2 instanceof CstI){
+            return this;
+        }
+        return new Sub(e1.simplify(),e2.simplify()).simplify();
+
     }
     
     // Exercise 1.4 (iii)
