@@ -14,8 +14,18 @@ public class Add extends Binop {
     public AExpr simplify() {
         if (e1.equals(new CstI(0)) && e2.equals(new CstI(0))){
             return new CstI(0);
+        } else if (e1.equals(new CstI(0))){
+            return e2.simplify();
+        } else if (e2.equals(new CstI(0))){
+            return e1.simplify();
+        } 
+
+        if (e1 instanceof CstI && e2 instanceof CstI){
+            return this;
         }
-        
+
+        return new Add(e1.simplify(), e2.simplify()).simplify();
+
     }
 
     // Exercise 1.4 (iii)
