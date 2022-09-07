@@ -1,9 +1,8 @@
-package Java.Intro.aexpr.operators;
+package java.intro.aexpr.operators;
 
+import java.intro.aexpr.AExpr;
+import java.intro.aexpr.syntax.CstI;
 import java.util.Map;
-
-import Java.Intro.aexpr.AExpr;
-import Java.Intro.aexpr.syntax.CstI;
 
 public class Mul extends Binop {
 

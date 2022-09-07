@@ -1,13 +1,12 @@
-package Java.Intro.aexpr;
+package java.intro.aexpr;
 
+import java.intro.aexpr.operators.Add;
+import java.intro.aexpr.operators.Mul;
+import java.intro.aexpr.operators.Sub;
+import java.intro.aexpr.syntax.CstI;
+import java.intro.aexpr.syntax.Var;
 import java.util.HashMap;
 import java.util.Map;
-
-import Java.Intro.aexpr.operators.Add;
-import Java.Intro.aexpr.operators.Mul;
-import Java.Intro.aexpr.operators.Sub;
-import Java.Intro.aexpr.syntax.CstI;
-import Java.Intro.aexpr.syntax.Var;
 
 // Exercise 1.4 (i)
 

@@ -1,8 +1,7 @@
-package Java.Intro.aexpr.syntax;
+package java.intro.aexpr.syntax;
 
+import java.intro.aexpr.AExpr;
 import java.util.Map;
-
-import Java.Intro.aexpr.AExpr;
 
 public class CstI extends AExpr {
     private final int i;
