@@ -121,41 +121,83 @@ let rec fmt a : string =
 let converted = fmt test3;;
 
 // Exercise 1.2 (iv)
-(*
-    EXPRESSION SIMPLIFICATIONS
-    0 + e −→ e
-    e + 0 −→ e
-    e − 0 −→ e
-    e − e −→ 0
-    1 ∗ e −→ e
-    e ∗ 1 −→ e
-    0 ∗ e −→ 0
-    e ∗ 0 −→ 0
-*)
-
 let rec simplify a : aexpr = 
     match a with
-    | Add(CstI 0, CstI 0)      -> CstI 0
-    | Add(CstI 0, a2)          -> simplify a2
-    | Add(a1, CstI 0)          -> simplify a1
-    | Add(CstI _, CstI _)      -> a
-    | Add(a1, a2)              -> Add(simplify a1, simplify a2) |> simplify
-    | Sub(a1, CstI 0)          -> simplify a1
-    | Sub(a1, a2) when a1 = a2 -> CstI 0
-    | Sub(CstI 0, CstI i)      -> CstI -i
-    | Sub(CstI _, CstI _)      -> a
-    | Sub(a1, a2)              -> Sub(simplify a1, simplify a2)
-    | Mul(CstI 1, a2)          -> simplify a2
-    | Mul(a1, CstI 1)          -> simplify a1
-    | Mul(CstI 0, _)           -> CstI 0
-    | Mul(_, CstI 0)           -> CstI 0
-    | Mul(a1, a2)              -> Mul(simplify a1, simplify a2) |> simplify
+    | Add(a1, a2) ->
+        let a1' = simplify a1
+        let a2' = simplify a2
+        match a1', a2' with
+        | CstI 0, CstI 0 -> CstI 0
+        | CstI 0, a2     -> simplify a2
+        | a1, CstI 0     -> simplify a1
+        | a1, a2         -> Add(a1, a2)
+    // | Add(CstI 0, CstI 0)      -> CstI 0
+    // | Add(CstI 0, a2)          -> simplify a2
+    // | Add(a1, CstI 0)          -> simplify a1
+    // | Add(CstI _, CstI _)      -> a
+    // | Add(a1, a2)              -> Add(simplify a1, simplify a2) |> simplify
+    
+    | Sub(a1, a2) ->
+        let a1' = simplify a1
+        let a2' = simplify a2
+        match a1', a2' with
+        | CstI 0, CstI 0      -> CstI 0
+        | a1, CstI 0          -> simplify a1
+        | a1, a2 when a1 = a2 -> CstI 0
+        | CstI 0, CstI i      -> CstI -i
+        | a1, a2              -> Sub(a1, a2)
+
+    // | Sub(a1, CstI 0)          -> simplify a1
+    // | Sub(a1, a2) when a1 = a2 -> CstI 0
+    // | Sub(CstI 0, CstI i)      -> CstI -i
+    // | Sub(CstI _, CstI _)      -> a
+    // | Sub(a1, a2)              -> Sub(simplify a1, simplify a2)
+
+    | Mul(a1, a2) ->
+        let a1' = simplify a1
+        let a2' = simplify a2
+        match a1', a2' with
+        | CstI 0, _ -> CstI 0
+        | _, CstI 0 -> CstI 0
+        | CstI 1, a2 -> simplify a2
+        | a1, CstI 1 -> simplify a1
+        | a1, a2     -> Mul(a1, a2)
+    
+    // | Mul(CstI 1, a2)          -> simplify a2
+    // | Mul(a1, CstI 1)          -> simplify a1
+    // | Mul(CstI 0, _)           -> CstI 0
+    // | Mul(_, CstI 0)           -> CstI 0
+    // | Mul(a1, a2)              -> Mul(simplify a1, simplify a2) |> simplify
     | _                        -> a;;
 
-let testSubSimplify0 = simplify (Sub(CstI 0, Add(CstI 3, CstI 4))) |> fmt
-let testSubSimplify1 = simplify (Add(CstI 0, CstI 2)) |> fmt
-let testSubSimplify2 = simplify (Sub(CstI 1, Add(CstI 0, CstI 2))) |> fmt
-let testSubSimplify3 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt //   ((0 * 1) + 10) - (10 + 10) => 10 - (10 + 10)
+// Add
+let addSimplifyTest1 = simplify (Add(CstI 17, CstI 0)) |> fmt       // 17
+let addSimplifyTest2 = simplify (Add(CstI 0, CstI 10)) |> fmt       // 10
+let addSimplifyTest3 = simplify (Add(CstI 0, CstI 0)) |> fmt        // 0
+let addSimplifyTest4 = simplify (Add(CstI 2, CstI 10)) |> fmt       // (2 + 10)
+let addSimplifyTest5 = simplify (Add(CstI 0, Add(CstI 2, CstI 10))) |> fmt // (2 + 10)
+let addSimplifyTest6 = simplify (Add(Var "x", Add(Var "y", CstI 0))) |> fmt // (x + y)
+let addSimplifyTest7 = simplify (Add(Var "x", Add(Var "y", Add(CstI 10, CstI 0)))) |> fmt // (x + (y + 10))
+
+// Sub
+let subSimplifyTest1 = simplify (Sub(CstI 0, CstI 0)) |> fmt // 0
+let subSimplifyTest2 = simplify (Sub(Var "x", CstI 0)) |> fmt // x
+let subSimplifyTest3 = simplify (Sub(Add(CstI 1, CstI 1), Add(CstI 1, CstI 1))) |> fmt // 0
+let subSimplifyTest4 = simplify (Sub(Add(CstI 0, CstI 0), CstI -1)) |> fmt // 1
+let subSimplifyTest5 = simplify (Sub(Var "x", Sub(CstI 10, Add(Var "y", CstI 0)))) |> fmt // x - (10 -  y)
+let subSimplifyTest6 = simplify (Sub(Add(Mul(CstI 0, CstI 1), CstI 10), Add(CstI 10, CstI 10))) |> fmt // 10 - (10 + 10)
+
+// Mul
+let mulSimplifyTest1 = simplify (Mul(CstI 0, Add(CstI 10, CstI 9))) |> fmt // 0
+let mulSimplifyTest2 = simplify (Mul(Add(CstI 10, CstI 9), CstI 0)) |> fmt // 0
+let mulSimplifyTest3 = simplify (Mul(Sub(CstI 1, CstI 0), Add(CstI 0, CstI 33))) |> fmt // 33
+let mulSimplifyTest4 = simplify (Mul(Add(CstI 0, CstI 33), (Sub(CstI 1, CstI 0)))) |> fmt // 33
+let mulSimplifyTest5 = simplify (Mul(CstI -2, Sub(CstI 10, CstI 0))) |> fmt // (-2 * 10)
+let mulSimplifyTest6 = simplify (Mul(CstI -2, Sub(CstI 10, CstI 10))) |> fmt // 0
+
+// Var
+let varSimplifyTest1 = simplify (Add(Var "x", Var "y")) |> fmt // (x + y)
+let varSimplifyTest2 = simplify (Var "x") |> fmt // x
 
 // Exercise 1.2 (iv)
 let rec diff a x : aexpr =
