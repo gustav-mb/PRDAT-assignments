@@ -1,6 +1,6 @@
 # Programs as Data - Assignment 1
 
-Assignments are from Programming Language Concepts (PLC), by Peter Sestoft, Springer 2017 and Basic Compiler (BCD)Design by Torben Mogensen, DIKU 2010
+Assignments are from Programming Language Concepts (PLC), by Peter Sestoft, Springer 2017 and Basic Compiler Design (BCD) by Torben Mogensen, DIKU 2010
 
 </br>
 
@@ -57,6 +57,18 @@ Construct the corresponding NFA. Try to find a DFA corresponding to the NFA.
 
 ## BCD 2.1
 
+In the following, a *number-string* is a non-empty sequence of decimal digits, i.e., something in the language defined by the regular expression $[0-9]^+$. The value of a number-string is the usual interpretation of a number-string as an integer number.
+
+Note that leading zeroes are allowed
+
+Make for each of the following languages a regular expression that describes that language.
+
+a) All number-strings that have the value 42.
+
+b) All number-strings that *do not* have the value 42
+
+c) All number-strings that have a value that is strictly greater than 42.
+
 </br>
 
 ---
@@ -64,6 +76,12 @@ Construct the corresponding NFA. Try to find a DFA corresponding to the NFA.
 </br>
 
 ## BCD 2.2
+
+Given a regular expression $a^*(a|b)aa$:
+
+a) Construct an equivalent NFA using the method in section 2.4.
+
+b) Convert this NFA to a DFA using algorithm 2.3.
 
 </br>
 
