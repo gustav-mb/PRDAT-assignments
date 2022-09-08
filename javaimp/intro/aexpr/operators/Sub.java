@@ -1,24 +1,26 @@
-package my_java.intro.aexpr.operators;
+package javaimp.intro.aexpr.operators;
 
-import my_java.intro.aexpr.AExpr;
-import my_java.intro.aexpr.syntax.CstI;
 import java.util.Map;
+
+import javaimp.intro.aexpr.AExpr;
+import javaimp.intro.aexpr.syntax.CstI;
 
 public class Sub extends Binop {
 
     public Sub(AExpr e1, AExpr e2) {
         super(e1, e2);
     }
-
     
     @Override
     public AExpr simplify() {
         if(e1.equals(e2)){
             return new CstI(0);
         }
+
         if(e2.equals(new CstI(0))){
             return e1.simplify();
         }
+        
         if(e1.equals(new CstI(0)) && e2 instanceof CstI){
             CstI constant = new CstI(-((CstI) e2).getI()); 
             return constant;
@@ -42,11 +44,17 @@ public class Sub extends Binop {
             return false;
         }
 
-        return e1.equals(((Sub) other).e1) && e2.equals(((Sub) other).e2);
+        var sub2 = (Sub) other;
+
+        return e1.equals(sub2.e1) && e2.equals(sub2.e2);
     }
 
     @Override
     public String toString() {
         return String.format("(%s - %s)", e1, e2);
+    }
+
+    public static Sub s(AExpr a1, AExpr a2) {
+        return new Sub(a1, a2);
     }
 }

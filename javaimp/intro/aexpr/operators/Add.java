@@ -1,8 +1,9 @@
-package my_java.intro.aexpr.operators;
+package javaimp.intro.aexpr.operators;
 
-import my_java.intro.aexpr.AExpr;
-import my_java.intro.aexpr.syntax.CstI;
 import java.util.Map;
+
+import javaimp.intro.aexpr.AExpr;
+import javaimp.intro.aexpr.syntax.CstI;
 
 public class Add extends Binop {
 
@@ -12,15 +13,19 @@ public class Add extends Binop {
 
     @Override
     public AExpr simplify() {
-        if (e1.equals(new CstI(0)) && e2.equals(new CstI(0))){
+        if (e1.equals(new CstI(0)) && e2.equals(new CstI(0))) {
             return new CstI(0);
-        } else if (e1.equals(new CstI(0))){
-            return e2.simplify();
-        } else if (e2.equals(new CstI(0))){
-            return e1.simplify();
-        } 
+        }
 
-        if (e1 instanceof CstI && e2 instanceof CstI){
+        if (e1.equals(new CstI(0))) {
+            return e2.simplify();
+        }
+
+        if (e2.equals(new CstI(0))) {
+            return e1.simplify();
+        }
+
+        if (e1 instanceof CstI && e2 instanceof CstI) {
             return this;
         }
 
@@ -40,11 +45,17 @@ public class Add extends Binop {
             return false;
         }
 
-        return e1.equals(((Add) other).e1) && e2.equals(((Add) other).e2);
+        var add2 = (Add) other;
+
+        return e1.equals(add2.e1) && e2.equals(add2.e2);
     }
 
     @Override
     public String toString() {
         return String.format("(%s + %s)", e1, e2);
+    }
+
+    public static Add a(AExpr a1, AExpr a2) {
+        return new Add(a1, a2);
     }
 }

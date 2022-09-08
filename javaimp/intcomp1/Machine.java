@@ -1,4 +1,4 @@
-package my_java.intcomp1;
+package javaimp.intcomp1;
 
 /* Java implementation of a unified-stack abstract machine 
    sestoft@itu.dk * 2001-02-05 

@@ -1,7 +1,8 @@
-package my_java.intro.aexpr.syntax;
+package javaimp.intro.aexpr.syntax;
 
-import my_java.intro.aexpr.AExpr;
 import java.util.Map;
+
+import javaimp.intro.aexpr.AExpr;
 
 public class Var extends AExpr {
     protected final String name;
@@ -33,5 +34,9 @@ public class Var extends AExpr {
     @Override
     public String toString() {
         return name;
+    }
+
+    public static Var x(String x) {
+        return new Var(x);
     }
 }
