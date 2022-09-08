@@ -23,7 +23,7 @@ public class Main {
 
         // Exercise 1.4 (ii)
         AExpr e2 = new Mul(new CstI(-2), new Sub(new CstI(10), new Var("y")));
-        AExpr e22 = new Mul(new CstI(-2), new Sub(new CstI(10), new Var("y")));
+        AExpr e2double = new Mul(new CstI(-2), new Sub(new CstI(10), new Var("y")));
         AExpr e3 = new Sub(new CstI(20), new Var("x"));
         AExpr e4 = new Mul(new CstI(4), new Add(new CstI(17), new Var("z")));
 
@@ -31,7 +31,7 @@ public class Main {
         System.out.println(e2.toString());
         System.out.println(e3.toString());
         System.out.println(e4.toString());
-        System.out.println(e2.equals(e22));
+        System.out.println(e2.equals(e2double));
 
         // Exercise 1.4 (iii)
         System.out.println("--- EVAL ---");

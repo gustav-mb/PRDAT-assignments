@@ -7,6 +7,8 @@
 
 module Intcomp1
 
+// Exercise 2.1
+
 type expr = 
   | CstI of int
   | Var of string
@@ -71,6 +73,9 @@ let rec lookup env x =
     | []        -> failwith (x + " not found")
     | (y, v)::r -> if x=y then v else lookup r x;;
 
+    
+// Exercise 2.1 
+
 let rec eval e (env : (string * int) list) : int =
     match e with
     | CstI i            -> i
@@ -105,19 +110,19 @@ let rec mem x vs =
 (* Checking whether an expression is closed.  The vs is 
    a list of the bound variables.  *)
 
-let rec closedin (e : expr) (vs : string list) : bool =
-    match e with
-    | CstI i -> true
-    | Var x  -> List.exists (fun y -> x=y) vs
-    | Let(x, erhs, ebody) -> 
-      let vs1 = x :: vs 
-      closedin erhs vs && closedin ebody vs1
-    | Prim(ope, e1, e2) -> closedin e1 vs && closedin e2 vs;;
+// let rec closedin (e : expr) (vs : string list) : bool =
+    // match e with
+    // | CstI i -> true
+    // | Var x  -> List.exists (fun y -> x=y) vs
+    // | Let(x, erhs, ebody) -> 
+    //   let vs1 = x :: vs 
+    //   closedin erhs vs && closedin ebody vs1
+    // | Prim(ope, e1, e2) -> closedin e1 vs && closedin e2 vs;;
 
 (* An expression is closed if it is closed in the empty environment *)
 
-let closed1 e = closedin e [];;
-let _ = List.map closed1 [e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
+// let closed1 e = closedin e [];;
+// let _ = List.map closed1 [e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
 
 (* ---------------------------------------------------------------------- *)
 
@@ -140,43 +145,42 @@ let rec remove env x =
 
 (* Naive substitution, may capture free variables: *)
 
-let rec nsubst (e : expr) (env : (string * expr) list) : expr =
-    match e with
-    | CstI i -> e
-    | Var x  -> lookOrSelf env x
-    | Let(x, erhs, ebody) ->
-      let newenv = remove env x
-      Let(x, nsubst erhs env, nsubst ebody newenv)
-    | Prim(ope, e1, e2) -> Prim(ope, nsubst e1 env, nsubst e2 env)
+// let rec nsubst (e : expr) (env : (string * expr) list) : expr =
+//     match e with
+//     | CstI i -> e
+//     | Var x  -> lookOrSelf env x
+//     | Let(x, erhs, ebody) ->
+//       let newenv = remove env x
+//       Let(x, nsubst erhs env, nsubst ebody newenv)
+//     | Prim(ope, e1, e2) -> Prim(ope, nsubst e1 env, nsubst e2 env)
 
 (* Some expressions with free variables: *)
 
 let e6 = Prim("+", Var "y", Var "z");;
 
-let e6s1 = nsubst e6 [("z", CstI 17)];;
+// let e6s1 = nsubst e6 [("z", CstI 17)];;
 
-let e6s2 = nsubst e6 [("z", Prim("-", CstI 5, CstI 4))];;
+// let e6s2 = nsubst e6 [("z", Prim("-", CstI 5, CstI 4))];;
 
-let e6s3 = nsubst e6 [("z", Prim("+", Var "z", Var "z"))];;
+// let e6s3 = nsubst e6 [("z", Prim("+", Var "z", Var "z"))];;
 
 // Shows that only z outside the Let gets substituted:
-let e7 = Prim("+", Let("z", CstI 22, Prim("*", CstI 5, Var "z")),
-                   Var "z");;
+// let e7 = Prim("+", Let("z", CstI 22, Prim("*", CstI 5, Var "z")),
+//                    Var "z");;
 
-let e7s1 = nsubst e7 [("z", CstI 100)];;
+// let e7s1 = nsubst e7 [("z", CstI 100)];;
 
-// Shows that only the z in the Let rhs gets substituted
-let e8 = Let("z", Prim("*", CstI 22, Var "z"), Prim("*", CstI 5, Var "z"));;
+// // Shows that only the z in the Let rhs gets substituted
+// let e8 = Let("z", Prim("*", CstI 22, Var "z"), Prim("*", CstI 5, Var "z"));;
 
-let e8s1 = nsubst e8 [("z", CstI 100)];;
+// let e8s1 = nsubst e8 [("z", CstI 100)];;
 
-// Shows (wrong) capture of free variable z under the let:
-let e9 = Let("z", CstI 22, Prim("*", Var "y", Var "z"));;
+// // Shows (wrong) capture of free variable z under the let:
+// let e9 = Let("z", CstI 22, Prim("*", Var "y", Var "z"));;
 
-let e9s1 = nsubst e9 [("y", Var "z")];;
+// let e9s1 = nsubst e9 [("y", Var "z")];;
 
-// 
-let e9s2 = nsubst e9 [("z", Prim("-", CstI 5, CstI 4))];;
+// let e9s2 = nsubst e9 [("z", Prim("-", CstI 5, CstI 4))];;
 
 let newVar : string -> string = 
     let n = ref 0
@@ -185,31 +189,31 @@ let newVar : string -> string =
 
 (* Correct, capture-avoiding substitution *)
 
-let rec subst (e : expr) (env : (string * expr) list) : expr =
-    match e with
-    | CstI i -> e
-    | Var x  -> lookOrSelf env x
-    | Let(x, erhs, ebody) ->
-      let newx = newVar x
-      let newenv = (x, Var newx) :: remove env x
-      Let(newx, subst erhs env, subst ebody newenv)
-    | Prim(ope, e1, e2) -> Prim(ope, subst e1 env, subst e2 env)
+// let rec subst (e : expr) (env : (string * expr) list) : expr =
+//     match e with
+//     | CstI i -> e
+//     | Var x  -> lookOrSelf env x
+//     | Let(x, erhs, ebody) ->
+//       let newx = newVar x
+//       let newenv = (x, Var newx) :: remove env x
+//       Let(newx, subst erhs env, subst ebody newenv)
+//     | Prim(ope, e1, e2) -> Prim(ope, subst e1 env, subst e2 env)
 
-let e6s1a = subst e6 [("z", CstI 17)];;
+// let e6s1a = subst e6 [("z", CstI 17)];;
 
-let e6s2a = subst e6 [("z", Prim("-", CstI 5, CstI 4))];;
+// let e6s2a = subst e6 [("z", Prim("-", CstI 5, CstI 4))];;
 
-let e6s3a = subst e6 [("z", Prim("+", Var "z", Var "z"))];;
+// let e6s3a = subst e6 [("z", Prim("+", Var "z", Var "z"))];;
 
 
-// Shows renaming of bound variable z (to z1)
-let e7s1a = subst e7 [("z", CstI 100)];;
+// // Shows renaming of bound variable z (to z1)
+// let e7s1a = subst e7 [("z", CstI 100)];;
 
-// Shows renaming of bound variable z (to z2)
-let e8s1a = subst e8 [("z", CstI 100)];;
+// // Shows renaming of bound variable z (to z2)
+// let e8s1a = subst e8 [("z", CstI 100)];;
 
-// Shows renaming of bound variable z (to z3), avoiding capture of free z
-let e9s1a = subst e9 [("y", Var "z")];;
+// // Shows renaming of bound variable z (to z3), avoiding capture of free z
+// let e9s1a = subst e9 [("y", Var "z")];;
 
 (* ---------------------------------------------------------------------- *)
 
@@ -237,7 +241,9 @@ let rec minus (xs, ys) =
 
 (* Find all variables that occur free in expression e *)
 
+
 // Exercise 2.2
+
 let rec freevars e : string list =
     match e with
     | CstI _ -> []
@@ -273,6 +279,8 @@ let rec getindex vs x =
     | y::yr -> if x=y then 0 else 1 + getindex yr x;;
 
 (* Compiling from expr to texpr *)
+
+// Exercise 2.3
 
 let rec tcomp (e : expr) (cenv : string list) : texpr =
     match e with

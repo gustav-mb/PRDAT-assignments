@@ -11,6 +11,13 @@ public class Add extends Binop {
         super(e1, e2);
     }
 
+    // Exercise 1.4 (iii)
+    @Override
+    public int eval(Map<String, Integer> env) {
+        return e1.eval(env) + e2.eval(env);
+    }
+
+    // Exercise 1.4 (iv)
     @Override
     public AExpr simplify() {
 
@@ -34,12 +41,6 @@ public class Add extends Binop {
 
     }
 
-    // Exercise 1.4 (iii)
-    @Override
-    public int eval(Map<String, Integer> env) {
-        return e1.eval(env) + e2.eval(env);
-    }
-
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof Add)) {
@@ -51,6 +52,7 @@ public class Add extends Binop {
         return e1.equals(add2.e1) && e2.equals(add2.e2);
     }
 
+    // Exercise 1.4 (i)
     @Override
     public String toString() {
         return String.format("(%s + %s)", e1, e2);

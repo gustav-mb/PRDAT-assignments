@@ -10,6 +10,13 @@ public class Mul extends Binop {
         super(e1, e2);
     }
 
+    // Exercise 1.4 (iii)
+    @Override
+    public int eval(Map<String, Integer> env) {
+        return e1.eval(env) * e2.eval(env);
+    }
+
+    // Exercise 1.4 (iv)
     @Override
     public AExpr simplify() {
 
@@ -31,12 +38,6 @@ public class Mul extends Binop {
         return new Mul(se1, se2); 
     }
 
-    // Exercise 1.4 (iii)
-    @Override
-    public int eval(Map<String, Integer> env) {
-        return e1.eval(env) * e2.eval(env);
-    }
-
     @Override
     public boolean equals(Object other) {
         if (!(other instanceof Mul)) {
@@ -48,6 +49,7 @@ public class Mul extends Binop {
         return e1.equals(mul2.e1) && e2.equals(mul2.e2);
     }
 
+    // Exercise 1.4 (i)
     @Override
     public String toString() {
         return String.format("(%s * %s)", e1, e2);

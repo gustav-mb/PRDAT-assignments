@@ -31,6 +31,7 @@ public class CstI extends AExpr {
         return this.i == ((CstI) other).i;
     }
 
+    // Exercise 1.4 (i)
     @Override
     public String toString() {
         return String.valueOf(i);

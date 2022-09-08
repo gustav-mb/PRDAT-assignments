@@ -31,6 +31,7 @@ public class Var extends AExpr {
         return name.equals(((Var) other).name);
     }
 
+    // Exercise 1.4 (i)
     @Override
     public String toString() {
         return name;

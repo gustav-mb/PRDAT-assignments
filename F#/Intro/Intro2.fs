@@ -179,7 +179,7 @@ let mulSimplifyTest6 = simplify (Mul(CstI -2, Sub(CstI 10, CstI 10))) |> fmt // 
 let varSimplifyTest1 = simplify (Add(Var "x", Var "y")) |> fmt // (x + y)
 let varSimplifyTest2 = simplify (Var "x") |> fmt // x
 
-// Exercise 1.2 (iv)
+// Exercise 1.2 (v)
 let rec diff a x : aexpr =
     match a with
     | CstI _ -> CstI 0
