@@ -12,19 +12,23 @@ public class Mul extends Binop {
 
     @Override
     public AExpr simplify() {
-        if(e1.equals(new CstI(1))) {
-            return e2.simplify();
+
+        var se1 = e1.simplify();
+        var se2 = e2.simplify();
+
+        if(se1.equals(new CstI(1))) {
+            return se2.simplify();
         }
 
-        if(e2.equals(new CstI(1))) {
-            return e1.simplify();
+        if(se2.equals(new CstI(1))) {
+            return se1.simplify();
         }
 
-        if(e1.equals(new CstI(0)) || e2.equals(new CstI(0))) {
+        if(se1.equals(new CstI(0)) || se2.equals(new CstI(0))) {
             return new CstI(0);
         }
 
-        return new Mul(e1.simplify(), e2.simplify()).simplify(); 
+        return new Mul(se1, se2); 
     }
 
     // Exercise 1.4 (iii)

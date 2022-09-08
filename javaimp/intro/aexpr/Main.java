@@ -52,12 +52,12 @@ public class Main {
         System.out.println(Add.a(Var.x("x"), Add.a(Var.x("y"), Add.a(CstI.i(10), CstI.i(0)))).simplify()); // (x + (y + 10))
 
         System.out.println("--- Sub ---");
-        System.out.println(Sub.s(CstI.i(0), CstI.i(0)));    // 0
-        System.out.println(Sub.s(Var.x("x"), CstI.i(0)));   // x
-        System.out.println(Sub.s(Add.a(CstI.i(1), CstI.i(1)), Add.a(CstI.i(1), CstI.i(1)))); // 0
-        System.out.println(Sub.s(Add.a(CstI.i(0), CstI.i(0)), CstI.i(-1))); // 1
-        System.out.println(Sub.s(Var.x("x"), Sub.s(CstI.i(10), Add.a(Var.x("y"), CstI.i(0))))); // x - (10 - y)
-        System.out.println(Sub.s(Add.a(Mul.m(CstI.i(0), CstI.i(1)), CstI.i(10)), Add.a(CstI.i(10), CstI.i(10)))); // 10 - (10 + 10)
+        System.out.println(Sub.s(CstI.i(0), CstI.i(0)).simplify());    // 0
+        System.out.println(Sub.s(Var.x("x"), CstI.i(0)).simplify());   // x
+        System.out.println(Sub.s(Add.a(CstI.i(1), CstI.i(1)), Add.a(CstI.i(1), CstI.i(1))).simplify()); // 0
+        System.out.println(Sub.s(Add.a(CstI.i(0), CstI.i(0)), CstI.i(-1)).simplify()); // 1
+        System.out.println(Sub.s(Var.x("x"), Sub.s(CstI.i(10), Add.a(Var.x("y"), CstI.i(0)))).simplify()); // x - (10 - y)
+        System.out.println(Sub.s(Add.a(Mul.m(CstI.i(0), CstI.i(1)), CstI.i(10)), Add.a(CstI.i(10), CstI.i(10))).simplify()); // 10 - (10 + 10)
         
         System.out.println("--- Mul ---");
         System.out.println(Mul.m(CstI.i(0), Add.a(CstI.i(10), CstI.i(9))).simplify()); // 0

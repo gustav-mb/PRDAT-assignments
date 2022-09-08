@@ -131,28 +131,14 @@ let rec simplify a : aexpr =
         | CstI 0, a2     -> simplify a2
         | a1, CstI 0     -> simplify a1
         | a1, a2         -> Add(a1, a2)
-    // | Add(CstI 0, CstI 0)      -> CstI 0
-    // | Add(CstI 0, a2)          -> simplify a2
-    // | Add(a1, CstI 0)          -> simplify a1
-    // | Add(CstI _, CstI _)      -> a
-    // | Add(a1, a2)              -> Add(simplify a1, simplify a2) |> simplify
-    
     | Sub(a1, a2) ->
         let a1' = simplify a1
         let a2' = simplify a2
         match a1', a2' with
-        | CstI 0, CstI 0      -> CstI 0
         | a1, CstI 0          -> simplify a1
         | a1, a2 when a1 = a2 -> CstI 0
         | CstI 0, CstI i      -> CstI -i
         | a1, a2              -> Sub(a1, a2)
-
-    // | Sub(a1, CstI 0)          -> simplify a1
-    // | Sub(a1, a2) when a1 = a2 -> CstI 0
-    // | Sub(CstI 0, CstI i)      -> CstI -i
-    // | Sub(CstI _, CstI _)      -> a
-    // | Sub(a1, a2)              -> Sub(simplify a1, simplify a2)
-
     | Mul(a1, a2) ->
         let a1' = simplify a1
         let a2' = simplify a2
@@ -162,12 +148,6 @@ let rec simplify a : aexpr =
         | CstI 1, a2 -> simplify a2
         | a1, CstI 1 -> simplify a1
         | a1, a2     -> Mul(a1, a2)
-    
-    // | Mul(CstI 1, a2)          -> simplify a2
-    // | Mul(a1, CstI 1)          -> simplify a1
-    // | Mul(CstI 0, _)           -> CstI 0
-    // | Mul(_, CstI 0)           -> CstI 0
-    // | Mul(a1, a2)              -> Mul(simplify a1, simplify a2) |> simplify
     | _                        -> a;;
 
 // Add
