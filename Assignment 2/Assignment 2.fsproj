@@ -7,16 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="ex2_4Handout.fs" />
+    <FsLex Include="./Expr/ExprLex.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </FsLex>
+    <FsYacc Include="./Expr/ExprPar.fsy">
+      <OtherFlags>--module ExprPar</OtherFlags>
+    </FsYacc>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="./Expr/ExprLex.fsl" />
+    <None Include="./Expr/ExprPar.fsy" />
     <Compile Include="./Expr/Absyn.fs" />
     <Compile Include="./Expr/Expr.fs" />
     <Compile Include="./Expr/ExprPar.fsi" />
     <Compile Include="./Expr/ExprPar.fs" />
     <Compile Include="./Expr/ExprLex.fs" />
     <Compile Include="./Expr/Parse.fs" />
+    <Compile Include="ex2_4Handout.fs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
     <PackageReference Include="FsLexYacc.Runtime" Version="10.2.0" />
   </ItemGroup>
 
