@@ -14,6 +14,8 @@ Use this function together with scomp from `Intcomp1.fs` to make a compiler from
 
 You may test the output of your compiler by typing in the numbers as an `int` array in the `Machine.java` interpreter. (Or you may solve Exercise 2.5 below to avoid this manual work).
 
+**See file: Expr.fs**
+
 </br>
 
 ---
@@ -45,9 +47,13 @@ It is essential that the compiler (in F#) and the interpreter (in Java) agree on
 
 ## PLC 3.2
 
-Write a regular expression that recognizes all sequences consisting of *a* and *b* where two *a*’s are always separated by at least one b. For instance, these four strings are legal: *b*, *a*, *ba*, ababbbaba; but these two strings are illegal: *aa*, *babaa*.
+Write a regular expression that recognizes all sequences consisting of *a* and *b* where two *a*’s are always separated by at least one b. For instance, these four strings are legal: *b*, *a*, *ba*, *ababbbaba*; but these two strings are illegal: *aa*, *babaa*.
 
 Construct the corresponding NFA. Try to find a DFA corresponding to the NFA.
+
+$ (a|b|ba)(b|ba)* $
+
+See picture
 
 </br>
 
@@ -65,9 +71,16 @@ Make for each of the following languages a regular expression that describes tha
 
 a) All number-strings that have the value 42.
 
+Answer: 0*42
+
 b) All number-strings that *do not* have the value 42
 
-c) All number-strings that have a value that is strictly greater than 42.
+Answer: 0*(4+|[0-35-9]*)
+
+
+c) All number-strings that have a value that is strictly greater than 42. (n > 42)
+
+Answer: ^[1-9][0-9]{2,}|[4-9][3-9]|[5-9][0-9]$
 
 </br>
 
@@ -77,9 +90,11 @@ c) All number-strings that have a value that is strictly greater than 42.
 
 ## BCD 2.2
 
-Given a regular expression $a^*(a|b)aa$:
+Given a regular expression a*(a|b)aa*:
 
 a) Construct an equivalent NFA using the method in section 2.4.
+
+See picture
 
 b) Convert this NFA to a DFA using algorithm 2.3.
 
