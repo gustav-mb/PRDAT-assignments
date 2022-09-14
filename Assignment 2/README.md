@@ -75,8 +75,7 @@ Answer: 0*42
 
 b) All number-strings that *do not* have the value 42
 
-Answer: 0*(4+|[0-35-9]*)
-
+Answer: 0*(([0-9][0-13-9]*)|([0-35-9][0-9])|([0-9]*42[0-9]+))
 
 c) All number-strings that have a value that is strictly greater than 42. (n > 42)
 
