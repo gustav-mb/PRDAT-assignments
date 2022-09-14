@@ -1,5 +1,7 @@
 # Programs as Data - Assignment 1
 
+Non-code answers to the exercises are given in this document!
+
 Assignments are from Programming Language Concepts (PLC), by Peter Sestoft, Springer 2017 and Basic Compiler Design (BCD) by Torben Mogensen, DIKU 2010
 
 </br>
@@ -14,7 +16,7 @@ Use this function together with scomp from `Intcomp1.fs` to make a compiler from
 
 You may test the output of your compiler by typing in the numbers as an `int` array in the `Machine.java` interpreter. (Or you may solve Exercise 2.5 below to avoid this manual work).
 
-**See file: Expr.fs**
+See file **ex2_4Handout.fs**
 
 </br>
 
@@ -39,6 +41,8 @@ The name of the text file may be given as a command-line parameter to the Java p
 
 It is essential that the compiler (in F#) and the interpreter (in Java) agree on the intermediate language: what integer represents what instruction.
 
+See file **ex2_4Handout.fs** and **Machine.java**
+
 </br>
 
 ---
@@ -51,9 +55,15 @@ Write a regular expression that recognizes all sequences consisting of *a* and *
 
 Construct the corresponding NFA. Try to find a DFA corresponding to the NFA.
 
-$ (a|b|ba)(b|ba)* $
+Regex: `(a|b|ba)(b|ba)*`
 
-See picture
+NFA:
+
+![3.2 NFA](/appendix/PLC%203.2%20NFA.png)
+
+DFA:
+
+![3.2 DFA](/appendix/PLC%203.2%20DFA.png)
 
 </br>
 
@@ -75,11 +85,11 @@ Answer: 0*42
 
 b) All number-strings that *do not* have the value 42
 
-Answer: 0*(([0-9][0-13-9]*)|([0-35-9][0-9])|([0-9]*42[0-9]+))
+Answer: `0*(([0-9][0-13-9]*)|([0-35-9][0-9])|([0-9]*42[0-9]+))`
 
 c) All number-strings that have a value that is strictly greater than 42. (n > 42)
 
-Answer: ^[1-9][0-9]{2,}|[4-9][3-9]|[5-9][0-9]$
+Answer: `^[1-9][0-9]{2,}|[4-9][3-9]|[5-9][0-9]$`
 
 </br>
 
@@ -89,13 +99,72 @@ Answer: ^[1-9][0-9]{2,}|[4-9][3-9]|[5-9][0-9]$
 
 ## BCD 2.2
 
-Given a regular expression a*(a|b)aa*:
+Given a regular expression a*(a|b)aa:
 
 a) Construct an equivalent NFA using the method in section 2.4.
 
-See picture
+![2.2 NFA](/appendix/BCD%202.2%20NFA.png)
 
 b) Convert this NFA to a DFA using algorithm 2.3.
+
+
+
+</br>
+
+---
+
+</br>
+
+## HelloLex Question 1
+
+Read the specification `hello.fsl`
+
+What are the regular expressions involved, and which semantic values are they associated with?
+
+The involved regex is the range [0-9].
+
+The semantaic values associated with it is all positive integers.
+
+</br>
+
+---
+
+</br>
+
+## HelloLex Question 2
+
+Generate the lexer out of the specification using a command prompt. Which additional file is generated during the process?
+
+How many states are there by the automaton of the lexer?
+Hint: Depending on setup, you can generate the lexer with the command `fslex --unicode hello.fsl`
+
+You can get the number of the states of the automaton by reading the report output when the lexer is generated.
+
+</br>
+
+---
+
+</br>
+
+## HelloLex Question 3
+
+Compile and run the generated program `hello.fs` from question 2.
+Hint: This depends on your setup. A possible approach is t have `FsLexYacc.Runtime.dll` accessible from your working directory and do the following:
+
+```fsharppc
+% fsharpc -r FsLexYacc.Runtime.dll hello.fs
+Microsoft (R) F# Compiler version 10.2.3 for F# 4.5
+Copyright (c) Microsoft Corporation. All Rights Reserved.
+
+% mono hello.exe
+Hello World from FsLex!
+
+Please pass a digit:
+3
+
+The lexer recognizes 3
+%
+```
 
 </br>
 
