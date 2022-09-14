@@ -103,11 +103,11 @@ Given a regular expression a*(a|b)aa:
 
 a) Construct an equivalent NFA using the method in section 2.4.
 
-![2.2 NFA](/appendix/BCD%202.2%20NFA.png)
+![BCD 2.2 NFA](/appendix/BCD%202.2%20NFA.png)
 
 b) Convert this NFA to a DFA using algorithm 2.3.
 
-
+![BCD 2.2 DFA](/appendix/BCD%202.2%20DFA.png)
 
 </br>
 
