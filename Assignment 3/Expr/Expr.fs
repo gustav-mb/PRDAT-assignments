@@ -314,10 +314,8 @@ let rec scomp e (cenv : rtvalue list) : sinstr list =
       | Var x  -> [SVar (getindex cenv (Bound x))]
       | Let(x, erhs, ebody) -> 
             scomp erhs cenv @ scomp ebody (Bound x :: cenv) @ [SSwap; SPop]
-      | If(CstI 0, e2, _)      -> 
-            scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop]  
-      | If(CstI 1, e2, e3)      -> 
-            scomp e1 (Intrm :: cenv) @ scomp e3 (Intrm :: cenv) @ [SPop] 
+      | If(e1, e2, e3)      -> 
+            scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop] @ scomp e3 (Intrm :: cenv) @ [SPop] 
       | Prim("+", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SAdd] 
       | Prim("-", e1, e2)   -> 
