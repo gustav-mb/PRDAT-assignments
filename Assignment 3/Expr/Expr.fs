@@ -276,6 +276,7 @@ type sinstr =
   | SMul                                (* pop args, push product *)
   | SPop                                (* pop value/unbind var   *)
   | SSwap                               (* exchange top and next  *)
+  | SDup                                (* duplicate top *)
  
 let rec seval (inss : sinstr list) stack = 
     match inss, stack with 
@@ -290,6 +291,7 @@ let rec seval (inss : sinstr list) stack =
        | SMul,     i2::i1::stkr -> seval rest (i1*i2 :: stkr)
        | SPop,        _ :: stkr -> seval rest stkr
        | SSwap,    i2::i1::stkr -> seval rest (i1::i2::stkr)
+       | SDup,     i1::stkr     -> seval rest (i1::i1::stkr) // Added
        | _,        _            -> raise (Failure "seval: error")
 
 
@@ -314,10 +316,8 @@ let rec scomp e (cenv : rtvalue list) : sinstr list =
       | Var x  -> [SVar (getindex cenv (Bound x))]
       | Let(x, erhs, ebody) -> 
             scomp erhs cenv @ scomp ebody (Bound x :: cenv) @ [SSwap; SPop]
-      | If(CstI 0, e2, _)      -> 
-            scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop]  
-      | If(CstI 1, e2, e3)      -> 
-            scomp e1 (Intrm :: cenv) @ scomp e3 (Intrm :: cenv) @ [SPop] 
+      | If(e1, e2, e3)      -> 
+            scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop]   
       | Prim("+", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SAdd] 
       | Prim("-", e1, e2)   -> 
