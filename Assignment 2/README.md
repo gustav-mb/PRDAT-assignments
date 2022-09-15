@@ -1,6 +1,6 @@
-# Programs as Data - Assignment 1
+# Programs as Data - Assignment 2
 
-Non-code answers to the exercises are given in this document!
+Non-code answers to the exercises are answered in this document!
 
 Assignments are from Programming Language Concepts (PLC), by Peter Sestoft, Springer 2017 and Basic Compiler Design (BCD) by Torben Mogensen, DIKU 2010
 
@@ -16,7 +16,7 @@ Use this function together with scomp from `Intcomp1.fs` to make a compiler from
 
 You may test the output of your compiler by typing in the numbers as an `int` array in the `Machine.java` interpreter. (Or you may solve Exercise 2.5 below to avoid this manual work).
 
-See file **ex2_4Handout.fs**
+Answer: See file **ex2_4Handout.fs**
 
 </br>
 
@@ -41,7 +41,7 @@ The name of the text file may be given as a command-line parameter to the Java p
 
 It is essential that the compiler (in F#) and the interpreter (in Java) agree on the intermediate language: what integer represents what instruction.
 
-See file **ex2_4Handout.fs** and **Machine.java**
+Answer: See file **ex2_4Handout.fs** and **Machine.java**
 
 </br>
 
@@ -81,7 +81,7 @@ Make for each of the following languages a regular expression that describes tha
 
 a) All number-strings that have the value 42.
 
-Answer: 0*42
+Answer: `0*42`
 
 b) All number-strings that *do not* have the value 42
 
@@ -89,7 +89,7 @@ Answer: `0*(([0-9][0-13-9]*)|([0-35-9][0-9])|([0-9]*42[0-9]+))`
 
 c) All number-strings that have a value that is strictly greater than 42. (n > 42)
 
-Answer: `^[1-9][0-9]{2,}|[4-9][3-9]|[5-9][0-9]$`
+Answer: `[1-9][0-9]{2,}|[4-9][3-9]|[5-9][0-9]`
 
 </br>
 
@@ -121,9 +121,9 @@ Read the specification `hello.fsl`
 
 What are the regular expressions involved, and which semantic values are they associated with?
 
-The involved regex is the range [0-9].
+Answer 1): The involved regex is the range [0-9].
 
-The semantic values associated with is a single char representing an integer from 0 to 9.
+Answer 2): The semantic value is a single number representing an integer from 0 to 9.
 
 </br>
 
@@ -135,7 +135,7 @@ The semantic values associated with is a single char representing an integer fro
 
 Generate the lexer out of the specification using a command prompt. Which additional file is generated during the process?
 
-Answer: `hello.fs`
+Answer: See `hello.fs`
 
 How many states are there by the automaton of the lexer?
 Hint: Depending on setup, you can generate the lexer with the command `fslex --unicode hello.fsl`
@@ -170,6 +170,10 @@ The lexer recognizes 3
 %
 ```
 
+Answer: Is run with `dotnet run`:
+
+![HelloLex Question 3](/appendix/HelloLex%203.png)
+
 </br>
 
 ---
@@ -179,7 +183,11 @@ The lexer recognizes 3
 ## HelloLex Question 4
 
 Extend the lexer specification `hello.fsl` to recognize numbers of more than one digit. New lexer specification is `hello2.fsl`.
-Generate `hello.fs`, compile and run the generated program.
+Generate `hello2.fs`, compile and run the generated program.
+
+Answer: Is run with `dotnet run`. See **./HelloLex/hello2.fsl** and **hello2.fs**
+
+![HelloLex Question 4](/appendix/HelloLex%204.png)
 
 </br>
 
@@ -192,6 +200,10 @@ Generate `hello.fs`, compile and run the generated program.
 Extend the lexer specification `hello2.fsl` to recognize floating numbers. New lexer specification is `hello3.fsl`. Generate `hello3.fs`, compile and run the generated program.
 
 Hint: You can use the regular expression `[+-]?([0-9]*[.])?[0-9]+` to recognize floats.
+
+Answer: Is run with `dotnet run`. See **./HelloLex/hello3.fsl** and **hello3.fs**
+
+![HelloLex Question 5](/appendix/HelloLex%205.png)
 
 </br>
 
