@@ -17,7 +17,7 @@ let sinstrToInt = function
   | SSwap   -> [6];;
 
 let assemble instrs = 
-  List.fold (fun acc x -> acc  @ sinstrToInt x) [] instrs;;
+  List.fold (fun acc x -> acc @ sinstrToInt x) [] instrs;;
 
 (* Output the integers in list inss to the text file called fname: *)
 
