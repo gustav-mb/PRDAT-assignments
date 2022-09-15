@@ -4,6 +4,16 @@ Non-code answers to the exercises are answered in this document!
 
 Assignments are from Programming Language Concepts (PLC), by Peter Sestoft, Springer 2017 and Basic Compiler Design (BCD) by Torben Mogensen, DIKU 2010
 
+Generation of F# Lexer Specifications:
+
+```dotnet build```
+
+Run one of the `hello*.fs` files with:
+
+```dotnet run```
+
+(To change which one is run outcomment one of the lines in `Assignment 2.fsproj`)
+
 </br>
 
 ## PLC 2.4
