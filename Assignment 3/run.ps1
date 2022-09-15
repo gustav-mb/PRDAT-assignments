@@ -1,1 +1,1 @@
-dotnet fsi -r .\bin\Debug\net6.0\FsLexYacc.Runtime.dll .\Expr\Absyn.fs .\ExprPar.fs .\ExprLex.fs .\Expr\Parse.fs
+dotnet fsi -r .\bin\Debug\net6.0\FsLexYacc.Runtime.dll .\Expr\Absyn.fs .\ExprPar.fs .\ExprLex.fs .\Expr\Parse.fs .\Expr\Expr.fs .\ex2_4Handout.fs

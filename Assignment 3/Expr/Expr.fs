@@ -36,9 +36,10 @@ let rec fmt1 (e : expr) : string =
       | CstI i -> i.ToString()
       | Var x  -> x 
       | Let(x, erhs, ebody) -> 
-            String.concat " " ["let"; x; "="; fmt1 erhs;
+            String.concat "" ["let"; x; "="; fmt1 erhs;
                                "in"; fmt1 ebody; "end"]
-      | Prim(ope, e1, e2) -> String.concat "" ["("; fmt1 e1; ope; fmt1 e2; ")"]
+      | Prim(ope, e1, e2)   -> String.concat "" ["("; fmt1 e1; ope; fmt1 e2; ")"]
+      | If(e1, e2, e3)      -> String.concat "" [fmt1 e1; "?"; fmt1 e2; ":"; fmt1 e3]
 
 (* Format expressions as strings, avoiding excess parentheses *)
 
@@ -55,6 +56,7 @@ let rec fmt2 (ctxpre : int) (e : expr) =
                | "-" -> wrappar ctxpre 6 [fmt2 5 e1; ope; fmt2 6 e2]
                | "*" -> wrappar ctxpre 7 [fmt2 6 e1; ope; fmt2 7 e2]
                | _   -> raise (Failure "unknown primitive"))
+      | If(e1, e2, e3) -> String.concat " " [fmt2 -1 e1; "?"; fmt2 -1 e2; ":"; fmt2 -1 e3]
 
 and wrappar ctxpre pre ss = 
     if pre <= ctxpre then String.concat "" ("(" :: ss @ [")"])
@@ -79,10 +81,12 @@ let rec eval (e : expr) (env : (string * int) list) : int =
             let xval = eval erhs env 
             let env1 = (x, xval) :: env in
             eval ebody env1
+      | If(e1, e2, e3)    -> if (eval e1 env) <> 0 then (eval e2 env) else (eval e3 env)
       | Prim("+", e1, e2) -> eval e1 env + eval e2 env
       | Prim("*", e1, e2) -> eval e1 env * eval e2 env
       | Prim("-", e1, e2) -> eval e1 env - eval e2 env
       | Prim _            -> raise (Failure "unknown primitive")
+
 
 (* Evaluate in empty environment: expression must have no free variables: *)
 
@@ -104,7 +108,8 @@ let rec closedin (e : expr) (env : string list) : bool =
       | Let(x, erhs, ebody) -> 
             let env1 = x :: env 
             closedin erhs env && closedin ebody env1
-      | Prim(ope, e1, e2) -> closedin e1 env && closedin e2 env;
+      | Prim(ope, e1, e2)   -> closedin e1 env && closedin e2 env
+      | If(e1, e2, e3)      -> closedin e1 env && closedin e2 env && closedin e3 env;;
 
 (* An expression is closed if it is closed in the empty environment *)
 
@@ -141,7 +146,8 @@ let rec freevars e : string list =
       | Var x  -> [x]
       | Let(x, erhs, ebody) -> 
             union (freevars erhs) (minus (freevars ebody) [x])
-      | Prim(ope, e1, e2) -> union (freevars e1) (freevars e2)
+      | Prim(ope, e1, e2)   -> union (freevars e1) (freevars e2)
+      | If(e1, e2, e)       -> failwith "not implemented"
 
 (* Alternative definition of closed *)
 
@@ -158,6 +164,7 @@ type texpr =                            (* target expressions *)
   | TVar of int                         (* index into runtime environment *)
   | TLet of texpr * texpr               (* erhs and ebody                 *)
   | TPrim of string * texpr * texpr
+  | TIf of texpr * texpr * texpr
 
 
 (* Map variable name to variable index at compile-time *)
@@ -181,7 +188,8 @@ let rec tcomp e (cenv : string list) : texpr =
       | Let(x, erhs, ebody) -> 
             let cenv1 = x :: cenv 
             TLet(tcomp erhs cenv, tcomp ebody cenv1)
-      | Prim(ope, e1, e2) -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv)
+      | Prim(ope, e1, e2)   -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv)
+      | If(e1, e2, e3)      -> TIf(tcomp e1 cenv, tcomp e2 cenv, tcomp e3 cenv)
 
 (* Evaluation of target expressions with variable indexes.  The
    run-time environment renv is a list of variable values (ints).  *)
@@ -194,6 +202,7 @@ let rec teval (e : texpr) (renv : int list) : int =
             let xval = teval erhs renv
             let renv1 = xval :: renv 
             teval ebody renv1
+      | TIf(e1, e2, e3)    -> if (teval e1 renv) <> 0 then (teval e2 renv) else (teval e3 renv)
       | TPrim("+", e1, e2) -> teval e1 renv + teval e2 renv
       | TPrim("*", e1, e2) -> teval e1 renv * teval e2 renv
       | TPrim("-", e1, e2) -> teval e1 renv - teval e2 renv
@@ -297,17 +306,23 @@ type rtvalue =
 
 (* Compilation to a list of instructions for a unified-stack machine *)
 
+//Assignment 3
+//Exercise 3.7
 let rec scomp e (cenv : rtvalue list) : sinstr list =
     match e with
       | CstI i -> [SCstI i]
       | Var x  -> [SVar (getindex cenv (Bound x))]
       | Let(x, erhs, ebody) -> 
             scomp erhs cenv @ scomp ebody (Bound x :: cenv) @ [SSwap; SPop]
-      | Prim("+", e1, e2) -> 
+      | If(CstI 0, e2, _)      -> 
+            scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop]  
+      | If(CstI 1, e2, e3)      -> 
+            scomp e1 (Intrm :: cenv) @ scomp e3 (Intrm :: cenv) @ [SPop] 
+      | Prim("+", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SAdd] 
-      | Prim("-", e1, e2) -> 
+      | Prim("-", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SSub] 
-      | Prim("*", e1, e2) -> 
+      | Prim("*", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SMul] 
       | Prim _ -> raise (Failure "scomp: unknown operator")
 

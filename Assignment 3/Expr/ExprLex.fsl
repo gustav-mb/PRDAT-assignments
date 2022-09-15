@@ -22,6 +22,8 @@ let keyword s =
     | _     -> NAME s
 }
 
+// Assignment 3
+// Excercise 3.7
 rule Token = parse
   | [' ' '\t' '\r'] { Token lexbuf }
   | '\n'            { lexbuf.EndPos <- lexbuf.EndPos.NextLine; Token lexbuf }
@@ -31,6 +33,8 @@ rule Token = parse
   | '+'             { PLUS  } 
   | '-'             { MINUS } 
   | '*'             { TIMES }
+  | '?'             { IF }
+  | ':'             { ELSE }
   | '='             { EQ    } 
   | '('             { LPAR  } 
   | ')'             { RPAR  } 

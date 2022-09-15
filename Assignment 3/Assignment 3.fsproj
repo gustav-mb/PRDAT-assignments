@@ -20,11 +20,11 @@
     <None Include="./Expr/ExprPar.fsy" />
     <Compile Include="./Expr/Absyn.fs" />
     <Compile Include="./Expr/Expr.fs" />
-    <Compile Include="ex2_4Handout.fs" />
-    <Compile Include="Parse.fs" />
     <Compile Include="ExprPar.fsi" />
     <Compile Include="ExprPar.fs" />
     <Compile Include="ExprLex.fs" />
+    <Compile Include="./Expr/Parse.fs" />
+    <Compile Include="ex2_4Handout.fs" />
   </ItemGroup>
 
   <ItemGroup>

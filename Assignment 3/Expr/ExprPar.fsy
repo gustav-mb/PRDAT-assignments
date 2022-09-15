@@ -11,10 +11,12 @@
 %token PLUS MINUS TIMES DIVIDE EQ
 %token END IN LET
 %token LPAR RPAR
+%token IF ELSE //3.7
 %token EOF
 
 %left MINUS PLUS        /* lowest precedence  */
 %left TIMES             /* highest precedence */
+%right IF ELSE          //3.7
 
 %start Main
 %type <Absyn.expr> Main 
@@ -30,6 +32,7 @@ Expr:
   | CSTINT                              { CstI $1           }
   | MINUS CSTINT                        { CstI (- $2)       }
   | LPAR Expr RPAR                      { $2                }
+  | Expr IF Expr ELSE Expr              { If($1, $3, $5)    } //   | If of expr * expr * expr
   | LET NAME EQ Expr IN Expr END        { Let($2, $4, $6)   }
   | Expr TIMES Expr                     { Prim("*", $1, $3) }
   | Expr PLUS  Expr                     { Prim("+", $1, $3) }  
