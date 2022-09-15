@@ -96,11 +96,10 @@ fromString "1 + let x=5 in let y=7+x in y+y end + x end";;
 ## PLC 3.6
 
 Use the expression parser from `Parse.fs` and the compiler `scomp` (from expressions to stack machine instructions)
-and the associated datatypes from `Expr.fs`to defie a function `compString : string -> sinstr list`that parses a string
+and the associated datatypes from `Expr.fs`to define a function `compString : string -> sinstr list`that parses a string
 as an expression and compiles it to stack machine code.
 
-Answer: See **ex2_4Handout.fs** 
-
+Answer: See **ex2_4Handout.fs**
 
 </br>
 
@@ -110,13 +109,18 @@ Answer: See **ex2_4Handout.fs**
 
 ## PLC 3.7
 
-opg7
+Extend the expression langauge abstract syntax and the lexer and parser specifications with conditional expressions. The abstract syntax should be `If(e1, e2, e3)`, so modify file `Absyn.fs` as well as `ExprLex.fsl` and file `ExprPar.fsy`. The concrete syntax may be the keyword-laden F#/ML-style:
+
+> `If e1 then e2 else e3`
+
+Or the more light-weight C/C++/Java/C#-style:
+
+> `e1 ? e2 : e3`
+
+Some documentation for `fslex` and `fsyacc` is found in this chapter and in `Expert F#`.
 
 Answer: See **ex2_4Handout.fs** and **Expre.fs**
-
 
 </br>
 
 ---
-
-</br>
