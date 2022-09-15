@@ -123,7 +123,7 @@ What are the regular expressions involved, and which semantic values are they as
 
 The involved regex is the range [0-9].
 
-The semantaic values associated with it is all positive integers.
+The semantic values associated with is a single char representing an integer from 0 to 9.
 
 </br>
 
@@ -135,10 +135,14 @@ The semantaic values associated with it is all positive integers.
 
 Generate the lexer out of the specification using a command prompt. Which additional file is generated during the process?
 
+Answer: `hello.fs`
+
 How many states are there by the automaton of the lexer?
 Hint: Depending on setup, you can generate the lexer with the command `fslex --unicode hello.fsl`
 
 You can get the number of the states of the automaton by reading the report output when the lexer is generated.
+
+Answer: There are 3 states by the automaton of the lexer.
 
 </br>
 
@@ -149,7 +153,7 @@ You can get the number of the states of the automaton by reading the report outp
 ## HelloLex Question 3
 
 Compile and run the generated program `hello.fs` from question 2.
-Hint: This depends on your setup. A possible approach is t have `FsLexYacc.Runtime.dll` accessible from your working directory and do the following:
+Hint: This depends on your setup. A possible approach is to have `FsLexYacc.Runtime.dll` accessible from your working directory and do the following:
 
 ```fsharppc
 % fsharpc -r FsLexYacc.Runtime.dll hello.fs
@@ -165,6 +169,29 @@ Please pass a digit:
 The lexer recognizes 3
 %
 ```
+
+</br>
+
+---
+
+</br>
+
+## HelloLex Question 4
+
+Extend the lexer specification `hello.fsl` to recognize numbers of more than one digit. New lexer specification is `hello2.fsl`.
+Generate `hello.fs`, compile and run the generated program.
+
+</br>
+
+---
+
+</br>
+
+## HelloLex Question 5
+
+Extend the lexer specification `hello2.fsl` to recognize floating numbers. New lexer specification is `hello3.fsl`. Generate `hello3.fs`, compile and run the generated program.
+
+Hint: You can use the regular expression `[+-]?([0-9]*[.])?[0-9]+` to recognize floats.
 
 </br>
 
