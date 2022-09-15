@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FsLex Include="./Expr/ExprLex.fsl">
+    <FsLex Include="./HelloLex/hello.fsl">
       <OtherFlags>--unicode</OtherFlags>
     </FsLex>
-    <FsYacc Include="./Expr/ExprPar.fsy">
-      <OtherFlags>--module ExprPar</OtherFlags>
-    </FsYacc>
+    <FsLex Include="./HelloLex/hello2.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </FsLex>
+    <FsLex Include="./HelloLex/hello3.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </FsLex>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +28,9 @@
     <Compile Include="./Expr/ExprLex.fs" />
     <Compile Include="./Expr/Parse.fs" />
     <Compile Include="ex2_4Handout.fs" />
+    <!-- <Compile Include="hello.fs" /> -->
+    <Compile Include="hello2.fs" />
+    <!-- <Compile Include="hello3.fs" /> -->
   </ItemGroup>
 
   <ItemGroup>
