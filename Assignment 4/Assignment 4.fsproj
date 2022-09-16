@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Assignment_4</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="./Fun/FunLex.fsl" />
+    <None Include="./Fun/FunPar.fsy" />
+    <Compile Include="./Fun/Absyn.fs" />
+    <Compile Include="./Fun/Fun.fs" />
+    <Compile Include="FunPar.fsi" />
+    <Compile Include="FunPar.fs" />
+    <Compile Include="FunLex.fs" />
+    <Compile Include="./Fun/Parse.fs" />
+    <Compile Include="./Fun/ParseAndRun.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
+    <PackageReference Include="FsLexYacc.Runtime" Version="10.2.0" />
+  </ItemGroup>
+
+</Project>
