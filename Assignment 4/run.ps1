@@ -1,0 +1,1 @@
+dotnet fsi -r .\bin\Debug\net6.0\FsLexYacc.Runtime.dll .\Fun\Absyn.fs .\FunPar.fs .\FunLex.fs .\Fun\Parse.fs  

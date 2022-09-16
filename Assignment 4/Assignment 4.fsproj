@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <fsLex Include="./Fun/FunLex.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </fsLex>
+    <fsyacc Include="./Fun/FunPar.fsy">
+      <OtherFlags>--module FunPar</OtherFlags>
+    </fsyacc>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="./Fun/FunLex.fsl" />
     <None Include="./Fun/FunPar.fsy" />
     <Compile Include="./Fun/Absyn.fs" />
