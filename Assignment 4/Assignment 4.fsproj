@@ -25,6 +25,7 @@
     <Compile Include="FunLex.fs" />
     <Compile Include="./Fun/Parse.fs" />
     <Compile Include="./Fun/ParseAndRun.fs" />
+    <Compile Include="./TypedFun/TypedFun.fs" />
   </ItemGroup>
 
   <ItemGroup>
