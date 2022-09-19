@@ -12,7 +12,25 @@ Write out the rightmost derivation of the string below from the expression gramm
 
 `let z = (17) in z + 2 * 3 end EOF`
 
-![PLC 3.3](/appendix/PLC%203.3.png)
+> $\text{Main}\overset{A}\rightarrow$
+>
+> $\text{\textbf{\textit{Expr}} EOF}\overset{F}\rightarrow$
+>
+> $\text{LET NAME EQ \textit{Expr} IN \textbf{\textit{Expr}} END EOF}\overset{G}\rightarrow$
+>
+>$\text{LET NAME EQ \textit{Expr} IN \textit{Expr} TIMES \textbf{\textit{Expr}} END EOF}\overset{C}\rightarrow$
+>
+>$\text{LET NAME EQ \textit{Expr} IN \textbf{\textit{Expr}} TIMES CSTINT END EOF}\overset{H}\rightarrow$
+>
+>$\text{LET NAME EQ \textit{Expr} IN \textit{Expr} PLUS \textbf{\textit{Expr}} TIMES CSTINT END EOF}\overset{C}\rightarrow$
+>
+>$\text{LET NAME EQ \textit{Expr} IN \textbf{\textit{Expr}} PLUS CSTINT TIMES CSTINT END EOF}\overset{B}\rightarrow$
+>
+>$\text{LET NAME EQ \textbf{\textit{Expr}} IN NAME PLUS CSTINT TIMES CSTINT END EOF}\overset{E}\rightarrow$
+>
+>$\text{LET NAME EQ LPAR \textbf{\textit{Expr}} RPAR IN NAME PLUS CSTINT TIMES CSTINT END EOF}\overset{C}\rightarrow$
+>
+>$\text{LET NAME EQ LPAR CSTINT RPAR IN NAME PLUS CSTINT TIMES CSTINT END EOF}$
 
 </br>
 
@@ -60,7 +78,7 @@ fromString "let in = (17) inz+2*3 end";;
 fromString "1 + let x=5 in let y=7+x in y+y end + x end";;
 ```
 
-Observations:
+Observations for the above expressions:
 
 ```fsharp
 open Parse;;
@@ -85,6 +103,7 @@ fromString "1 + let x=5 in let y=7+x in y+y end + x end";;
              ("y", Prim ("+", CstI 7, Var "x"), Prim ("+", Var "y", Var "y")),
            Var "x")))
 *)
+fromString "let x = 10 in x - x end";; // Parses: Let ("x", CstI 10, Prim ("-", Var "x", Var "x"))
 ```
 
 </br>
@@ -109,7 +128,7 @@ Answer: See **ex2_4Handout.fs**
 
 ## PLC 3.7
 
-Extend the expression langauge abstract syntax and the lexer and parser specifications with conditional expressions. The abstract syntax should be `If(e1, e2, e3)`, so modify file `Absyn.fs` as well as `ExprLex.fsl` and file `ExprPar.fsy`. The concrete syntax may be the keyword-laden F#/ML-style:
+Extend the expression language abstract syntax and the lexer and parser specifications with conditional expressions. The abstract syntax should be `If(e1, e2, e3)`, so modify file `Absyn.fs` as well as `ExprLex.fsl` and file `ExprPar.fsy`. The concrete syntax may be the keyword-laden F#/ML-style:
 
 > `If e1 then e2 else e3`
 
@@ -119,7 +138,7 @@ Or the more light-weight C/C++/Java/C#-style:
 
 Some documentation for `fslex` and `fsyacc` is found in this chapter and in `Expert F#`.
 
-Answer: See **ex2_4Handout.fs** and **Expre.fs**
+Answer: Both implemented; see **Absyn.fs**, **ExprLex.fsl** and **ExprPar.fsy**
 
 </br>
 
