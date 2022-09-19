@@ -43,8 +43,8 @@ let testCompString = compString  "let z = 17 in z + z end";;
 // Exercise 3.7 (Tests)
 let fromStringTest2 = fromString "0 ? 1 : 2"
 let fromStringTest2' = fromString "if 0 then 1 else 2"
-let fromStringTest4 = fromString "let y = 10 in y ? 1 : 2 end"
-let fromStringTest4' = fromString "let y = 10 in if y then 1 else 2 end"
+let fromStringTest3 = fromString "let y = 10 in y ? 1 : 2 end"
+let fromStringTest3' = fromString "let y = 10 in if y then 1 else 2 end"
 
 // let comp0 = compString "0 ? 1 : 2"
 // let comp1 = compString "1 ? 1 : 2"
