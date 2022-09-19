@@ -103,13 +103,13 @@ let mem x vs = List.exists (fun y -> x=y) vs;;
 
 let rec closedin (e : expr) (env : string list) : bool =
     match e with 
-      | CstI i -> true
+      | CstI _ -> true
       | Var x  -> List.exists (fun y -> x=y) env
       | Let(x, erhs, ebody) -> 
             let env1 = x :: env 
             closedin erhs env && closedin ebody env1
-      | Prim(ope, e1, e2)   -> closedin e1 env && closedin e2 env
-      | If(e1, e2, e3)      -> closedin e1 env && closedin e2 env && closedin e3 env;;
+      | If(e1, e2, e3)    -> closedin e1 env && closedin e2 env && closedin e3 env
+      | Prim(_, e1, e2)   -> closedin e1 env && closedin e2 env;;
 
 (* An expression is closed if it is closed in the empty environment *)
 
@@ -142,12 +142,12 @@ let rec minus xs ys =
 
 let rec freevars e : string list =
     match e with 
-      | CstI i -> []
+      | CstI _ -> []
       | Var x  -> [x]
       | Let(x, erhs, ebody) -> 
             union (freevars erhs) (minus (freevars ebody) [x])
-      | Prim(ope, e1, e2)   -> union (freevars e1) (freevars e2)
-      | If(e1, e2, e)       -> failwith "not implemented"
+      | Prim(_, e1, e2)   -> union (freevars e1) (freevars e2)
+      | If(_, _, _)       -> failwith "not implemented"
 
 (* Alternative definition of closed *)
 
@@ -315,7 +315,10 @@ let rec scomp e (cenv : rtvalue list) : sinstr list =
       | Let(x, erhs, ebody) -> 
             scomp erhs cenv @ scomp ebody (Bound x :: cenv) @ [SSwap; SPop]
       | If(e1, e2, e3)      -> 
-            scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop] @ scomp e3 (Intrm :: cenv) @ [SPop] 
+            // scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop] @ scomp e3 (Intrm :: cenv) @ [SPop]
+            scomp e1 (Intrm :: cenv) @ [SPop] @ scomp e2 (Intrm :: cenv) @ [SPop] @ scomp e3 (Intrm :: cenv) @ [SPop]
+            // if seval e1' [] <> 0 then scomp e2 cenv else scomp e3 cenv
+            // scomp e1 cenv @ scomp e2 cenv @ scomp e3 cenv
       | Prim("+", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SAdd] 
       | Prim("-", e1, e2)   -> 
