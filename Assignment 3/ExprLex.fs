@@ -17,16 +17,19 @@ let lexemeAsString lexbuf =
 
 let keyword s =
     match s with
-    | "let" -> LET
-    | "in"  -> IN
-    | "end" -> END
-    | _     -> NAME s
+    | "let"  -> LET
+    | "in"   -> IN
+    | "end"  -> END
+    | "if"   -> IF
+    | "then" -> THEN
+    | "else" -> ELSE
+    | _      -> NAME s
 
-# 25 "ExprLex.fs"
+# 28 "ExprLex.fs"
 let trans : uint16[] array = 
     [| 
     (* State 0 *)
-     [| 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 1us; 2us; 14us; 14us; 1us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 1us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 11us; 12us; 7us; 5us; 14us; 6us; 14us; 14us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 9us; 14us; 14us; 10us; 14us; 8us; 14us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 14us; 14us; 14us; 14us; 14us; 14us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 13us; |];
+     [| 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 1us; 2us; 14us; 14us; 1us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 1us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 11us; 12us; 7us; 5us; 14us; 6us; 14us; 14us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 3us; 10us; 14us; 14us; 8us; 14us; 9us; 14us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 14us; 14us; 14us; 14us; 14us; 14us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 4us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 14us; 13us; |];
     (* State 1 *)
      [| 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; |];
     (* State 2 *)
@@ -67,74 +70,74 @@ let rec _fslex_dummy () = _fslex_dummy()
 and Token  lexbuf =
   match _fslex_tables.Interpret(0,lexbuf) with
   | 0 -> ( 
-# 28 "./Expr/ExprLex.fsl"
+# 31 "./Expr/ExprLex.fsl"
                                      Token lexbuf 
-# 72 "ExprLex.fs"
+# 75 "ExprLex.fs"
           )
   | 1 -> ( 
-# 29 "./Expr/ExprLex.fsl"
+# 32 "./Expr/ExprLex.fsl"
                                      lexbuf.EndPos <- lexbuf.EndPos.NextLine; Token lexbuf 
-# 77 "ExprLex.fs"
+# 80 "ExprLex.fs"
           )
   | 2 -> ( 
-# 30 "./Expr/ExprLex.fsl"
+# 33 "./Expr/ExprLex.fsl"
                                      CSTINT (System.Int32.Parse (lexemeAsString lexbuf)) 
-# 82 "ExprLex.fs"
+# 85 "ExprLex.fs"
           )
   | 3 -> ( 
-# 32 "./Expr/ExprLex.fsl"
+# 35 "./Expr/ExprLex.fsl"
                                      keyword (lexemeAsString lexbuf) 
-# 87 "ExprLex.fs"
+# 90 "ExprLex.fs"
           )
   | 4 -> ( 
-# 33 "./Expr/ExprLex.fsl"
+# 36 "./Expr/ExprLex.fsl"
                                      PLUS  
-# 92 "ExprLex.fs"
+# 95 "ExprLex.fs"
           )
   | 5 -> ( 
-# 34 "./Expr/ExprLex.fsl"
+# 37 "./Expr/ExprLex.fsl"
                                      MINUS 
-# 97 "ExprLex.fs"
+# 100 "ExprLex.fs"
           )
   | 6 -> ( 
-# 35 "./Expr/ExprLex.fsl"
+# 38 "./Expr/ExprLex.fsl"
                                      TIMES 
-# 102 "ExprLex.fs"
+# 105 "ExprLex.fs"
           )
   | 7 -> ( 
-# 36 "./Expr/ExprLex.fsl"
-                                     IF 
-# 107 "ExprLex.fs"
+# 39 "./Expr/ExprLex.fsl"
+                                     EQ    
+# 110 "ExprLex.fs"
           )
   | 8 -> ( 
-# 37 "./Expr/ExprLex.fsl"
-                                     ELSE 
-# 112 "ExprLex.fs"
+# 40 "./Expr/ExprLex.fsl"
+                                     QUESTIONMARK 
+# 115 "ExprLex.fs"
           )
   | 9 -> ( 
-# 38 "./Expr/ExprLex.fsl"
-                                     EQ    
-# 117 "ExprLex.fs"
+# 41 "./Expr/ExprLex.fsl"
+                                     COLON 
+# 120 "ExprLex.fs"
           )
   | 10 -> ( 
-# 39 "./Expr/ExprLex.fsl"
+# 42 "./Expr/ExprLex.fsl"
                                      LPAR  
-# 122 "ExprLex.fs"
+# 125 "ExprLex.fs"
           )
   | 11 -> ( 
-# 40 "./Expr/ExprLex.fsl"
+# 43 "./Expr/ExprLex.fsl"
                                      RPAR  
-# 127 "ExprLex.fs"
+# 130 "ExprLex.fs"
           )
   | 12 -> ( 
-# 41 "./Expr/ExprLex.fsl"
+# 44 "./Expr/ExprLex.fsl"
                                      EOF   
-# 132 "ExprLex.fs"
+# 135 "ExprLex.fs"
           )
   | 13 -> ( 
-# 42 "./Expr/ExprLex.fsl"
+# 45 "./Expr/ExprLex.fsl"
                                      failwith "Lexer error: illegal symbol" 
-# 137 "ExprLex.fs"
+# 140 "ExprLex.fs"
           )
   | _ -> failwith "Token"
 

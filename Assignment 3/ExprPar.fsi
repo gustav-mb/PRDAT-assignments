@@ -3,7 +3,10 @@ module ExprPar
 type token = 
   | EOF
   | IF
+  | THEN
   | ELSE
+  | QUESTIONMARK
+  | COLON
   | LPAR
   | RPAR
   | END
@@ -19,7 +22,10 @@ type token =
 type tokenId = 
     | TOKEN_EOF
     | TOKEN_IF
+    | TOKEN_THEN
     | TOKEN_ELSE
+    | TOKEN_QUESTIONMARK
+    | TOKEN_COLON
     | TOKEN_LPAR
     | TOKEN_RPAR
     | TOKEN_END
