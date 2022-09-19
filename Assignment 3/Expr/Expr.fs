@@ -306,19 +306,14 @@ type rtvalue =
 
 (* Compilation to a list of instructions for a unified-stack machine *)
 
-//Assignment 3
-//Exercise 3.7
 let rec scomp e (cenv : rtvalue list) : sinstr list =
     match e with
       | CstI i -> [SCstI i]
       | Var x  -> [SVar (getindex cenv (Bound x))]
       | Let(x, erhs, ebody) -> 
             scomp erhs cenv @ scomp ebody (Bound x :: cenv) @ [SSwap; SPop]
-      | If(e1, e2, e3)      -> 
-            // scomp e1 (Intrm :: cenv) @ scomp e2 (Intrm :: cenv) @ [SPop] @ scomp e3 (Intrm :: cenv) @ [SPop]
-            scomp e1 (Intrm :: cenv) @ [SPop] @ scomp e2 (Intrm :: cenv) @ [SPop] @ scomp e3 (Intrm :: cenv) @ [SPop]
-            // if seval e1' [] <> 0 then scomp e2 cenv else scomp e3 cenv
-            // scomp e1 cenv @ scomp e2 cenv @ scomp e3 cenv
+      // | If(e1, e2, e3)      ->
+      //       scomp e1 cenv @ scomp e2 cenv @ scomp e3 cenv
       | Prim("+", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SAdd] 
       | Prim("-", e1, e2)   -> 
@@ -326,6 +321,7 @@ let rec scomp e (cenv : rtvalue list) : sinstr list =
       | Prim("*", e1, e2)   -> 
             scomp e1 cenv @ scomp e2 (Intrm :: cenv) @ [SMul] 
       | Prim _ -> raise (Failure "scomp: unknown operator")
+      | _ -> failwith "scomp: unsupported expr"
 
 let s1 = scomp e1 []
 let s2 = scomp e2 []
