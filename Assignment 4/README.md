@@ -14,6 +14,17 @@ It contains lexer and parser specifications and interpreter for a small firstord
 
 Answer:
 
+```fsharp
+run (fromString "5+7");; 
+val it: int = 12
+
+run (fromString "let y = 7 in y + 2 end");;
+val it: int = 9
+
+run (fromString "let f x = x + 7 in f 2 end");;
+val it: int = 9
+```
+
 </br>
 
 ---
@@ -26,19 +37,19 @@ Write more example programs in the functional language, and test them in the sam
 
 - Compute the sum of the numbers from 1000 down to 1. Do this by defining a function `sum n` that computes the sum $n+(n-1)+...+2+1$. (Use straightforward summation, no clever tricks).
 
-Answer: See **\<filename\>**
+Answer: See **\<ParseAndRun.fs\>**
 
 - Compute the number $3^8$, that is, 3 raised to the power of 8. Again, use a recursive function.
 
-Answer: See **\<filename\>**
+Answer: See **\<ParseAndRun.fs\>**
 
 - Compute $3^0+3^1+...+3^{10}+3^{11}$, using a recursive function (or two, if you prefer).
 
-Answer: See **\<filename\>**
+Answer: See **\<ParseAndRun.fs\>**
 
 - Compute $1^8+2^8+...+10^8$, again using a recursive function (or two).
 
-Answer: See **\<filename\>**
+Answer: See **\<ParseAndRun.fs\>**
 
 </br>
 
