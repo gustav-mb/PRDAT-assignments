@@ -59,7 +59,7 @@ Answer: See **\<ParseAndRun.fs\>**
 
 ## PLC 4.3
 
-For simplicity, the current implementation of the functional language requires all functions to take exactly one argument. This seriously limits the pgorams that can be written in the language (at least it limits what that can be written without excessive cleverness and complications).
+For simplicity, the current implementation of the functional language requires all functions to take exactly one argument. This seriously limits the programs that can be written in the language (at least it limits what that can be written without excessive cleverness and complications).
 
 Modify the language to allow functions to take one or more arguments. Start by modifying the abstrac syntax in `Absyn.fs` to permit a list of parameter names in `Letfun` and a list of argument expressions in `Call`.
 
