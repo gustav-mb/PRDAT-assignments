@@ -14,9 +14,9 @@
 %token IF THEN ELSE QUESTIONMARK COLON // Exercise 3.7
 %token EOF
 
+%right IF THEN ELSE QUESTIONMARK COLON          // Exercise 3.7
 %left MINUS PLUS        /* lowest precedence  */
 %left TIMES             /* highest precedence */
-%right IF THEN ELSE QUESTIONMARK COLON          // Exercise 3.7
 
 %start Main
 %type <Absyn.expr> Main 
