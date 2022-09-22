@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Assignment_5</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <fsLex Include="./Fun1/FunLex.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </fsLex>
+    <fsyacc Include="./Fun1/FunPar.fsy">
+      <OtherFlags>--module FunPar</OtherFlags>
+    </fsyacc>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="./Fun1/FunLex.fsl" />
+    <None Include="./Fun1/FunPar.fsy" />
+    <Compile Include="./Fun1/Absyn.fs" />
+    <Compile Include="./Fun1/Fun.fs" />
+    <Compile Include="FunPar.fsi" />
+    <Compile Include="FunPar.fs" />
+    <Compile Include="FunLex.fs" />
+    <Compile Include="./Fun1/Parse.fs" />
+    <Compile Include="./Fun1/ParseAndRun.fs" />
+    <Compile Include="./Fun2/HigherFun.fs" />
+    <Compile Include="./Fun2/TypeInference.fs" />
+    <Compile Include="./Fun2/ParseAndRunHigher.fs" />
+    <Compile Include="./Fun2/ParseAndType.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
+    <PackageReference Include="FsLexYacc.Runtime" Version="10.2.0" />
+  </ItemGroup>
+
+</Project>
