@@ -2,6 +2,7 @@
 
 module Absyn
 
+// Exercise 4.3 Function with one or more arguments
 type expr = 
   | CstI of int
   | CstB of bool
@@ -9,5 +10,5 @@ type expr =
   | Let of string * expr * expr
   | Prim of string * expr * expr
   | If of expr * expr * expr
-  | Letfun of string * string * expr * expr    (* (f, x, fBody, letBody) *)
-  | Call of expr * expr
+  | Letfun of string * list<string> * expr * expr    (* (f, (x, y, ...), fBody, letBody) *)
+  | Call of expr * list<expr> // Call(Var "f", [CstI 1, CstI 2])

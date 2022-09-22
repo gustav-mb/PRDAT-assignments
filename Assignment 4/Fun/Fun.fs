@@ -24,8 +24,10 @@ let rec lookup env x =
 
 type value = 
   | Int of int
-  | Closure of string * string * expr * value env       (* (f, x, fBody, fDeclEnv) *)
+  | Closure of string * string list * expr * value env       (* (f, [x, y, ...], fBody, fDeclEnv) *)
 
+
+// Exercise 4.3 
 let rec eval (e : expr) (env : value env) : int =
     match e with 
     | CstI i -> i
@@ -58,9 +60,9 @@ let rec eval (e : expr) (env : value env) : int =
     | Call(Var f, eArg) -> 
       let fClosure = lookup env f
       match fClosure with
-      | Closure (f, x, fBody, fDeclEnv) ->
-        let xVal = Int(eval eArg env)
-        let fBodyEnv = (x, xVal) :: (f, fClosure) :: fDeclEnv
+      | Closure (f, xArg, fBody, fDeclEnv) ->
+        let mappings = List.foldBack2 (fun x xVal acc -> (x, Int(eval xVal env)) :: acc) xArg eArg []
+        let fBodyEnv = mappings @ (f, fClosure) :: fDeclEnv
         eval fBody fBodyEnv
       | _ -> failwith "eval Call: not a function"
     | Call _ -> failwith "eval Call: not first-order function"
@@ -68,6 +70,15 @@ let rec eval (e : expr) (env : value env) : int =
 (* Evaluate in empty environment: program must have no free variables: *)
 
 let run e = eval e [];;
+
+
+(* EXAMPLES AFTER EXERCISE 4.3: *)
+let ex1 = Letfun("f1", [("x"); ("y")], Prim("+", Var "x", CstI 1), 
+                 Call(Var "f1", [(CstI 10); (CstI 20)]));;
+
+
+
+(* EXAMPLES BEFORE EXERCISE 4.3:
 
 (* Examples in abstract syntax *)
 
@@ -96,6 +107,7 @@ let ex3 = Letfun("deep", "x",
     
 let rundeep n = eval ex3 [("count", Int n)];;
 
+
 (* Example: static scope (result 14) or dynamic scope (result 25) *)
 
 let ex4 =
@@ -113,4 +125,4 @@ let ex5 =
                           Call(Var "fib", Prim("-", Var "n", CstI 1)),
                           Call(Var "fib", Prim("-", Var "n", CstI 2))),
                      CstI 1), Call(Var "fib", CstI 25)));;
-                     
+*)                     
