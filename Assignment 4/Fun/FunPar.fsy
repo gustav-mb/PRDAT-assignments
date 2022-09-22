@@ -27,6 +27,8 @@
 %start Main
 %type <Absyn.expr> Main Expr AtExpr Const
 %type <Absyn.expr> AppExpr
+%type <string list> Arguments
+%type <Absyn.expr list> ArgumentValues
 
 %%
 
@@ -53,19 +55,30 @@ Expr:
 ;
 
 AtExpr:
-    Const                               { $1                     }
-  | NAME                                { Var $1                 }
-  | LET NAME EQ Expr IN Expr END        { Let($2, $4, $6)        }
-  | LET NAME NAME EQ Expr IN Expr END   { Letfun($2, $3, $5, $7) } // EXCERCISE  4.4
-  | LPAR Expr RPAR                      { $2                     }
+    Const                                    { $1                     }
+  | NAME                                     { Var $1                 }
+  | LET NAME EQ Expr IN Expr END             { Let($2, $4, $6)        }
+  | LET NAME Arguments EQ Expr IN Expr END   { Letfun($2, $3, $5, $7) } // EXCERCISE  4.4
+  | LPAR Expr RPAR                           { $2                     }
 ;
 
+//Exercise 4.4
 AppExpr:
-    AtExpr AtExpr                       { Call($1, $2)           }
-  | AppExpr AtExpr                      { Call($1, $2)           }
+    AtExpr ArgumentValues               { Call($1, $2)           }
+  | AppExpr ArgumentValues              { Call($1, $2)           } 
 ;
 
 Const:
     CSTINT                              { CstI($1)               }
   | CSTBOOL                             { CstB($1)               }
+;
+
+Arguments: 
+    NAME                                { [$1]                   }
+  | NAME Arguments                      { $1 :: $2               }
+;
+
+ArgumentValues:
+    AtExpr                              { [$1]                   }
+  | AtExpr ArgumentValues               { $1 :: $2               }
 ;

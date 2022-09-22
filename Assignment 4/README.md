@@ -94,7 +94,20 @@ You may want to define non-empty parameter lists and argument lists in analogy w
 
 Note that multi-argument applications such as `f a b` are already permitted by the existing grammar, but they would produce abstract syntax of the form `Call(Call(Var "f", Var "a"), Var "b")` which the `Fun.eval` function does not understand. You need to modify the AppExpr nonterminal and its semantic action to produce `Call(Var "f", [Var "a"; Var "b"])` instead.
 
-Answer: See **\<filename\>**
+Answer: See **FunPar.fsy** and **ParseAndRun** (for tests)
+
+```fsharp
+> test44;;  
+val it: Absyn.expr =
+  Letfun
+    ("pow", ["x"; "n"],
+     If
+       (Prim ("=", Var "n", CstI 0), CstI 1,
+        Prim
+          ("*", Var "x",
+           Call (Var "pow", [Var "x"; Prim ("-", Var "n", CstI 1)]))),
+     Call (Var "pow", [CstI 3; CstI 8]))
+```
 
 </br>
 

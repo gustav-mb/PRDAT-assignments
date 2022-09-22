@@ -20,7 +20,7 @@ let testSum3Power11 = run (fromString sum3Power11);; // 265.720
 let testSum10Power8 = run (fromString sum10Power8);; // 167731333
 
 
-//Exercise 4.4
+//Exercise 4.4 tests
 let test44a = "let pow x n = if n=0 then 1 else x * pow x (n-1) in pow 3 8 end";;
 
 let test44b = "let max2 a b = if a<b then b else a 
@@ -28,6 +28,11 @@ let test44b = "let max2 a b = if a<b then b else a
                in max3 25 6 62 end 
                end";;
 
-let test44aa = run (fromString test44a);;
-let test44bb = run (fromString test44b);;
+let test44 = fromString test44a;;
+let test44aa = run (fromString test44a);; //6.561
+let test44bb = run (fromString test44b);; // 62
+
+let test44c = "Call(Var f, [Var a; Var b])";;
+let test44cc = run (fromString test44c);;
+
             
