@@ -1,6 +1,9 @@
 Compiling and loading the typed micro-ML evaluator (TypedFun/README.TXT)
 ------------------------------------------------------------------------
 
+Archive typedfun.zip contains the file mentioned below, in directory
+TypedFun/
+
 A. Loading evaluator and type checker for the explicitly typed language
 
    fsharpi TypedFun.fs
