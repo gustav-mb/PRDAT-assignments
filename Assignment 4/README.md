@@ -67,7 +67,7 @@ Then modify the `eval` interpreter in file `Fun.fs` to work for the new abstract
 
 Also, modify the `Letfun` and `Call` clauses of the interpreter. You will need  a way to zip together a list of vairable names and a list of variable values, to get an environment in the form of an assoication list; so function `List.zip` might be useful.
 
-Answer: See **\<filename\>**
+Answer: See **See Fun.fs**
 
 </br>
 
@@ -84,7 +84,7 @@ The resulting parser should permit function declarations such as these:
 ```fsharp
 let pow x n = if n=0 then 1 else x * pow x (n-1) in pow 3 8 end
 
-let max2 a b = if azb then b else a 
+let max2 a b = if a<b then b else a 
 in let max3 a b c = max2 a (max2 b c) 
   in max3 25 6 62 end 
 end
