@@ -29,7 +29,7 @@ that takes two sorted arrays of ints and merges them into a sorted array of ints
 
 `int[] ys = { 2, 3, 4, 7 };`
 
-Answer: See file **<file.fs>**
+> Answer: See file **<file.fs>**
 
 </br>
 
@@ -48,7 +48,7 @@ type typ =
   | ...
 ```
 
-Answer: See file **<file.fs>**
+> Answer: See file **<file.fs>**
 
 </br>
 
@@ -73,7 +73,7 @@ end
 let add x = let f y = x+y in f end in add 2 end
 ```
 
-Answer:
+> Answer:
 
 </br>
 
@@ -115,7 +115,7 @@ Clos("z", Prim("+", Var "z", Var "y"), [(y,22)])
 
 Extend the evaluator `eval` in file `HigherFun.fs` to interpret such anonymous functions.
 
-Answer: See file **<file.fs>**
+> Answer: See file **<file.fs>**
 
 </br>
 
@@ -134,7 +134,7 @@ let add x = fun y -> x+y in add 2 5 end
 let add = fun x -> fun y -> x+y in add 2 5 end
 ```
 
-Answer: See file **<file.fs>**
+> Answer: See file **<file.fs>**
 
 </br>
 
@@ -154,7 +154,7 @@ This exercise concerns type rules for ML-polymorphism, as shown in Fig. 6.1.
 let f x = 1 in f f end
 ```
 
-Answer:
+> Answer:
 
 (ii) Build a type rule tree for this micro-ML program (in the let-body, `f` should *not* be polymorphic – why?):
 
@@ -162,7 +162,7 @@ Answer:
 let f x = if x<10 then 42 else f(x+1) in f 20 end
 ```
 
-Answer:
+> Answer:
 
 </br>
 
@@ -194,7 +194,7 @@ let f x =
 in f true end
 ```
 
-Answer:
+> Answer:
 
 (2) Write micro-ML programs for which the micro-ML type inference report the following types:
 
@@ -209,7 +209,7 @@ Answer:
 
 Remember that the type arrow (`->`) is right associative, so `int -> int -> int` is the same as `int -> (int -> int)`, and that the choice of type variables does not matter, so the type scheme `'h -> 'g -> 'h` is the same as `a' -> 'b -> 'a`
 
-Answer:
+> Answer:
 
 </br>
 
