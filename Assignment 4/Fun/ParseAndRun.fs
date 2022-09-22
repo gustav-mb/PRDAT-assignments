@@ -32,7 +32,4 @@ let test44 = fromString test44a;;
 let test44aa = run (fromString test44a);; //6.561
 let test44bb = run (fromString test44b);; // 62
 
-let test44c = "Call(Var f, [Var a; Var b])";;
-let test44cc = run (fromString test44c);;
-
             
