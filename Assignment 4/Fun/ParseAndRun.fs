@@ -32,4 +32,26 @@ let test44 = fromString test44a;;
 let test44aa = run (fromString test44a);; //6.561
 let test44bb = run (fromString test44b);; // 62
 
+// Exercise 4.5
+let testAndTrue = "true && true";; //1
+let testAndFalse = "true && false";; //0
+
+let testOrTrue = "false || true";; //1
+let testOrFalse = "false || false";; //0
+let testNested1 = "false || ( true && true) && true";; //1
+let testNested2 = "false || ( true && true) && false";; //0
+let testNested3 = " (3 - 3) || ( true && true) && false";; //0
+let testNested4 = " (3 + 3) || ( true && true) && false";; //1
+
+let answerTandT = run (fromString testAndTrue);; //1
+let answerTandF = run (fromString testAndFalse);; //0
+let answerForT = run (fromString testOrTrue);; //1
+let answerForF = run (fromString testOrFalse);; //0
+
+let answerNested1 = run (fromString testNested1);; //1
+let answerNested2 = run (fromString testNested2);; //0
+let answerNested3 = run (fromString testNested3);; //0
+let answerNested4 = run (fromString testNested4);; //1
+
+
             

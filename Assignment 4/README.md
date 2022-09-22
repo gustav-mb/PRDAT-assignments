@@ -119,9 +119,11 @@ val it: Absyn.expr =
 
 Extend the (untyped) functional language with infix operator "`&&`" meaning sequential logical "and" and infix operator "`||`" meaning sequentical logical "or", as in C, C++, Java, C#, or F#.
 
-Note that `e1 && e2` can be encoded as `if e1 then true else e2`. Hence you need only change the lexer and parser specifications, and make the new rules in the parser specification generate the appropriate abstract syntax. You need not change `Absyn.fs` or `Fun.fs`.
+Note that `e1 && e2` can be encoded as `if e1 then e2 else false` and that `e1 || e2` can be encoded as `if e1 then true else e2`.
 
-Answer: See **\<filename\>**
+ Hence you need only change the lexer and parser specifications, and make the new rules in the parser specification generate the appropriate abstract syntax. You need not change `Absyn.fs` or `Fun.fs`.
+
+Answer: See **FunPar.fsy** and **ParseAndRun.fs** (for tests)
 
 </br>
 
