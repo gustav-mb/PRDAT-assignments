@@ -2,6 +2,7 @@
 
 module Absyn
 
+// Exerrcise 6.2
 type expr = 
   | CstI of int
   | CstB of bool
@@ -11,3 +12,5 @@ type expr =
   | If of expr * expr * expr
   | Letfun of string * string * expr * expr    (* (f, x, fBody, letBody) *)
   | Call of expr * expr
+  | Fun of string * expr
+

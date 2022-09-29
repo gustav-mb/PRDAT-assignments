@@ -29,7 +29,7 @@ that takes two sorted arrays of ints and merges them into a sorted array of ints
 
 `int[] ys = { 2, 3, 4, 7 };`
 
-> Answer: See file **./Exercise 5_1/Merge.fs** and **./Exercise 5_1/Merge.java**
+> Answer: See file **Merge.fs** and **Merge.java**
 
 </br>
 
@@ -48,7 +48,7 @@ type typ =
   | ...
 ```
 
-> Answer: See file **<file.fs>**
+> Answer: See file **TypeInference.fs**
 
 </br>
 
@@ -66,6 +66,11 @@ let add x = f y = x+y in f end in add 2 5 end
 
 let add x = let f y = x+y in f end
 in let addtwo = add 2
+  in addtwo 5 end
+end
+
+let add x = let f y = x+y in f end
+in let addtwo = add 2
   in let x = 77 in addtwo 5 end
   end
 end
@@ -74,6 +79,45 @@ let add x = let f y = x+y in f end in add 2 end
 ```
 
 > Answer:
+
+```fsharp
+let add x = let f y = x+y in f end in add 2 5 end
+// Result: val it: HigherFun.value = Int 7
+
+let add x = let f y = x+y in f end
+in let addtwo = add 2
+  in addtwo 5 end
+end
+// Result: val it: HigherFun.value = Int 7
+
+let add x = let f y = x+y in f end
+in let addtwo = add 2
+  in let x = 77 in addtwo 5 end
+  end
+end
+// Result: val it: HigherFun.value = Int 7
+(*
+  Yes, it should return 7, since the inner binding of x is never used.
+  It instead, returns the value of addTwo 5 (i.e. y) to the currying function add 2 y = add 2 5.
+*)
+
+let add x = let f y = x+y in f end in add 2 end
+(*
+  val it: HigherFun.value =
+  Closure
+    ("f", "y", Prim ("+", Var "x", Var "y"),
+     [("x", Int 2);
+      ("add",
+       Closure
+         ("add", "x", Letfun ("f", "y", Prim ("+", Var "x", Var "y"), Var "f"),
+          []))])
+*)
+(*
+  add x takes two arguments x and an implicit variable y, 
+  in the bobody of the function we give x the value 2 and we end the function without passing the last argument.
+  The result is that we return a curry function that expects the variable y before the computation is evaluated. 
+*)
+```
 
 </br>
 
@@ -115,7 +159,7 @@ Clos("z", Prim("+", Var "z", Var "y"), [(y,22)])
 
 Extend the evaluator `eval` in file `HigherFun.fs` to interpret such anonymous functions.
 
-> Answer: See file **<file.fs>**
+> Answer: See file **ParseAndRunHigher.fs**
 
 </br>
 

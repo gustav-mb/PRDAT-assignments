@@ -50,7 +50,7 @@ type typ =
      | TypB                                (* booleans                   *)
      | TypF of typ * typ                   (* (argumenttype, resulttype) *)
      | TypV of typevar                     (* type variable              *)
-     | TypL of list<typ>                   
+     | TypL of list<typ>                   // Exercise 5.7        
 
 and tyvarkind =  
      | NoLink of string                    (* uninstantiated type var.   *)
@@ -93,7 +93,8 @@ let rec freeTypeVars t : typevar list =
     | TypB        -> []
     | TypV tv     -> [tv]
     | TypF(t1,t2) -> union(freeTypeVars t1, freeTypeVars t2)
-    | TypL x :: xs -> freeTypeVars x :: freeTypeVars xs 
+    // | TypL xs -> List.fold (fun acc x -> (freeTypeVars x) @ acc) [] xs
+                    
 
 
 let occurCheck tyvar tyvars =                     
@@ -123,6 +124,7 @@ let rec typeToString t : string =
     | TypB         -> "bool"
     | TypV _       -> failwith "typeToString impossible"
     | TypF(t1, t2) -> "function"
+    | TypL _       -> "list"
             
 (* Unify two types, equating type variables with types as necessary *)
 
