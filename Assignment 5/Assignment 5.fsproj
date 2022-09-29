@@ -29,6 +29,7 @@
     <Compile Include="./Fun2/TypeInference.fs" />
     <Compile Include="./Fun2/ParseAndRunHigher.fs" />
     <Compile Include="./Fun2/ParseAndType.fs" />
+    <Compile Include="./Exercise 5_1/Merge.fs" />
   </ItemGroup>
 
   <ItemGroup>

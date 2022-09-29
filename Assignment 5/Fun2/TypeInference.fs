@@ -44,11 +44,13 @@ let rec unique xs =
 
 (* A type is int, bool, function, or type variable: *)
 
+// Exercise 5.7
 type typ =
      | TypI                                (* integers                   *)
      | TypB                                (* booleans                   *)
      | TypF of typ * typ                   (* (argumenttype, resulttype) *)
      | TypV of typevar                     (* type variable              *)
+     | TypL of list<typ>                   
 
 and tyvarkind =  
      | NoLink of string                    (* uninstantiated type var.   *)
@@ -91,6 +93,8 @@ let rec freeTypeVars t : typevar list =
     | TypB        -> []
     | TypV tv     -> [tv]
     | TypF(t1,t2) -> union(freeTypeVars t1, freeTypeVars t2)
+    | TypL x :: xs -> freeTypeVars x :: freeTypeVars xs 
+
 
 let occurCheck tyvar tyvars =                     
     if mem tyvar tyvars then failwith "type error: circularity" else ()

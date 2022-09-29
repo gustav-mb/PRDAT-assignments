@@ -29,7 +29,7 @@ that takes two sorted arrays of ints and merges them into a sorted array of ints
 
 `int[] ys = { 2, 3, 4, 7 };`
 
-> Answer: See file **<file.fs>**
+> Answer: See file **./Exercise 5_1/Merge.fs** and **./Exercise 5_1/Merge.java**
 
 </br>
 
