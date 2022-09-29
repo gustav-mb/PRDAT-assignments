@@ -19,7 +19,6 @@ let ex1 = Fun("x", Prim("*", CstI 2, Var "x"));;
 let ex2 = Let("y", CstI 22, Fun("z", Prim("+", Var "z", Var "y")));;
 let ex3 = Fun("x", CstI 1);;
 
-let f x = 1 in f f
 // let f x = 1 in f f 
 // f f
 // f (f x = 1)
