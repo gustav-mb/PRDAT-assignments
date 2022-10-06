@@ -97,8 +97,8 @@ in let addtwo = add 2
 end
 // Result: val it: HigherFun.value = Int 7
 (*
-  Yes, it should return 7, since the inner binding of x is never used.
-  It instead, returns the value of addTwo 5 (i.e. y) to the currying function add 2 y = add 2 5.
+  Yes, it should return 7, since the inner binding of x is never used, since the returned function must enclose the value of f's free variable x.
+  It instead, returns the value of addTwo 5 (i.e. y) to the partial application function add 2 y = add 2 5.
 *)
 
 let add x = let f y = x+y in f end in add 2 end
@@ -115,7 +115,7 @@ let add x = let f y = x+y in f end in add 2 end
 (*
   add x takes two arguments x and an implicit variable y, 
   in the bobody of the function we give x the value 2 and we end the function without passing the last argument.
-  The result is that we return a curry function that expects the variable y before the computation is evaluated. 
+  The result is that we return a partial application function that expects the variable y before the computation is evaluated. 
 *)
 ```
 
