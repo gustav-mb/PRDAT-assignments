@@ -48,7 +48,7 @@ type typ =
   | ...
 ```
 
-> Answer: See file **TypeInference.fs**
+> Answer: See file **TypedFun.fs**
 
 </br>
 
@@ -220,30 +220,57 @@ Download `fun2.zip` and build the micro-ML higher-order type inference as descri
 
 (1) Use the type inference on the micro-ML programs shown below, and report what type the program has. Some of the type inferences will fail because the programs are not typable in micro-ML; in those cases, explain why the program is not typable:
 
-> Answer:
-
 ```fsharp
 let f x = 1 in f f end
-//val it: string = "int"
 
 let f g = g g in f end
-//type error: circularity //function g calls itself
 
 let f x = 
   let g y = y in g false end 
 in f 42 end
-//val it: string = "bool"
 
 let f x =
   let g y = if true then y else x in g false end
 in f 42 end
-//type error: bool and int //false and 42 
 
 let f x =
   let g y = if true then y else x in g false end
 in f true end
-//val it: string = "bool"
+```
 
+> Answer:
+
+```fsharp
+let f x = 1 in f f end
+// val it: string = "int"
+
+let f g = g g in f end
+// type error: circularity 
+(*
+  The function g calls itself, so the type inference
+  system would never step infering the type.
+*) 
+
+let f x = 
+  let g y = y in g false end 
+in f 42 end
+// val it: string = "bool"
+
+let f x =
+  let g y = if true then y else x in g false end
+in f 42 end
+// type error: bool and int 
+(*
+  By the Type Rule p7 about if-then-else expressions
+  the types following then and else must be of the same type.
+
+  In this case x = 42 because f(42) and y = false because g(false) meaning that they cannot be compared!
+*)
+
+let f x =
+  let g y = if true then y else x in g false end
+in f true end
+// val it: string = "bool"
 ```
 
 (2) Write micro-ML programs for which the micro-ML type inference report the following types:
