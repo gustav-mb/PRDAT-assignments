@@ -26,7 +26,7 @@ let i1 = inferType (fromString "let f x =  in end");;
 // let i6 = inferType (fromString "");;
 
 // // 'a -> 'b
-// let i7 = inferType (fromString "");;
+// let i7 = inferType (fromString "let f x = f x in f end");;
 
 // // 'a
 // let i8 = inferType (fromString "");;
