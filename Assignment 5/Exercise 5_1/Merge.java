@@ -9,17 +9,13 @@ public class Merge {
         int[] ys = { 2, 3, 4, 7 };
         int[] sorted = Merge.mergeArrays(xs,ys);
         
-        for(int s : sorted){
-            System.out.println(s);    
-        }
+        System.out.println("test: " + Arrays.toString(sorted));
     }
     
     public static int[] mergeArrays(int[] xs, int[] ys){
-        int length = xs.length + ys.length;
-        int[] newArray = new int[length];
+        int[] newArray = new int[xs.length + ys.length];
         System.arraycopy(xs, 0, newArray, 0, xs.length);
-        System.arraycopy(ys, 0
-        , newArray, xs.length, ys.length); 
+        System.arraycopy(ys, 0, newArray, xs.length, ys.length); 
         Arrays.sort(newArray);
         return newArray;
     }
