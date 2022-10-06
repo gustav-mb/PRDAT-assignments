@@ -5,7 +5,33 @@ module ParseAndType
 let fromString = Parse.fromString;;
 
 let inferType = TypeInference.inferType;;
-    
+
+// Exercise 6.5 (2)
+// bool -> bool
+let i1 = inferType (fromString "let f x =  in end");;
+
+// // int -> int
+// let i2 = inferType (fromString "");;
+
+// // int -> int -> int
+// // let i3 = inferType (fromString "let i2 x = i2 + x in i2 x end");;
+
+// // 'a -> 'b -> 'a
+// let i4 = inferType (fromString "");;
+
+// // 'a -> 'b -> 'b
+// let i5 = inferType (fromString "");;
+
+// // ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
+// let i6 = inferType (fromString "");;
+
+// // 'a -> 'b
+// let i7 = inferType (fromString "");;
+
+// // 'a
+// let i8 = inferType (fromString "");;
+
+
 (* Well-typed examples ---------------------------------------- *)
 
 (* In the let-body, f is polymorphic *)

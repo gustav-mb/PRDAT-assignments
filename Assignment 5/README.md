@@ -220,25 +220,31 @@ Download `fun2.zip` and build the micro-ML higher-order type inference as descri
 
 (1) Use the type inference on the micro-ML programs shown below, and report what type the program has. Some of the type inferences will fail because the programs are not typable in micro-ML; in those cases, explain why the program is not typable:
 
+> Answer:
+
 ```fsharp
 let f x = 1 in f f end
+//val it: string = "int"
 
 let f g = g g in f end
+//type error: circularity //function g calls itself
 
 let f x = 
   let g y = y in g false end 
 in f 42 end
+//val it: string = "bool"
 
 let f x =
   let g y = if true then y else x in g false end
 in f 42 end
+//type error: bool and int //false and 42 
 
 let f x =
   let g y = if true then y else x in g false end
 in f true end
-```
+//val it: string = "bool"
 
-> Answer:
+```
 
 (2) Write micro-ML programs for which the micro-ML type inference report the following types:
 
@@ -253,7 +259,7 @@ in f true end
 
 Remember that the type arrow (`->`) is right associative, so `int -> int -> int` is the same as `int -> (int -> int)`, and that the choice of type variables does not matter, so the type scheme `'h -> 'g -> 'h` is the same as `a' -> 'b -> 'a`
 
-> Answer:
+> Answer: See file **ParseAndType.fs**
 
 </br>
 
