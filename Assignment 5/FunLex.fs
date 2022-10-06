@@ -2,12 +2,12 @@
  
  (* File Fun/Funlex.fsl 
     Lexer for a simple functional language (micro-ML) 
-    sestoft@itu.dk * 2010-01-02, 2021-04-05
+    sestoft@itu.dk * 2010-01-02
   *)
 
 module FunLex
 
-open FSharp.Text.Lexing
+open (*Microsoft.*) FSharp.Text.Lexing
 open FunPar;
 
 let lexemeAsString lexbuf = 
@@ -25,13 +25,13 @@ let keyword s =
     | "else"  -> ELSE 
     | "end"   -> END
     | "false" -> CSTBOOL false
-    | "fun"   -> FUN          // Exercise 6.3
     | "if"    -> IF
     | "in"    -> IN
     | "let"   -> LET
     | "not"   -> NOT
     | "then"  -> THEN
     | "true"  -> CSTBOOL true
+    | "fun"   -> FUN        // Exercise 6.2
     | _       -> NAME s
 
 # 37 "FunLex.fs"
@@ -100,7 +100,7 @@ let trans : uint16[] array =
     (* State 30 *)
      [| 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 30us; 30us; 30us; 30us; 30us; 30us; 30us; 30us; 30us; 30us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; |];
     |] 
-let actions : uint16[] = [|65535us; 3us; 3us; 2us; 3us; 1us; 0us; 65535us; 0us; 1us; 2us; 3us; 16us; 5us; 8us; 7us; 11us; 12us; 13us; 14us; 15us; 17us; 19us; 20us; 18us; 9us; 6us; 10us; 4us; 3us; 2us; |]
+let actions : uint16[] = [|65535us; 3us; 3us; 2us; 3us; 1us; 0us; 65535us; 0us; 1us; 2us; 3us; 17us; 5us; 8us; 7us; 11us; 12us; 13us; 14us; 15us; 18us; 19us; 20us; 16us; 9us; 6us; 10us; 4us; 3us; 2us; |]
 let _fslex_tables = FSharp.Text.Lexing.UnicodeTables.Create(trans,actions)
 let rec _fslex_dummy () = _fslex_dummy() 
 // Rule Token
@@ -190,17 +190,17 @@ and Token  lexbuf =
           )
   | 16 -> ( 
 # 57 "./Fun1/FunLex.fsl"
-                                     LPAR 
+                                     ARROW 
 # 194 "FunLex.fs"
           )
   | 17 -> ( 
 # 58 "./Fun1/FunLex.fsl"
-                                     RPAR 
+                                     LPAR 
 # 199 "FunLex.fs"
           )
   | 18 -> ( 
 # 59 "./Fun1/FunLex.fsl"
-                                     ARROW 
+                                     RPAR 
 # 204 "FunLex.fs"
           )
   | 19 -> ( 

@@ -30,7 +30,7 @@ let rec lookup env x =
 type value = 
   | Int of int
   | Closure of string * string * expr * value env       (* (f, x, fBody, fDeclEnv) *)
-  | Clos of string * expr * value env
+  | Clos of string * expr * value env                   // Exercise 6.2
 
 let rec eval (e : expr) (env : value env) : value =
     match e with

@@ -1,12 +1,12 @@
 {
  (* File Fun/Funlex.fsl 
     Lexer for a simple functional language (micro-ML) 
-    sestoft@itu.dk * 2010-01-02, 2021-04-05
+    sestoft@itu.dk * 2010-01-02
   *)
 
 module FunLex
 
-open FSharp.Text.Lexing
+open (*Microsoft.*) FSharp.Text.Lexing
 open FunPar;
 
 let lexemeAsString lexbuf = 
@@ -24,13 +24,13 @@ let keyword s =
     | "else"  -> ELSE 
     | "end"   -> END
     | "false" -> CSTBOOL false
-    | "fun"   -> FUN          // Exercise 6.3
     | "if"    -> IF
     | "in"    -> IN
     | "let"   -> LET
     | "not"   -> NOT
     | "then"  -> THEN
     | "true"  -> CSTBOOL true
+    | "fun"   -> FUN        // Exercise 6.2
     | _       -> NAME s
 }
 
@@ -54,9 +54,9 @@ rule Token = parse
   | '*'             { TIMES }                     
   | '/'             { DIV }                     
   | '%'             { MOD }
+  | "->"            { ARROW }
   | '('             { LPAR }
   | ')'             { RPAR }
-  | "->"            { ARROW } // Exercise 6.3
   | eof             { EOF }
   | _               { failwith "Lexer error: illegal symbol" }
 
@@ -69,4 +69,3 @@ and SkipComment = parse
                       SkipComment lexbuf }
    | eof            { failwith "Lexer error: unterminated comment" }
    | _              { SkipComment lexbuf }
-

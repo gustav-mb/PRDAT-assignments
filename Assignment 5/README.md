@@ -159,7 +159,7 @@ Clos("z", Prim("+", Var "z", Var "y"), [(y,22)])
 
 Extend the evaluator `eval` in file `HigherFun.fs` to interpret such anonymous functions.
 
-> Answer: See file **ParseAndRunHigher.fs**
+> Answer: See files **Absyn**, **HigherFun.fs** and **ParseAndRunHigher.fs** (for tests)
 
 </br>
 
@@ -178,7 +178,7 @@ let add x = fun y -> x+y in add 2 5 end
 let add = fun x -> fun y -> x+y in add 2 5 end
 ```
 
-> Answer: See file **<file.fs>**
+> Answer: See files **FunLex.fsl** and **FunPar.fsy**
 
 </br>
 

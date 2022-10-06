@@ -64,6 +64,7 @@ let rec eval (e : expr) (env : value env) : int =
         eval fBody fBodyEnv
       | _ -> failwith "eval Call: not a function"
     | Call _ -> failwith "eval Call: not first-order function"
+    | Fun(_, _) -> failwith "not implemented"
 
 (* Evaluate in empty environment: program must have no free variables: *)
 
