@@ -37,19 +37,19 @@ Write more example programs in the functional language, and test them in the sam
 
 - Compute the sum of the numbers from 1000 down to 1. Do this by defining a function `sum n` that computes the sum $n+(n-1)+...+2+1$. (Use straightforward summation, no clever tricks).
 
-> Answer: See **\<ParseAndRun.fs\>**
+> Answer: See **ParseAndRun.fs**
 
 - Compute the number $3^8$, that is, 3 raised to the power of 8. Again, use a recursive function.
 
-> Answer: See **\<ParseAndRun.fs\>**
+> Answer: See **ParseAndRun.fs**
 
 - Compute $3^0+3^1+...+3^{10}+3^{11}$, using a recursive function (or two, if you prefer).
 
-> Answer: See **\<ParseAndRun.fs\>**
+> Answer: See **ParseAndRun.fs**
 
 - Compute $1^8+2^8+...+10^8$, again using a recursive function (or two).
 
-> Answer: See **\<ParseAndRun.fs\>**
+> Answer: See **ParseAndRun.fs**
 
 </br>
 
@@ -67,7 +67,7 @@ Then modify the `eval` interpreter in file `Fun.fs` to work for the new abstract
 
 Also, modify the `Letfun` and `Call` clauses of the interpreter. You will need  a way to zip together a list of vairable names and a list of variable values, to get an environment in the form of an assoication list; so function `List.zip` might be useful.
 
-> Answer: See **See Fun.fs**
+> Answer: See **Absyn.fs** and **Fun.fs**
 
 </br>
 
@@ -123,7 +123,7 @@ Note that `e1 && e2` can be encoded as `if e1 then e2 else false` and that `e1 |
 
  Hence you need only change the lexer and parser specifications, and make the new rules in the parser specification generate the appropriate abstract syntax. You need not change `Absyn.fs` or `Fun.fs`.
 
-> Answer: See **FunPar.fsy** and **ParseAndRun.fs** (for tests)
+> Answer: See **FunLex.fsl**, **FunPar.fsy** and **ParseAndRun.fs** (for tests)
 
 </br>
 
