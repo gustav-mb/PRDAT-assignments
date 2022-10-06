@@ -44,15 +44,12 @@ let rec unique xs =
 
 (* A type is int, bool, function, or type variable: *)
 
-// Exercise 5.7
 type typ =
      | TypI                                (* integers                   *)
      | TypB                                (* booleans                   *)
      | TypF of typ * typ                   (* (argumenttype, resulttype) *)
      | TypV of typevar                     (* type variable              *)
-     | TypL of typ                          // Exercise 5.7        
-    // List<bool> -> TypL (TypB)
-    // List<List<Integer>> -> TypL (TypL (TypI))
+
 and tyvarkind =  
      | NoLink of string                    (* uninstantiated type var.   *)
      | LinkTo of typ                       (* instantiated to typ        *)
@@ -94,7 +91,6 @@ let rec freeTypeVars t : typevar list =
     | TypB        -> []
     | TypV tv     -> [tv]
     | TypF(t1,t2) -> union(freeTypeVars t1, freeTypeVars t2)
-    | TypL t      -> freeTypeVars t // Exercise 5.7
 
 let occurCheck tyvar tyvars =                     
     if mem tyvar tyvars then failwith "type error: circularity" else ()
@@ -123,8 +119,7 @@ let rec typeToString t : string =
     | TypB         -> "bool"
     | TypV _       -> failwith "typeToString impossible"
     | TypF(t1, t2) -> "function"
-    | TypL _       -> "list"            // Exercise 5.7
-            
+
 (* Unify two types, equating type variables with types as necessary *)
 
 let rec unify t1 t2 : unit =
@@ -140,7 +135,6 @@ let rec unify t1 t2 : unit =
       if tv1 = tv2                then () 
       else if tv1level < tv2level then linkVarToType tv1 t2'
                                   else linkVarToType tv2 t1'
-    | (TypL t1'', TypL t2'') -> unify t1'' t2'' //Exercise 5.7
     | (TypV tv1, _       ) -> linkVarToType tv1 t2'
     | (_,        TypV tv2) -> linkVarToType tv2 t1'
     | (TypI,     t) -> failwith ("type error: int and " + typeToString t)
@@ -186,7 +180,6 @@ let rec copyType subst t : typ =
     | TypF(t1,t2) -> TypF(copyType subst t1, copyType subst t2)
     | TypI        -> TypI
     | TypB        -> TypB
-    | TypL t        -> TypL t   //Exercise 5.7
 
 (* Create a type from a type scheme (tvs, t) by instantiating all the
    type scheme's parameters tvs with fresh type variables *)
@@ -210,7 +203,6 @@ let rec showType t : string =
           | (NoLink name, _) -> name
           | _                -> failwith "showType impossible"
         | TypF(t1, t2) -> "(" + pr t1 + " -> " + pr t2 + ")"
-        | TypL t         -> showType t + "list" //Exercise 5.7
     pr t 
 
 (* A type environment maps a program variable name to a typescheme *)
@@ -263,6 +255,7 @@ let rec typ (lvl : int) (env : tenv) (e : expr) : typ =
       let tr = TypV(newTypeVar lvl)
       unify tf (TypF(tx, tr));
       tr
+    | _ -> failwith "not implemented"
 
 (* Type inference: tyinf e0 returns the type of e0, if any *)
 
