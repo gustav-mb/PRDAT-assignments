@@ -8,10 +8,10 @@ let inferType = TypeInference.inferType;;
 
 // Exercise 6.5 (2)
 // bool -> bool
-let i1 = inferType (fromString "let f x = false");;
+let i1 = inferType (fromString "let f x = if x = false then false else true in f end");;
 
 // // int -> int
-// let i2 = inferType (fromString "");;
+let i2 = inferType (fromString "");;
 
 // // int -> int -> int
 // // let i3 = inferType (fromString "let i2 x = i2 + x in i2 x end");;
