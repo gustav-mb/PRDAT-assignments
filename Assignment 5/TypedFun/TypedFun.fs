@@ -58,7 +58,7 @@ type tyexpr =
 type value = 
   | Int of int
   | Closure of string * string * tyexpr * value env       (* (f, x, fBody, fDeclEnv) *)
-
+  | LstV of value list * typ // Exercise 5.7
 
 let rec eval (e : tyexpr) (env : value env) : int =
     match e with
@@ -88,6 +88,7 @@ let rec eval (e : tyexpr) (env : value env) : int =
     | Letfun(f, x, _, fBody, _, letBody) -> 
       let bodyEnv = (f, Closure(f, x, fBody, env)) :: env 
       eval letBody bodyEnv
+    | Lst(x, _) -> List.fold (fun acc x -> acc + (eval x env)) 0 x    // Exercise 5.7 TODO: skal lige tjekkes op på
     | Call(Var f, eArg) -> 
       let fClosure = lookup env f
       match fClosure with
@@ -134,6 +135,10 @@ let rec typ (e : tyexpr) (env : typ env) : typ =
       if typ fBody fBodyEnv = rTyp
       then typ letBody letBodyEnv
       else failwith ("Letfun: return type in " + f)
+    // Excercise 5.7
+    | Lst(lst, t) -> 
+      let result = List.forall (fun x -> (typ x env) = t) lst
+      if result then t else failwith "Lst: mixed types"
     | Call(Var f, eArg) -> 
       match lookup env f with
       | TypF(xTyp, rTyp) ->
@@ -144,6 +149,14 @@ let rec typ (e : tyexpr) (env : typ env) : typ =
 
 let typeCheck e = typ e [];;
 
+
+// Exercise 5.7
+// Test func typ
+let typ1 = typeCheck (Lst([CstI 2], TypB))                                       // fail
+let typ2 = typeCheck (Lst([CstI 2; CstI 3], TypI))                               // TypL TypI
+let typ3 = typeCheck (Lst([CstI 2; CstI 3; CstB true], TypI))                    // fail
+let typ4 = typeCheck (Lst([CstI 2; Prim("*", CstI 2, CstI 10)], TypI))           // TypL TypI
+let typ5 = typeCheck (Lst([CstI 2; If(CstB true, CstB false, CstB true)], TypI)) // fail
 
 (* Examples of successful type checking *)
 

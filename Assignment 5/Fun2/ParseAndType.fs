@@ -8,7 +8,7 @@ let inferType = TypeInference.inferType;;
 
 // Exercise 6.5 (2)
 // bool -> bool
-let i1 = inferType (fromString "let f x =  in end");;
+let i1 = inferType (fromString "let f x = false");;
 
 // // int -> int
 // let i2 = inferType (fromString "");;
