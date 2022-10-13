@@ -15,15 +15,9 @@ let run e = eval e [];;
 
 
 // Exercise 6.2
-let ex1 = Fun("x", Prim("*", CstI 2, Var "x"));;
-let ex2 = Let("y", CstI 22, Fun("z", Prim("+", Var "z", Var "y")));;
-let ex3 = Fun("x", CstI 1);;
-
-// let f x = 1 in f f 
-// f f
-// f (f x = 1)
-// f x->1
-// 1 
+let ex1 = run (Fun("x", Prim("*", CstI 2, Var "x")));;
+let ex2 = run (Let("y", CstI 22, Fun("z", Prim("+", Var "z", Var "y"))));;
+let ex3 = run (Fun("x", CstI 1));;
 
 let ex5 = 
     Parse.fromString 

@@ -154,7 +154,7 @@ Evaluation of a `Fun (...)` should produce a non-recursive closure of the from
 
 ```fsharp
 Clos("x", Prim("*", CstI 2, Var "x"), [])
-Clos("z", Prim("+", Var "z", Var "y"), [(y,22)])
+Clos("z", Prim("+", Var "z", Var "y"), [("y",22)])
 ```
 
 Extend the evaluator `eval` in file `HigherFun.fs` to interpret such anonymous functions.
