@@ -248,7 +248,7 @@ let f g = g g in f end
 // type error: circularity 
 (*
   The function g calls itself, so the type inference
-  system would never step infering the type.
+  system never stops infering the type.
 *) 
 
 let f x = 
