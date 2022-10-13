@@ -8,36 +8,37 @@ let inferType = TypeInference.inferType;;
 
 // Exercise 6.5 (2)
 // bool -> bool
-let i1 = inferType (fromString "let f x = if x = false then false else true in f end");;
-let i1' = inferType (fromString "let f x = x = false in f end");;
+let i1 = inferType (fromString "let f x = x = false in f end");;
 
 // int -> int
-let i2 = inferType (fromString "let f x = if x = 0 then 0 else 1 in f end");;
-let i2' = inferType (fromString "let f x = x in let g y = 10 + y in f g end end");;
-let i2'' = inferType (fromString "let f x = x + 1 in f end");;
-
+let i2 = inferType (fromString "let f x = x + 1 in f end");;
 
 // int -> int -> int
-// let i3 = inferType (fromString "let f x = let g y = x + y in f g end in f 1 end");;
-let i3x = inferType (fromString "let f x = x + 10 in let g y = y + 10 in g f 10 end end");;
+let i3 = inferType (fromString "let f x = (let g y = x + y in g end) in f end");;
 
-// // 'a -> 'b -> 'a
-// let i4 = inferType (fromString "let f x = x in let g y = true in f g end end");;
+// 'a -> 'b -> 'a
+let i4 = inferType (fromString "let f x = (let g y = x in g end) in f end");;
 
-// // 'a -> 'b -> 'b
-let i5a = inferType (fromString "let f x = x in f end");; //d' -> 'd
-// let i5 = inferType (fromString "");;
+// 'a -> 'b -> 'b
+let i5 = inferType (fromString "let f x = (let g y = y in g end) in f end");;
 
-// // ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
-// let i6 = inferType (fromString "");;
+// ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
+let i6 = inferType (fromString "let f x = 
+                                    let g y = 
+                                        let h y = 
+                                            let k x =y  in k end in h end in g end in f end");;
 
-// // 'a -> 'b
-// let i7 = inferType (fromString "let f x in let y = y + x in f end end");;
+let i6' = inferType (fromString "let f x = (let g y = (let h z = (let i w = z in i end) in h end) in g end) in f end");;
 
-// // 'a
-// let i8 = inferType (fromString "");;
+// 'a -> 'b
+let i7 = inferType (fromString "let f x = f x in f end");;
 
+// 'a
+let i8 = inferType (fromString "let a = let f x = x in f end");;
 
+let i8' = inferType (fromString "let f x = (g y = g x in f y end) in f end");;
+
+let i8'' = inferType (fromString "let let g =  x in g end ");;
 
 (* Well-typed examples ---------------------------------------- *)
 
