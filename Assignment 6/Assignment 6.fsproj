@@ -30,6 +30,7 @@
     <Compile Include="./MicroC/ParseAndComp.fs" />
     <Compile Include="./MicroC/ParseAndContcomp.fs" />
     <Compile Include="./MicroC/ParseAndRun.fs" />
+    <Compile Include="./Imp/Naive.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,17 +1,15 @@
 // micro-C example 11 -- n queens problem * 1996-12-20, 2009-10-01
 
-// Finding and printing the 2680 solutions to the 11 queens problem
-// takes 8.1 secs when executed using the micro-C interpreter "eval"
-// written in F#, when running on a 2.5 GHz Intel i7.
+// Running this with the micro-C interpreter "eval" written in F#:
+// Finding the 724 solutions to the 10 queens problem takes 6-7
+// seconds on a 1.6 GHz Pentium M.
 
-// It takes 0.960 sec when the micro-C program is compiled
-// (unoptimized) to bytecode and interpreted on the Machine.java
-// bytecode interpreter run on a 2.5 GHz Intel i7; and 0.790 sec when
-// interpreted on the machine.c bytecode interpreter.
-
-// It takes 0.110 sec when the micro-C program is compiled
-// (unoptimized) to (inefficient) assembly code, on the 2.5 GHz i7.
-
+// Running this micro-C program, when compiled to bytecode: 
+// Finding the 724 solutions to the 10 queens problem takes 0.6
+// seconds with an abstract machine implemented in Java and executed
+// on Sun JDK 1.5 Hotspot on a 1.6 GHz Pentium M running Windows XP.  
+// It takes 0.2 seconds with an abstract machine implemented in C
+// and executed on a 1.86 GHz Intel Xeon running Linux.
 
 void main(int n) {
   int i; 
@@ -40,13 +38,13 @@ void main(int n) {
 	u = u + 1;
       if (u <= n) { // not used[u]; fill col[i] then try col[i+1]
 	col[i] = u; 
-	diag1[u-i+n] = diag2[u+i] = used[u] = true; 
+	used[u] = diag1[u-i+n] = diag2[u+i] = true; 
 	i = i+1; u = 1;
       } else {			// backtrack; try to find a new col[i-1]
 	i = i-1;
 	if (i > 0) { 
 	  u = col[i]; 
-	  diag1[u-i+n] = diag2[u+i] = used[u] = false; 
+	  used[u] = diag1[u-i+n] = diag2[u+i] = false; 
 	  u = u+1;
 	} 
       }
@@ -63,7 +61,7 @@ void main(int n) {
       i = i-1; 
       if (i > 0) { 
 	u = col[i]; 
-	diag1[u-i+n] = diag2[u+i] = used[u] = false; 
+	used[u] = diag1[u-i+n] = diag2[u+i] = false; 
 	u = u+1;
       }
     }

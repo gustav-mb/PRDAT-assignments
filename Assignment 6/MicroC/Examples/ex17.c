@@ -5,10 +5,8 @@ void main() {
   k = 0;
   while (true) {
     k = k+1;
-    if (seq(k) > 240) {
-      print k;
-      println;
-    }
+    if (seq(k) > 240) 
+      print k; 
   }
 }
 

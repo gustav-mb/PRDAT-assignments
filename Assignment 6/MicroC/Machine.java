@@ -1,6 +1,6 @@
 /* File MicroC/Machine.java
    A unified-stack abstract machine for imperative programs.
-   sestoft@itu.dk * 2001-03-21, 2009-09-24, 2021-04-05
+   sestoft@itu.dk * 2001-03-21, 2009-09-24
 
    To execute a program file using this abstract machine, do:
 
@@ -195,8 +195,8 @@ class Machine {
     tstream.parseNumbers();
     tstream.nextToken();
     while (tstream.ttype == StreamTokenizer.TT_NUMBER) {
-      rawprogram.add((int)tstream.nval);
-      tstream.nextToken();
+	rawprogram.add(Integer.valueOf((int)tstream.nval)) ;; 
+	tstream.nextToken();
     }
     inp.close();
     final int programsize = rawprogram.size();

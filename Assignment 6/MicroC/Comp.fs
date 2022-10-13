@@ -70,8 +70,9 @@ let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr lis
     match typ with
     | TypA (TypA _, _) -> 
       raise (Failure "allocate: array of arrays not permitted")
-    | TypA (t, Some i) -> 
-      let newEnv = ((x, (kind (fdepth+i), typ)) :: env, fdepth+i+1)
+    | TypA (t, Some i) ->
+      (* i+1 because we need room for the array elements and pointer to first element. *)        
+      let newEnv = ((x, (kind (fdepth+i), typ)) :: env, fdepth+i+1)  
       let code = [INCSP i; GETSP; CSTI (i-1); SUB]
       (newEnv, code)
     | _ -> 
@@ -98,7 +99,7 @@ let makeGlobalEnvs (topdecs : topdec list) : varEnv * funEnv * instr list =
         | dec::decr  -> 
           match dec with
           | Vardec (typ, var) ->
-            let (varEnv1, code1)          = allocate Glovar (typ, var) varEnv
+            let (varEnv1, code1)        = allocate Glovar (typ, var) varEnv
             let (varEnvr, funEnvr, coder) = addv decr varEnv1 funEnv
             (varEnvr, funEnvr, code1 @ coder)
           | Fundec (tyOpt, f, xs, body) ->
@@ -128,7 +129,7 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
       [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
       @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
     | Expr e -> 
-      cExpr e varEnv funEnv @ [INCSP -1]
+      cExpr e varEnv funEnv @ [INCSP -1]  (* Remove result of expression from stack, as this is a statement *)
     | Block stmts -> 
       let rec loop stmts varEnv =
           match stmts with 
@@ -138,7 +139,7 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
             let (fdepthr, coder) = loop sr varEnv1 
             (fdepthr, code1 @ coder)
       let (fdepthend, code) = loop stmts varEnv
-      code @ [INCSP(snd varEnv - fdepthend)]
+      code @ [INCSP(snd varEnv - fdepthend)]  (* Remove variables, declared in the block, from the stack *)
     | Return None -> 
       [RET (snd varEnv - 1)]
     | Return (Some e) -> 
@@ -244,7 +245,7 @@ let cProgram (Prog topdecs) : instr list =
         let (labf, _, paras) = lookup funEnv f
         let (envf, fdepthf) = bindParams paras (globalVarEnv, 0)
         let code = cStmt body (envf, fdepthf) funEnv
-        [Label labf] @ code @ [RET (List.length paras-1)]
+        [Label labf] @ code @ [RET (List.length paras-1)]  (* -1 because there is no result value on the stack; we leave a dummy one - body of function is always a statement. *)
     let functions = 
         List.choose (function 
                          | Fundec (rTy, name, argTy, body) 

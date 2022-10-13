@@ -39,7 +39,7 @@ let rec addINCSP m1 C : instr list =
     match C with
     | INCSP m2            :: C1 -> addINCSP (m1+m2) C1
     | RET m2              :: C1 -> RET (m2-m1) :: C1
-    | Label lab :: RET m2 :: _  -> RET (m2-m1) :: C
+    | Label lab :: RET m2 :: _  -> RET (m2-m1) :: C  (* Becomes: RET(m2-m1)::Label lab::RET m2 *)
     | _                         -> if m1=0 then C else INCSP m1 :: C
 
 let addLabel C : label * instr list =          (* Conditional jump to C *)
@@ -64,7 +64,7 @@ let makeCall m lab C : instr list =
     | Label _ :: RET n :: _  -> TCALL(m, n, lab) :: C
     | _                      -> CALL(m, lab) :: C
 
-let rec deadcode C =
+let rec deadcode C = (* Remove all code until next label *)
     match C with
     | []              -> []
     | Label lab :: _  -> C
@@ -139,7 +139,7 @@ let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr lis
     match typ with
     | TypA (TypA _, _) -> failwith "allocate: arrays of arrays not permitted"
     | TypA (t, Some i) ->
-      let newEnv = ((x, (kind (fdepth+i), typ)) :: env, fdepth+i+1)
+      let newEnv = ((x, (kind (fdepth+i), typ)) :: env, fdepth+i+1) (* i+1 because we need room for the array elements and pointer to first element. *)
       let code = [INCSP i; GETSP; CSTI (i-1); SUB]
       (newEnv, code)
     | _ -> 
@@ -196,7 +196,7 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr 
            makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: C))
       addJump jumptest (Label labbegin :: cStmt body varEnv funEnv C1)
     | Expr e -> 
-      cExpr e varEnv funEnv (addINCSP -1 C) 
+      cExpr e varEnv funEnv (addINCSP -1 C) (* Remove result of expression from stack, as this is a statement *)
     | Block stmts -> 
       let rec pass1 stmts ((_, fdepth) as varEnv) =
           match stmts with 
@@ -211,7 +211,7 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr 
           | [] -> C
           | (BDec code,  varEnv) :: sr -> code @ pass2 sr C
           | (BStmt stmt, varEnv) :: sr -> cStmt stmt varEnv funEnv (pass2 sr C)
-      pass2 stmtsback (addINCSP(snd varEnv - fdepthend) C)
+      pass2 stmtsback (addINCSP(snd varEnv - fdepthend) C) (* Remove variables, declared in the block, from the stack *)
     | Return None -> 
       RET (snd varEnv - 1) :: deadcode C
     | Return (Some e) -> 
@@ -339,7 +339,7 @@ let cProgram (Prog topdecs) : instr list =
     let compilefun (tyOpt, f, xs, body) =
         let (labf, _, paras) = lookup funEnv f
         let (envf, fdepthf) = bindParams paras (globalVarEnv, 0)
-        let C0 = [RET (List.length paras-1)]
+        let C0 = [RET (List.length paras-1)] (* -1 because there is no result value on the stack; we leave a dummy one - body of function is always a statement. *)
         let code = cStmt body (envf, fdepthf) funEnv C0
         Label labf :: code
     let functions = 
