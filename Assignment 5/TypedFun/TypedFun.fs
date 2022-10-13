@@ -137,12 +137,8 @@ let rec typ (e : tyexpr) (env : typ env) : typ =
       else failwith ("Letfun: return type in " + f)
     // Excercise 5.7
     | Lst(lst, t) ->
-      printfn "LIST IS OF TYPE %A -> %A" t lst
-      let result = List.forall (fun x -> 
-                          printfn "Element: %A" x
-                          (typ x env) = t
-                        ) lst
-      if result then t else failwith "Lst: mixed types"
+      let result = List.forall (fun x -> (typ x env) = t) lst
+      if result then TypL t else failwith "Lst: mixed types"
     | Call(Var f, eArg) -> 
       match lookup env f with
       | TypF(xTyp, rTyp) ->
@@ -155,13 +151,12 @@ let typeCheck e = typ e [];;
 
 
 // Exercise 5.7
-// Test func typ
-let typ0 = typeCheck (Lst([], TypI));;
-let typ1 = typeCheck (Lst([CstI 2], TypB));;                                       // fail
-let typ2 = typeCheck (Lst([CstI 2; CstI 3], TypI));;                               // TypL TypI
-let typ3 = typeCheck (Lst([CstI 2; CstI 3; CstB true], TypI));;                    // fail
-let typ4 = typeCheck (Lst([CstI 2; Prim("*", CstI 2, CstI 10)], TypI));;           // TypL TypI
-let typ5 = typeCheck (Lst([CstI 2; If(CstB true, CstB false, CstB true)], TypI));; // fail
+let typ0 = typeCheck (Lst([], TypB));;                                                // TypL TypB
+// let typ1 = typeCheck (Lst([CstI 2], TypB));;                                       // fail
+let typ2 = typeCheck (Lst([CstI 2; CstI 3], TypI));;                                  // TypL TypI
+// let typ3 = typeCheck (Lst([CstI 2; CstI 3; CstB true], TypI));;                    // fail
+let typ4 = typeCheck (Lst([CstI 2; Prim("*", CstI 2, CstI 10)], TypI));;              // TypL TypI
+// let typ5 = typeCheck (Lst([CstI 2; If(CstB true, CstB false, CstB true)], TypI));; // fail
 
 (* Examples of successful type checking *)
 
