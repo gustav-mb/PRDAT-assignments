@@ -199,6 +199,9 @@ let f x = 1 in f f end
 ```
 
 > Answer:
+>
+> As can be seen in both the type rule tree above and the code of the function the argument *x* is not bound to anything in the function.
+> This allows *x* to have any type, thereby making `f` polymorphic.
 
 ![PLC 6.4(1)](appendix/PLC%206.4(1).png)
 
@@ -209,6 +212,8 @@ let f x = if x<10 then 42 else f(x+1) in f 20 end
 ```
 
 > Answer:
+>
+> We can see that at the function environment the function is called with an int (20), which is bound to *x*. This is later evaluated by the if-statement, therefore infering it as an integer (which can also be seen in the type rule tree).
 
 ![PLC 6.4(2)](appendix/PLC%206.4(2).png)
 
@@ -291,6 +296,40 @@ in f true end
 Remember that the type arrow (`->`) is right associative, so `int -> int -> int` is the same as `int -> (int -> int)`, and that the choice of type variables does not matter, so the type scheme `'h -> 'g -> 'h` is the same as `a' -> 'b -> 'a`
 
 > Answer: See file **ParseAndType.fs**
+
+```fsharp
+// bool -> bool
+let i1 = inferType (fromString "let f x = x = false in f end");;
+// val i1: string = "(bool -> bool)"
+
+// int -> int
+let i2 = inferType (fromString "let f x = x + 1 in f end");;
+// val i2: string = "(int -> int)"
+
+// int -> int -> int
+let i3 = inferType (fromString "let f x = (let g y = x + y in g end) in f end");;
+// val i3: string = "(int -> (int -> int))"
+
+// 'a -> 'b -> 'a
+let i4 = inferType (fromString "let f x = (let g y = x in g end) in f end");;
+// val i4: string = "('h -> ('g -> 'h))"
+
+// 'a -> 'b -> 'b
+let i5 = inferType (fromString "let f x = (let g y = y in g end) in f end");;
+// val i5: string = "('g -> ('h -> 'h))"
+
+// ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
+let i6 = inferType (fromString "let f x = (let g y = (let h z = y (x z) in h end) in g end) in f end");;
+// val i6: string = "(('l -> 'k) -> (('k -> 'm) -> ('l -> 'm)))"
+
+// 'a -> 'b
+let i7 = inferType (fromString "let f x = f x in f end");;
+// val i7: string = "('e -> 'f)"
+
+// 'a
+let i8 = inferType (fromString "let f x = f 0 in f 0 end");;
+// val i8: string = "'e"
+```
 
 </br>
 

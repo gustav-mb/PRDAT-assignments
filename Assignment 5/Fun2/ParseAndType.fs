@@ -9,36 +9,35 @@ let inferType = TypeInference.inferType;;
 // Exercise 6.5 (2)
 // bool -> bool
 let i1 = inferType (fromString "let f x = x = false in f end");;
+// val i1: string = "(bool -> bool)"
 
 // int -> int
 let i2 = inferType (fromString "let f x = x + 1 in f end");;
+// val i2: string = "(int -> int)"
 
 // int -> int -> int
 let i3 = inferType (fromString "let f x = (let g y = x + y in g end) in f end");;
+// val i3: string = "(int -> (int -> int))"
 
 // 'a -> 'b -> 'a
 let i4 = inferType (fromString "let f x = (let g y = x in g end) in f end");;
+// val i4: string = "('h -> ('g -> 'h))"
 
 // 'a -> 'b -> 'b
 let i5 = inferType (fromString "let f x = (let g y = y in g end) in f end");;
+// val i5: string = "('g -> ('h -> 'h))"
 
 // ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
-let i6 = inferType (fromString "let f x = 
-                                    let g y = 
-                                        let h y = 
-                                            let k x =y  in k end in h end in g end in f end");;
-
-let i6' = inferType (fromString "let f x = (let g y = (let h z = (let i w = z in i end) in h end) in g end) in f end");;
+let i6 = inferType (fromString "let f x = (let g y = (let h z = y (x z) in h end) in g end) in f end");;
+// val i6: string = "(('l -> 'k) -> (('k -> 'm) -> ('l -> 'm)))"
 
 // 'a -> 'b
 let i7 = inferType (fromString "let f x = f x in f end");;
+// val i7: string = "('e -> 'f)"
 
 // 'a
-let i8 = inferType (fromString "let a = let f x = x in f end");;
-
-let i8' = inferType (fromString "let f x = (g y = g x in f y end) in f end");;
-
-let i8'' = inferType (fromString "let let g =  x in g end ");;
+let i8 = inferType (fromString "let f x = f 0 in f 0 end");;
+// val i8: string = "'e"
 
 (* Well-typed examples ---------------------------------------- *)
 
