@@ -200,6 +200,8 @@ let f x = 1 in f f end
 
 > Answer:
 
+![PLC 6.4(1)](appendix/PLC%206.4(1).png)
+
 (ii) Build a type rule tree for this micro-ML program (in the let-body, `f` should *not* be polymorphic – why?):
 
 ```fsharp
@@ -207,6 +209,8 @@ let f x = if x<10 then 42 else f(x+1) in f 20 end
 ```
 
 > Answer:
+
+![PLC 6.4(2)](appendix/PLC%206.4(2).png)
 
 </br>
 
