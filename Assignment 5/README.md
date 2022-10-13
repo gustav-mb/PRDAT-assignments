@@ -21,7 +21,7 @@ For instance, `merge([3;5;12], [2;3;4;7])` should give `[2;3;3;4;5;7;12]`.
 
 (B) Implement a similar Java (or C#) method:
 
-`static int[] merge(int[] xs, int[] ys`
+`static int[] merge(int[] xs, int[] ys)`
 
 that takes two sorted arrays of ints and merges them into a sorted array of ints. The method should build a new array, and should not modify the given arrays. Two arrays `xs` and `ys` of integers may be built like this:
 
