@@ -88,7 +88,7 @@ let rec eval (e : tyexpr) (env : value env) : int =
     | Letfun(f, x, _, fBody, _, letBody) -> 
       let bodyEnv = (f, Closure(f, x, fBody, env)) :: env 
       eval letBody bodyEnv
-    | Lst(x, _) -> List.fold (fun acc x -> acc + (eval x env)) 0 x    // Exercise 5.7 TODO: skal lige tjekkes op på
+    | Lst(_, _) -> failwith "not implemented" // -> List.fold (fun acc x -> acc + (eval x env)) 0 x    // Exercise 5.7 TODO: skal lige tjekkes op på
     | Call(Var f, eArg) -> 
       let fClosure = lookup env f
       match fClosure with
