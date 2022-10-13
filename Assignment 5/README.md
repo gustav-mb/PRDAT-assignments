@@ -178,7 +178,15 @@ let add x = fun y -> x+y in add 2 5 end
 let add = fun x -> fun y -> x+y in add 2 5 end
 ```
 
-> Answer: See files **FunLex.fsl** and **FunPar.fsy**
+> Answer: See files **FunLex.fsl**, **FunPar.fsy** and **ParseAndRunHigher.fs** (for tests)
+
+```fsharp
+let add x = fun y -> x+y in add 2 5 end
+// val it: HigherFun.value = Int 7
+
+let add = fun x -> fun y -> x+y in add 2 5 end
+// val it: HigherFun.value = Int 7
+```
 
 </br>
 

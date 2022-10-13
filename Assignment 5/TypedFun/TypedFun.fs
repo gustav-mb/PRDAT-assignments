@@ -60,40 +60,45 @@ type value =
   | Closure of string * string * tyexpr * value env       (* (f, x, fBody, fDeclEnv) *)
   | LstV of value list * typ // Exercise 5.7
 
-let rec eval (e : tyexpr) (env : value env) : int =
+// Exercise 5.7
+let rec eval (e : tyexpr) (env : value env) : value =
     match e with
-    | CstI i -> i
-    | CstB b -> if b then 1 else 0
+    | CstI i -> Int i
+    | CstB b -> Int (if b then 1 else 0)
     | Var x  ->
       match lookup env x with
-      | Int i -> i 
+      | Int i -> Int i 
       | _     -> failwith "eval Var"
     | Prim(ope, e1, e2) -> 
-      let i1 = eval e1 env
-      let i2 = eval e2 env
-      match ope with
-      | "*" -> i1 * i2
-      | "+" -> i1 + i2
-      | "-" -> i1 - i2
-      | "=" -> if i1 = i2 then 1 else 0
-      | "<" -> if i1 < i2 then 1 else 0
+      let v1 = eval e1 env
+      let v2 = eval e2 env
+      match (ope, v1, v2) with
+      | ("*", Int i1, Int i2) -> Int (i1 * i2)
+      | ("+", Int i1, Int i2) -> Int (i1 + i2)
+      | ("-", Int i1, Int i2) -> Int (i1 - i2)
+      | ("=", Int i1, Int i2) -> Int (if i1 = i2 then 1 else 0)
+      | ("<", Int i1, Int i2) -> Int (if i1 < i2 then 1 else 0)
       | _   -> failwith "unknown primitive"
     | Let(x, eRhs, letBody) -> 
-      let xVal = Int(eval eRhs env)
+      let xVal = eval eRhs env
       let bodyEnv = (x, xVal) :: env 
       eval letBody bodyEnv
     | If(e1, e2, e3) -> 
-      let b = eval e1 env
-      if b<>0 then eval e2 env else eval e3 env
+      match eval e1 env with
+      | Int 0 -> eval e3 env
+      | Int _ -> eval e2 env
+      | _     -> failwith "eval If"
     | Letfun(f, x, _, fBody, _, letBody) -> 
       let bodyEnv = (f, Closure(f, x, fBody, env)) :: env 
       eval letBody bodyEnv
-    | Lst(_, _) -> failwith "not implemented" // -> List.fold (fun acc x -> acc + (eval x env)) 0 x    // Exercise 5.7 TODO: skal lige tjekkes op på
+    | Lst(lst, t) -> 
+      let lst' = List.foldBack (fun x acc -> (eval x env) :: acc) lst [] // Tjekker ikke for ens typer
+      LstV(lst', t)
     | Call(Var f, eArg) -> 
       let fClosure = lookup env f
       match fClosure with
       | Closure (f, x, fBody, fDeclEnv) ->
-        let xVal = Int(eval eArg env)
+        let xVal = eval eArg env
         let fBodyEnv = (x, xVal) :: (f, fClosure) :: fDeclEnv
         eval fBody fBodyEnv
       | _ -> failwith "eval Call: not a function"
@@ -157,6 +162,11 @@ let typ2 = typeCheck (Lst([CstI 2; CstI 3], TypI));;                            
 // let typ3 = typeCheck (Lst([CstI 2; CstI 3; CstB true], TypI));;                    // fail
 let typ4 = typeCheck (Lst([CstI 2; Prim("*", CstI 2, CstI 10)], TypI));;              // TypL TypI
 // let typ5 = typeCheck (Lst([CstI 2; If(CstB true, CstB false, CstB true)], TypI));; // fail
+
+// Exercise 5.7
+let eval0 = eval (Lst([Prim("+", CstI 3, CstI 4); Var "x"; CstI 3], TypI)) [("x", Int 1)];;
+let eval1 = eval (Lst([Prim("+", CstI 3, CstI 4); CstI 3], TypI)) [];;
+
 
 (* Examples of successful type checking *)
 

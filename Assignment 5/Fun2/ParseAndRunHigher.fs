@@ -19,6 +19,10 @@ let ex1 = run (Fun("x", Prim("*", CstI 2, Var "x")));;
 let ex2 = run (Let("y", CstI 22, Fun("z", Prim("+", Var "z", Var "y"))));;
 let ex3 = run (Fun("x", CstI 1));;
 
+// Exercise 6.3
+let anoFun1 = fromString "let add x = fun y -> x+y in add 2 5 end";;
+let anoFun2 = fromString "let add = fun x -> fun y -> x+y in add 2 5 end";;
+
 let ex5 = 
     Parse.fromString 
      @"let tw g = let app x = g (g x) in app end 
