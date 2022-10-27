@@ -17,7 +17,7 @@ Run the fromFile parser on the micro-C example in source file `ex1.c`. In your s
 ```fsharp
  Prog
     [Fundec
-       (None, "main", [(TypI, "n")], // Declaration for function "main". It takes one argument, a TypI "n", and returns void, which is why it says "None" at the beginning
+       (None, "main", [(TypI, "n")], // Declaration of function "main". It takes one argument, a TypI "n", and returns void, which is why it says "None" at the beginning
         Block   // Code block of statements and variable declarations related to main
           [Stmt // Statement for while loop
              (While // While of expr * stmt
@@ -40,6 +40,11 @@ Run the interpreter on some of the micro-C examples provided, such as those in s
 > Answer:
 
 ```fsharp
+// ex1.c
+run (fromFile "ex1.c") [5];;
+5 4 3 2 1 
+val it: Interp.store = map [(0, 0)]
+
 // ex11.c
 run (fromFile "ex11.c") [5];;
 1 3 5 2 4 
@@ -57,12 +62,6 @@ val it: Interp.store =
   map
     [(0, 5); (1, 0); (2, 6); (3, -999); (4, 0); (5, 0); (6, 0); (7, 0); (8, 0);
      ...]
-
-// ex1.c
-run (fromFile "ex1.c") [5];;
-5 4 3 2 1 
-val it: Interp.store = map [(0, 0)]
-
 ```
 
 </br>
@@ -84,7 +83,7 @@ Also remember to initialize all variables and array elements; this doesn't happe
 
 > Answer: See file **./7.2/7.2(i).c**
 
-``` fsharp 
+``` fsharp
 run (fromFile "MicroC/7.2/7.2(i).c") [2];;
 20 val it: Interp.store =
   map
@@ -162,7 +161,6 @@ Rewrite your programs from Exercise [7.2](#plc-72) to use for-loops instead of w
 
 > Answer: See files **CLex.fsl**, **CPar.fsy**, and Folder **7.3**
 
-Exemple 1
 ```fsharp
 run (fromFile "MicroC/Examples/ex1.c") [17];;
 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
