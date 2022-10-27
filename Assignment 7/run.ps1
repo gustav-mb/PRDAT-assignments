@@ -1,0 +1,1 @@
+dotnet fsi -r .\bin\Debug\net6.0\FsLexYacc.Runtime.dll .\MicroC\Absyn.fs .\MicroC\Machine.fs .\MicroC\Interp.fs .\MicroC\Comp.fs .\MicroC\Contcomp.fs .\MicroC\Interp.fs .\CPar.fs .\CLex.fs .\MicroC\Parse.fs .\MicroC\MicroCC.fs .\MicroC\ParseAndComp.fs .\MicroC\ParseAndContcomp.fs .\MicroC\ParseAndRun.fs .\Imp\Naive.fs
