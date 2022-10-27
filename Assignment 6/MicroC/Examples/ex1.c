@@ -7,12 +7,3 @@ void main(int n) {
   }
   println;
 }
-
-// Exercise 7.3
-// void main(int n) {
-//   int i;
-//   for(i = n; i > 0; i = i - 1) {
-//     print i;
-//   }
-//   println;
-// }

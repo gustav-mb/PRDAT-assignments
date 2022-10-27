@@ -18,9 +18,11 @@ void main(int n) {
 }
 
 void squares(int n, int arr[]) {
-    while(n >= 0){
-        arr[n] = n*n;
-        n = n - 1;
+    int i;
+    i = 0;
+    while(i < n){
+        arr[i] = i*i;
+        i = i + 1;
     }
 }
 

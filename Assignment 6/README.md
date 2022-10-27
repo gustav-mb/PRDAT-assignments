@@ -29,10 +29,7 @@ Run the fromFile parser on the micro-C example in source file `ex1.c`. In your s
                          (Assign // Assigns the result of the expression "n - 1" to the variable "n", as follows:
                             (AccVar "n", // Variable access to the variable "n"
                              Prim2 ("-", Access (AccVar "n"), CstI 1))))])); // Prim2 is a Binary operator, where subtracts is the operand in the expression 'n - 1' 
-           Stmt (Expr (Prim1 ("printc", CstI 10)))])] // Prim1 is a Unary operator printc where we print a constant "10" 
-
-# Ask the TA about Printc and the CstI 10
-
+           Stmt (Expr (Prim1 ("printc", CstI 10)))])] // Prim1 is a Unary operator printc where we print the ASCII value 10, which is the new line character (as defined in CPar.fsy)
 ```
 
 Run the interpreter on some of the micro-C examples provided, such as those in source files `ex1.c` and `ex11.c`. Note that both take an integer `n` as input. The former program prints the numbers from `n` down to 1; the latter finds all solutions to the n-queens problem.
@@ -162,9 +159,26 @@ Rewrite your programs from Exercise [7.2](#plc-72) to use for-loops instead of w
 > Answer: See files **CLex.fsl**, **CPar.fsy**, and Folder **7.3**
 
 ```fsharp
-run (fromFile "MicroC/Examples/ex1.c") [17];;
-17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
-val it: Interp.store = map [(0, 17); (1, 0)]
+// (i)
+run (fromFile "MicroC/7.3/7.3(i).c") [2];;
+20 val it: Interp.store =
+  map
+    [(-1, 20); (0, 2); (1, -1); (2, 7); (3, 13); (4, 9); (5, 8); (6, 2);
+     (7, -1); ...]
+
+// (ii)
+run (fromFile "MicroC/7.3/7.3(ii).c") [4];;
+14 val it: Interp.store =
+  map
+    [(-1, 14); (0, 4); (1, 0); (2, 1); (3, 4); (4, 9); (5, 16); (6, -999);
+     (7, -999); ...]
+
+// (iii)
+run (fromFile "MicroC/7.3/7.3(iii).c") [7];;
+1 4 2 0 val it: Interp.store =
+  map
+    [(0, 7); (1, 1); (2, 4); (3, 2); (4, 0); (5, 1); (6, 1); (7, 2); (8, 1);
+     ...]
 ```
 
 </br>
@@ -180,7 +194,7 @@ Extend the micro-C abstract syntax in `Absyn.fs` with the preincrement and prede
 ```fsharp
 type expr =
     ...
-  | PreInc of access  (* C/C++/Java/C# i++ or ++a[e] *)
+  | PreInc of access  (* C/C++/Java/C# ++i or ++a[e] *)
   | PreDec of access  (* C/C++/Java/C# --i or --a[e] *)
 ```
 
@@ -188,7 +202,7 @@ Note that the predecrement and preincrement operators work on lvalues, that is, 
 
 Modify the micro-C interpreter in `Interp.fs` to handle `PreInc` and `PreDec`. You will need to modify the `eval` function, and use the `getSto` and `setSto` store operations (Sect. 7.3).
 
-> Answer: See files **Absyn.fs** and **Interp.fs**
+> Answer: See files **Absyn.fs**, **Interp.fs** and Folder **7.5** (for tests)
 
 </br>
 
@@ -203,10 +217,11 @@ Extend the micro-C lexer and parser to accept `++e` and `-–e` also, and to bui
 > Answer: See files **CLex.fsl**, **CPar.fsy** and Folder **7.5**
 
 ```fsharp
-run (fromFile "MicroC/7.5/examples.c") [12] ;;
-13 val it: Interp.store = map [(0, 13)]
-
-#Ask TA about precedence print and Inc
+run (fromFile "MicroC/7.5/examples.c") [11];;
+12 // (inc n)
+10 // (dec n)
+12 // (array)
+val it: Interp.store = map [(0, 11); (1, 11); (2, 12); (3, 2)]
 ```
 
 </br>
