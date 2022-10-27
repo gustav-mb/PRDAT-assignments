@@ -27,7 +27,8 @@ let keyword s =
     | "return"  -> RETURN
     | "true"    -> CSTBOOL 1
     | "void"    -> VOID 
-    | "while"   -> WHILE         
+    | "while"   -> WHILE
+    | "for"     -> FOR         // Exercise 7.3    
     | _         -> NAME s
  
 let cEscape s = 
@@ -50,8 +51,10 @@ rule Token = parse
   | ['0'-'9']+      { CSTINT (System.Int32.Parse (lexemeAsString lexbuf)) }  
   | ['a'-'z''A'-'Z']['a'-'z''A'-'Z''0'-'9']*
                     { keyword (lexemeAsString lexbuf) }
-  | '+'             { PLUS } 
-  | '-'             { MINUS } 
+  | '+'             { PLUS }
+  | "++"            { INC }     // Exercise 7.5
+  | '-'             { MINUS }
+  | "--"            { DEC }     // Exercise 7.5
   | '*'             { TIMES } 
   | '/'             { DIV } 
   | '%'             { MOD }                     
