@@ -20,8 +20,9 @@ let nl = CstI 10
 %token NOT SEQOR SEQAND
 %token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP
 %token EOF
-%token INC DEC // Exercise 7.5
+%token INC DEC            // Exercise 7.5
 %token QUESTIONMARK COLON // Exercise 8.5
+%token SWITCH CASE        // Exercise 8.6
 
 %right ASSIGN             /* lowest precedence */
 %right QUESTIONMARK COLON // Exercise 8.5
@@ -105,7 +106,13 @@ StmtM:  /* No unbalanced if-else */
   | IF LPAR Expr RPAR StmtM ELSE StmtM                      { If($3, $5, $7)             }
   | WHILE LPAR Expr RPAR StmtM                              { While($3, $5)              }
   | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM            { Block([Stmt(Expr($3)); Stmt(While($5, Block([Stmt($9); Stmt(Expr($7))])))])  } // Exercise 7.3
-  | LPAR Expr QUESTIONMARK Expr COLON Expr RPAR SEMI        { If($2, Expr($4), Expr($6)) }    // Exercise 8.5   
+  | SWITCH LPAR Expr RPAR LBRACE CaseBlockSeq RBRACE        { Switch($3, $6)             }    // Exercise 8.6
+;
+
+// Exercise 8.6
+CaseBlockSeq:
+    /* empty */                                { [] }
+  | CASE CSTINT COLON Block CaseBlockSeq       { Case($2, $4) :: $5 }
 ;
 
 StmtU:
@@ -142,6 +149,7 @@ ExprNotAccess:
   | Expr SEQOR  Expr                    { Orelse($1, $3)      }
   | INC Access                          { PreInc($2)          } // Exercise 7.5
   | DEC Access                          { PreDec($2)          } // Exercise 7.5
+  | LPAR Expr QUESTIONMARK Expr COLON Expr RPAR { Ternary($2, $4, $6) } // Exercise 8.5
 ;
 
 AtExprNotAccess:

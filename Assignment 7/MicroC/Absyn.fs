@@ -25,6 +25,7 @@ and expr =
   | Call of string * expr list       (* Function call f(...)        *)
   | PreInc of access                 (* C/C++/Java/C# ++i or ++a[e] a[e] +1 *) // Exercise 7.4
   | PreDec of access                 (* C/C++/Java/C# --i or --a[e] *)         // Exercise 7.4
+  | Ternary of expr * expr * expr    (* Ternary operator 1 ? 5 : 3 *)          // Exercise 8.5
                                                                    
 and access =                                                       
   | AccVar of string                 (* Variable access        x    *) 
@@ -37,10 +38,15 @@ and stmt =
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
-                                                                   
+  | Switch of expr * case list       (* Switch statement            *)      // Exercise 8.6      
+
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
   | Stmt of stmt                     (* A statement                 *)
+
+// Exercise 8.6
+and case =
+  | Case of int * stmt               (* Case block for a switch statement *)
 
 and topdec = 
   | Fundec of typ option * string * (typ * string) list * stmt

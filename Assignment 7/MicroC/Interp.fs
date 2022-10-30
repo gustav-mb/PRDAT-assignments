@@ -142,6 +142,14 @@ let rec exec stmt (locEnv : locEnv) (gloEnv : gloEnv) (store : store) : store =
           | [ ] -> store
           | s1::sr -> loop sr (stmtordec s1 locEnv gloEnv store)
       loop stmts (locEnv, store) 
+    // Exercise 8.6
+    | Switch(e, cases) ->
+      let (v, store1) = eval e locEnv gloEnv store
+      let rec aux cases' =
+        match cases' with
+        | [] -> store1
+        | Case(value, block) :: xs -> if value = v then exec block locEnv gloEnv store1 else aux xs
+      aux cases
     | Return _ -> failwith "return not implemented"
 
 and stmtordec stmtordec locEnv gloEnv store = 
@@ -205,6 +213,10 @@ and eval e locEnv gloEnv store : int * store =
       let value = (getSto store' address) - 1                 
       let updatedStore = setSto store' address value 
       (value, updatedStore) 
+    // Exercise 8.5
+    | Ternary(e1, e2, e3) -> 
+      let (v, store1) = eval e1 locEnv gloEnv store
+      if v <> 0 then eval e2 locEnv gloEnv store1 else eval e3 locEnv gloEnv store1
 
 and access acc locEnv gloEnv store : int * store = 
     match acc with 

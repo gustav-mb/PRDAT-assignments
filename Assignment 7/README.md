@@ -692,7 +692,7 @@ and the compiler to implement conditional expressions of the form `(e1 ? e2 : e3
 
 The compilation of `e1 ? e2 : e3` should produce code that evaluates `e2` only if `e1` is true and evaluates `e3` only if `e1` is false. The compilation scheme should be the same as for the conditional statement `if (e) stmt1 else stmt2`, but expression `e2` or expression `e3` must leave its value on the stack top if evaluated, so that the entire expression `e1 ? e2 : e3` leaves its value on the stack top.
 
-> Answer: See files **Absyn**, **CLex.fsl**, **CPar.fsy** and **Comp.fs**
+> Answer: See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **ternary.c** (for tests)
 
 </br>
 
@@ -718,7 +718,7 @@ switch (month) {
 Unlike in C, there should be no fall-through from one `case` to the next: after the last statement of a `case`, the code should jump to the end of the `switch` statement. The parenthesis after `switch` must contain an expression.
 The value after a `case` must be an integer constant, and a case must be followed by a statement block. A `switch` with `n` cases can be compiled using `n` labels, the last of which is at the very end of the switch. For simplicity, do not implement the `break` statement or the `default` branch.
 
-> Answer:
+> Answer: See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **switch.c** (for tests)
 
 </br>
 
