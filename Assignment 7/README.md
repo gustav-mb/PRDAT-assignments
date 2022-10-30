@@ -510,7 +510,7 @@ L1: // main function
   INCSP -1
   GOTO "L3"
 L2: // while
-  GETBP    //redundant operationer
+  GETBP    // Redundant operations
   CSTI 0   //
   ADD      //
   GETBP    //
@@ -692,7 +692,7 @@ and the compiler to implement conditional expressions of the form `(e1 ? e2 : e3
 
 The compilation of `e1 ? e2 : e3` should produce code that evaluates `e2` only if `e1` is true and evaluates `e3` only if `e1` is false. The compilation scheme should be the same as for the conditional statement `if (e) stmt1 else stmt2`, but expression `e2` or expression `e3` must leave its value on the stack top if evaluated, so that the entire expression `e1 ? e2 : e3` leaves its value on the stack top.
 
-> Answer: See files **CLex.fsl**, **CPar.fsy** and **Comp.fs**
+> Answer: See files **Absyn**, **CLex.fsl**, **CPar.fsy** and **Comp.fs**
 
 </br>
 
