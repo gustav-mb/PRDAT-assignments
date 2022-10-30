@@ -6,7 +6,33 @@ let fromString = Parse.fromString;;
 
 let inferType = TypeInference.inferType;;
 
-// Exercise 6.5 (2)
+// Exercise 6.5 (i)
+let a1 = inferType (fromString "let f x = 1 in f f end")
+// val it: string = "int"
+
+// let a2 = inferType (fromString "let f g = g g in f end")
+// type error: circularity 
+(*
+  The function g calls itself, so the type inference
+  system never stops infering the type.
+*) 
+
+let a3 = inferType (fromString "let f x = let g y = y in g false end in f 42 end")
+// val it: string = "bool"
+
+//let a4 = inferType (fromString "let f x = let g y = if true then y else x in g false end in f 42 end")
+// type error: bool and int 
+(*
+  By the Type Rule p7 about if-then-else expressions
+  the types following then and else must be of the same type.
+
+  In this case x = 42 because f(42) and y = false because g(false) meaning that they cannot be compared!
+*)
+
+let a5 = inferType (fromString "let f x = let g y = if true then y else x in g false end in f true end")
+// val it: string = "bool"
+
+// Exercise 6.5 (ii)
 // bool -> bool
 let i1 = inferType (fromString "let f x = x = false in f end");;
 // val i1: string = "(bool -> bool)"
