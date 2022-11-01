@@ -1,6 +1,6 @@
-// run (fromFile "MicroC/8.3/examples.c") [];;
-// compile "MicroC/8.3/examples";; 
-// java Machine 8.3/examples.out 11
+// run (fromFile "MicroC/8.3/PreIncDecTests.c") [1];;
+// compile "MicroC/8.3/PreIncDecTests";; 
+// java Machine 8.3/PreIncDecTests.out 1
 
 void main(int n) {
     inc(n);
