@@ -1,6 +1,6 @@
-// run (fromFile "MicroC/8.3/PreIncDecTests.c") [1];;
+// run (fromFile "MicroC/8.3/PreIncDecTests.c") [0];;
 // compile "MicroC/8.3/PreIncDecTests";; 
-// java Machine 8.3/PreIncDecTests.out 1
+// java Machine 8.3/PreIncDecTests.out 0
 
 void main(int n) {
     inc(n);
@@ -9,16 +9,19 @@ void main(int n) {
     doubleInc(n);
 }
 
+// Result with n = 0: 1
 void inc(int n) {
     print ++n;
     println;
 }
 
+// Result with n = 0: -1
 void dec(int n) {
     print --n;
     println;
 }
 
+// Result with n = 0: 1
 void incArray(int n) {
     int arr[1];
     arr[0] = n;
@@ -27,6 +30,7 @@ void incArray(int n) {
     println;
 }
 
+// Result with n = 0: 2
 void doubleInc(int n) {
     int arr[2];
     arr[0] = 0;
