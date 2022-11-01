@@ -144,6 +144,13 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
       [RET (snd varEnv - 1)]
     | Return (Some e) -> 
       cExpr e varEnv funEnv @ [RET (snd varEnv)]
+    // Exercise 8.6
+    | Switch(e, cases) -> 
+      let rec aux cases' varEnv =
+        match cases' with
+        | [] -> []
+        | Case(v, block) :: xs -> []
+      aux cases varEnv
 
 and cStmtOrDec stmtOrDec (varEnv : varEnv) (funEnv : funEnv) : varEnv * instr list = 
     match stmtOrDec with 
