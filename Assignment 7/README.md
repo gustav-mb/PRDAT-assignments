@@ -12,9 +12,7 @@ Download `microc.zip` from the book homepage, unpack it to a folder `MicroC`, an
 
 (i) As a warm-up, compile one of the micro-C examples provided, such as that in source file `ex11.c`, then run it using the abstract machine implemented in Java, as described also in step (B) of the README file. When run with command line argument 8, the program prints the 92 solutions to the eight queens problem: how to place eight queens on a chessboard so that none of them can attack any of the others.
 
-> Answer:
-
-Compilation of ex11.c:
+> **Answer:** Compilation of ex11.c can be seen below
 
 ```fsharp
 compileToFile (fromFile "MicroC/examples/ex11.c") "ex11.out";;
@@ -35,7 +33,7 @@ val it: Machine.instr list =
 Run via Machine.java:
 
 ```txt
-java Machine examples/ex11.out 8       
+java Machine ex11.out 8       
 1 5 8 6 3 7 2 4 
 1 6 8 3 7 4 2 5
 1 7 4 6 8 2 5 3
@@ -135,7 +133,7 @@ Ran 0.251 seconds
 (ii) Now compile the example micro-C programs `ex3.c` and `ex5.c` using functions `compileToFile` and `fromFile` from `ParseAndComp.fs` as above.
 Study the generated symbolic bytecode. Write up the bytecode in a more structured way with labels only at the beginning of the line (as in this chapter). Write the corresponding micro-C code to the right of the stack machine code. Note that `ex5.c` has a nested scope (a block ... inside a function body); how is that visible in the generated code?
 
-> Answer:
+> **Answer:** See below
 
 ```fsharp
 // ex3
@@ -274,7 +272,7 @@ L2:
 
 Execute the compiled programs using `java Machine ex3.out 10` and similar. Note that these micro-C programs require a command line argument (an integer) when they are executed.
 
-> Answer:
+> **Answer:** See output below
 
 ```txt
 java Machine examples/ex3.out 10
@@ -284,7 +282,7 @@ Ran 0.033 seconds
 
 Trace the execution using `java Machinetrace ex3.out 4`, and explain the stack contents and what goes on in each step of execution, and especially how the low-level bytecode instructions map to the higher-level features of MicroC. You can capture the standard output from a command prompt (in a file `ex3trace.txt`) using the Unix-style notation: `java Machinetrace ex3.out 4 > ex3trace.txt`
 
-> Answer:
+> **Answer:** See below
 
 ```txt
 java Machinetrace examples/ex3.out 4
@@ -450,18 +448,58 @@ It is tempting to expand `++e` to the assignment expression `e = e+1`, but that 
 
 Hence `e` should be computed only once. For instance, `++i` should compile to something like this: `<code to compute address of i>`, `DUP`, `LDI`, `CSTI 1`, `ADD`, `STI`, where the address of `i` is computed once and then duplicated.
 
-> Answer: See file **Comp.fs**
+> **Answer:** See file **Comp.fs** and (for PLC 7.4) **Absyn.fs**, **Interp.fs**, **CLex.fsl** and **CPar.fsy**
 
 Write a program to check that this works. If you are brave, try it on expressions of the form `++arr[++i]` and check that `i` and the elements of `arr` have the correct values afterwards.
 
-> Answer: See files in folder **8.3**
+> **Answer:** See files **8.3/PreIncDecTests.c** and **8.3/PreIncDecTests.out** plus below output
+
+Run **PreIncDecTests.c**:
+
+```fsharp
+// Run with n = 1
+open ParseAndRun;;
+run (fromFile "8.3/PreIncDecTests.c") [1];;
+
+2 // inc (n++)
+0 // dec (n--)
+2 // incArray (++arr[0]) 
+3 // doubleInc (++arr[++n])
+```
+
+Compile **PreIncDecTests.c**:
+
+```fsharp
+// Compile PreIncDecTests.c
+open ParseAndComp;;
+
+compile "8.3/PreIncDecTests";;
+val it: Machine.instr list =
+  [LDARGS; CALL (1, "L1"); STOP; Label "L1"; GETBP; CSTI 0; ADD; LDI;
+   CALL (1, "L2"); INCSP -1; GETBP; CSTI 0; ADD; LDI; CALL (1, "L3"); INCSP -1;
+   GETBP; CSTI 0; ADD; LDI; CALL (1, "L4"); INCSP -1; GETBP; CSTI 0; ADD; LDI;
+   CALL (1, "L5"); INCSP -1; INCSP 0; RET 0; Label "L2"; GETBP; CSTI 0; ADD;
+   DUP; LDI; CSTI 1; ADD; STI; PRINTI; INCSP -1; CSTI 10; PRINTC; INCSP -1;
+   INCSP 0; RET 0; Label "L3"; GETBP; CSTI 0; ADD; DUP; LDI; CSTI 1; SUB; STI;
+   PRINTI; INCSP -1; CSTI 10; PRINTC; INCSP -1; INCSP 0; RET 0; Label "L4";
+   INCSP 1; GETSP; CSTI 0; SUB; GETBP; CSTI 2; ADD; LDI; CSTI 0; ADD; GETBP;
+   CSTI 0; ADD; LDI; STI; INCSP -1; GETBP; CSTI 2; ADD; LDI; CSTI 0; ADD; DUP;
+   LDI; CSTI 1; ADD; STI; INCSP -1; GETBP; CSTI 2; ADD; LDI; CSTI 0; ADD; LDI;
+   PRINTI; INCSP -1; ...]
+```
+
+Run with Machine.java:
+
+**NB: The Machine gives wrong output for doubleInc (++arr[++n])!**
 
 ```txt
-java Machine 7.5/examples.out 0 
-1  (inc n)
--1 (dec n)
-1  (innArr n)
-2  (doubleInc n)
+java Machine 8.3/examples.out 1
+2 // inc (n++)
+0 // dec (n--)
+2 // incArray (++arr[0]) 
+7 // doubleInc (++arr[++n])
+
+Ran 0.004 seconds
 ```
 
 </br>
@@ -474,7 +512,7 @@ java Machine 7.5/examples.out 0
 
 Compile `ex8.c` and study the symbolic bytecode to see why it is so much slower than the handwritten 20 million iterations loop in `prog1`.
 
-> Answer:
+> **Answer:** See below
 
 ```c
 // micro-C example 8 -- loop 20 million times
@@ -559,7 +597,7 @@ It is slower because there are many redundant operations, such as:
 
 Compile `ex13.c` and study the symbolic bytecode to see how loops and conditionals interact; describe what you see.
 
-> Answer:
+> **Answer:** See below
 
 ```c
 // micro-C example 13 -- optimization of andalso and orelse
@@ -692,7 +730,7 @@ and the compiler to implement conditional expressions of the form `(e1 ? e2 : e3
 
 The compilation of `e1 ? e2 : e3` should produce code that evaluates `e2` only if `e1` is true and evaluates `e3` only if `e1` is false. The compilation scheme should be the same as for the conditional statement `if (e) stmt1 else stmt2`, but expression `e2` or expression `e3` must leave its value on the stack top if evaluated, so that the entire expression `e1 ? e2 : e3` leaves its value on the stack top.
 
-> Answer: See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **ternary.c** (for tests)
+> **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **ternary.c** (for tests)
 
 </br>
 
@@ -718,7 +756,7 @@ switch (month) {
 Unlike in C, there should be no fall-through from one `case` to the next: after the last statement of a `case`, the code should jump to the end of the `switch` statement. The parenthesis after `switch` must contain an expression.
 The value after a `case` must be an integer constant, and a case must be followed by a statement block. A `switch` with `n` cases can be compiled using `n` labels, the last of which is at the very end of the switch. For simplicity, do not implement the `break` statement or the `default` branch.
 
-> Answer: See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **switch.c** (for tests)
+> **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **switch.c** (for tests)
 
 </br>
 
