@@ -457,14 +457,15 @@ Write a program to check that this works. If you are brave, try it on expression
 Run **PreIncDecTests.c**:
 
 ```fsharp
-// Run with n = 1
+// Run with n = 0
 open ParseAndRun;;
-run (fromFile "8.3/PreIncDecTests.c") [1];;
+run (fromFile "8.3/PreIncDecTests.c") [0];;
 
-2 // inc (n++)
-0 // dec (n--)
-2 // incArray (++arr[0]) 
-3 // doubleInc (++arr[++n])
+1  // inc (n++)
+-1 // dec (n--)
+1  // incArray (++arr[0]) 
+2  // doubleInc (++arr[++n])
+val it: Interp.store = map [(0, 0); (1, 1); (2, 0); (3, 2); (4, 2)]
 ```
 
 Compile **PreIncDecTests.c**:
@@ -490,16 +491,14 @@ val it: Machine.instr list =
 
 Run with Machine.java:
 
-**NB: The Machine gives wrong output for doubleInc (++arr[++n])!**
-
 ```txt
 java Machine 8.3/examples.out 1
-2 // inc (n++)
-0 // dec (n--)
-2 // incArray (++arr[0]) 
-7 // doubleInc (++arr[++n])
+1 // inc (n++)
+-1 // dec (n--)
+1 // incArray (++arr[0]) 
+2 // doubleInc (++arr[++n])
 
-Ran 0.004 seconds
+Ran 0.003 seconds
 ```
 
 </br>
