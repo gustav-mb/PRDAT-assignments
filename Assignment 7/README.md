@@ -137,7 +137,7 @@ Study the generated symbolic bytecode. Write up the bytecode in a more structure
 
 > **Answer:** See files **ex3.out** and **ex5.out**
 >
-> The block is visible in the generated code for `ex5.c` in form of a new scope for the block variables (See bytecode instruction comments).
+> The block is visible in the generated code for `ex5.c` in form of a new scope for the block variables (See bytecode instruction comments) i.e., the local variable r in the block has offset 2 from the basepointer (treated as a third variable besides n and "global" r).
 
 Compile output:
 
@@ -167,50 +167,50 @@ Bytecode instructions written in a structured way:
 ```txt
 ex3
 
-LDARGS          // Load commandline args "n"
-CALL 1 "L1"     // Call main(n) with 1 argument "n"
-STOP            // End of main()
-L1:             // main(int n) function
-  INCSP 1       // Declare variable "i"
-  GETBP         // Get address of "i" at offset 1 
-  CSTI 1        
-  ADD
+LDARGS          // Load commandline args n
+CALL 1 "L1"     // Call main(n) with 1 argument (n)
+STOP            // End of main(); halt machine
+L1:             // main(int n)
+  INCSP 1       // Declare variable i
+  GETBP         // Compute address of i using the basepointer plus offset of 1, push to stack
+  CSTI 1        -
+  ADD           -
   CSTI 0        // Put 0 on the stack
-  STI           // Store 0 in the address of variable "i"
-  INCSP -1      // Remove result of assignment
-  GOTO "L3"     // Goto conditional statement i < n in while loop
+  STI           // Store 0 in the address of i, pop address, push value
+  INCSP -1      // Remove value of i from stack
+  GOTO "L3"     // Jumo to conditional statement i < n in while loop
 L2:             // While-loop body
-  GETBP         // Get address of variable "i" at offset 1
-  CSTI 1        
-  ADD           // Compute and put address of "i" on the stack
-  LDI           // Access variable on top of stack ("i")
-  PRINTI        // Print value of "i"
-  INCSP -1      // Shrink stack thus removing the value of "i" from the stack
-  GETBP         // Get address of variable "i" at offset 1.
-  CSTI 1        
-  ADD           // Compute and put address of "i" on the stack
-  GETBP         // Access variable "i" at offset 1.
-  CSTI 1        
-  ADD           // Compute and put address of "i" on the stack
-  LDI           // Load "i" fra stack
-  CSTI 1        
-  ADD           // Compute new value i + 1
-  STI           // Store the result of i + 1 in the address of variable "i"
-  INCSP -1      // Remove result from stack
+  GETBP         // Push address of i at offset 1 from basepointer
+  CSTI 1        -
+  ADD           -
+  LDI           // Load value of i at address, pop address, push value
+  PRINTI        // Print value of i
+  INCSP -1      // Shrink stack with 1 thus removing the value of i from the stack
+  GETBP         // Push address of variable i at offset 1 from basepointer.
+  CSTI 1        -
+  ADD           -
+  GETBP         // Push address of variable i at offset 1 from basepointer.
+  CSTI 1        -
+  ADD           -
+  LDI           // Load value of i at address, pop address, push value
+  CSTI 1        // Push 1 to stack
+  ADD           // Compute new value i + 1, pop value of i and 1, push result (i + 1)
+  STI           // Store the result of i + 1 in the address of variable i, pop address
+  INCSP -1      // Remove value of i from stack
   INCSP 0       // Dead code generated for block
 L3:             // While-loop
-  GETBP         // Get address of "i" at offset 1
-  CSTI 1
-  ADD
-  LDI           // Access "i", put value on stack
-  GETBP         // Get address of "n" at offset 0
-  CSTI 0
-  ADD
-  LDI           // Access "n", put value on stack
-  LT            // "i" < "n"
-  IFNZRO "L2"   // If result of "i" < "n" is non-zero goto while-loop body
-  INCSP -1      // Else remove result of previous operation from stack
-  RET 0         // Return value
+  GETBP         // Push address of i with offset 1 from basepointer
+  CSTI 1        -
+  ADD           -
+  LDI           // Load value of i from address, pop address, push value
+  GETBP         // Push address of n with offset 0 from basepointer
+  CSTI 0        -
+  ADD           -
+  LDI           // Load value of n from address, pop address, push value
+  LT            // i < n, pop value of i and n, push result
+  IFNZRO "L2"   // If (i < n) is non-zero jump to while-loop body
+  INCSP -1      // Else remove result of (i < n) from stack
+  RET 0         // Return from call to L1
    
 ```
 
@@ -218,62 +218,62 @@ L3:             // While-loop
 ex5
 
 LDARGS
-CALL 1 "L1"     // Call main(n) with 1 argument "n"
-STOP            // End of main()
-L1:             // main(int n) function
+CALL 1 "L1"     // Call main(n) with 1 argument n
+STOP            // End of main(), halt machine
+L1:             // main(int n)
   INCSP 1       // Declare variable r
-  GETBP         // Get address of "r" at offset 1
-  CSTI 1         
-  ADD 
-  GETBP         // Get address of "n" at offset 0
-  CSTI 0        
-  ADD            
-  LDI           // Access value of "n" via computed address
-  STI           // Store n in the address of variable "r". Assign r = n
-  INCSP -1      // Shrink stack thus removing the value of "n" from stack
-  INCSP 1       // Declare local variable "r" in block
-  GETBP         // Compute address of local variable "r" with offset 0 (in the new block), because it declared in a block.
-  CSTI 0
-  ADD           // Put the result on the stack
-  LDI           // Access value of local variable "r" and put on stack
-  GETBP         // Accessvalue of global variable "r"
-  CSTI 2
-  ADD           // Put the address of global variable "r" on stack
-  CALL 2 "L2"   // Call square() with two parameters
+  GETBP         // Compute address of r with offset 1 from basepointer
+  CSTI 1        -
+  ADD           -
+  GETBP         // Push address of n with offset 0 from basepointer
+  CSTI 0        -
+  ADD           -
+  LDI           // Load value of n from address, pop address, push value
+  STI           // (r = n) store n in the address of variable r, pop address 
+  INCSP -1      // Shrink stack thus removing the value of n from stack
+  INCSP 1       // Declare local variable r in block
+  GETBP         // Push address of n with offset 0 (in the new block) from basepointer
+  CSTI 0        -
+  ADD           -
+  LDI           // Load value of n, pop address, push value
+  GETBP         // Push address of local variable r with offset 2 from basepointer
+  CSTI 2        -
+  ADD           -
+  CALL 2 "L2"   // Call square(int i, int *rp) with two parameters n and &r
   INCSP -1      // Shrink stack thus removing the basepointer left after call
-  GETBP         // access value of L2 computation "r" at offset 2
-  CSTI 2        
-  ADD
-  LDI           // Access "r", put value on stack
-  PRINTI        // print "r"
-  INCSP -1      // Shrink stack thus removing the value of "r" from the stack for the print call
-  INCSP -1      // Shrink stack thus removing the value of "r" which is the local variable "r", before ending the block (local scope)
-  GETBP
-  CSTI 1
-  ADD
-  LDI           // Access "r", put value on stack
-  PRINTI        // print "r"
-  INCSP -1      // Shrink stack thus removing the value of "r" from the stack
-  INCSP -1      // Shrink stack thus removing the value of "r" which is the local variable "r", before ending the block (local scope)
-  RET 0         // Return value
+  GETBP         // Push address local (block) variable r, with offset 2 from basepointer
+  CSTI 2        -
+  ADD           -
+  LDI           // Load value of local variable r, pop address, push value
+  PRINTI        // print local variable r
+  INCSP -1      // Shrink stack thus removing the value of r from the stack
+  INCSP -1      // Shrink stack thus removing the program counter from call to square (out of scope block)
+  GETBP         // Push address of r with offset 1 from basepointer
+  CSTI 1        -
+  ADD           -
+  LDI           // Load value of r, pop address, push value
+  PRINTI        // Print value of r
+  INCSP -1      // Shrink stack thus removing the value of r from the stack
+  INCSP 0       // Dead code, end of block
+  RET 0         // Return from call to main
 L2:             // square(int i, int *rp)
-  GETBP         // Get address of "rp" at offset 1
-  CSTI 1
-  ADD
-  LDI           // Access "rp", put value on stack
-  GETBP         // Get address of "i" at offset 0
-  CSTI 0
-  ADD
-  LDI           // Access "i", put value on stack
-  GETBP         // Get address of "i" at offset 0
-  CSTI 0
-  ADD
-  LDI           // Access "i", put value on stack
-  MUL           // i * i 
-  STI           // Store "i * i" at address of "rp"
-  INCSP -1      // Remove result of assignment
-  INCSP 0       // Dead code (generated for block)
-  RET 1         // Return to main()
+  GETBP         // Push address of rp with offset 1 from basepointer
+  CSTI 1        -
+  ADD           -
+  LDI           // Load value of *rp, pop address, push value
+  GETBP         // Push address of i with offset 0 from basepointer
+  CSTI 0        -
+  ADD           -
+  LDI           // Load value of variable i, pop address, push value
+  GETBP         // Push address of i with offset 0 from basepointer
+  CSTI 0        -
+  ADD           -
+  LDI           // Load value of i, pop address, push value
+  MUL           // i * i, pop both values of i, push result
+  STI           // Store (i * i) at *rp, pop address
+  INCSP -1      // Remove result of (i * i) from stack
+  INCSP 0       // Dead code, end of block
+  RET 1         // Return to call to square(n, &r) in block
 ```
 
 Execute the compiled programs using `java Machine ex3.out 10` and similar. Note that these micro-C programs require a command line argument (an integer) when they are executed.
