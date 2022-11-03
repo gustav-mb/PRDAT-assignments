@@ -1,5 +1,7 @@
 // Exercise 8.6
-// run (fromFile "MicroC/8.5/switch.c") [];;
+// run (fromFile "MicroC/8.6/switch.c") [];;
+// compile "MicroC/8.6/switch"
+// java .\MicroC\Machine.java .\MicroC\8.6\switch.out 2
 
 void main(int month) {
     int days;

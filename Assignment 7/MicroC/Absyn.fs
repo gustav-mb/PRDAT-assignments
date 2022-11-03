@@ -26,7 +26,7 @@ and expr =
   | PreInc of access                 (* C/C++/Java/C# ++i or ++a[e] a[e] +1 *) // Exercise 7.4
   | PreDec of access                 (* C/C++/Java/C# --i or --a[e] *)         // Exercise 7.4
   | Ternary of expr * expr * expr    (* Ternary operator 1 ? 5 : 3 *)          // Exercise 8.5
-                                                                   
+
 and access =                                                       
   | AccVar of string                 (* Variable access        x    *) 
   | AccDeref of expr                 (* Pointer dereferencing  *p   *)
@@ -38,7 +38,7 @@ and stmt =
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
-  | Switch of expr * case list       (* Switch statement            *)      // Exercise 8.6      
+  | Switch of expr * case list       (* Switch(e) statement            *)      // Exercise 8.6      
 
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)

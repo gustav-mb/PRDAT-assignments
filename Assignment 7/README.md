@@ -12,7 +12,7 @@ Download `microc.zip` from the book homepage, unpack it to a folder `MicroC`, an
 
 (i) As a warm-up, compile one of the micro-C examples provided, such as that in source file `ex11.c`, then run it using the abstract machine implemented in Java, as described also in step (B) of the README file. When run with command line argument 8, the program prints the 92 solutions to the eight queens problem: how to place eight queens on a chessboard so that none of them can attack any of the others.
 
-> **Answer:** Compilation of ex11.c can be seen below
+> **Answer:** Compilation of ex11.c and output from run via Machine.java can be seen below
 
 ```fsharp
 compileToFile (fromFile "MicroC/examples/ex11.c") "ex11.out";;
@@ -134,6 +134,10 @@ Ran 0.251 seconds
 Study the generated symbolic bytecode. Write up the bytecode in a more structured way with labels only at the beginning of the line (as in this chapter). Write the corresponding micro-C code to the right of the stack machine code. Note that `ex5.c` has a nested scope (a block ... inside a function body); how is that visible in the generated code?
 
 > **Answer:** See below
+>
+> The block is visible in the generated code for `ex5.c` in form of a new scope for the block. See code comments.
+
+Compile output:
 
 ```fsharp
 // ex3
@@ -156,55 +160,55 @@ val it: Machine.instr list =
    LDI; GETBP; CSTI 0; ADD; LDI; MUL; STI; INCSP -1; INCSP 0; RET 1]
 ```
 
-Structured:
+Bytecode instructions written in a structured way:
 
 ```txt
 ex3
 
-LDARGS
-CALL 1 "L1" //main()
-STOP
-L1:         
-  INCSP 1 //i
-  GETBP 
+LDARGS          // Load commandline args "n"
+CALL 1 "L1"     // Call main(n) with 1 argument "n"
+STOP            // End of main()
+L1:             // main(int n) function
+  INCSP 1       // Declare variable "i"
+  GETBP         // Get address of "i" at offset 1 
+  CSTI 1        
+  ADD
+  CSTI 0        // Put 0 on the stack
+  STI           // Store 0 in the address of variable "i"
+  INCSP -1      // Remove result of assignment
+  GOTO "L3"     // Goto conditional statement i < n in while loop
+L2:             // While-loop body
+  GETBP         // Get address of variable "i" at offset 1
+  CSTI 1        
+  ADD           // Compute and put address of "i" on the stack
+  LDI           // Access variable on top of stack ("i")
+  PRINTI        // Print value of "i"
+  INCSP -1      // Shrink stack thus removing the value of "i" from the stack
+  GETBP         // Get address of variable "i" at offset 1.
+  CSTI 1        
+  ADD           // Compute and put address of "i" on the stack
+  GETBP         // Access variable "i" at offset 1.
+  CSTI 1        
+  ADD           // Compute and put address of "i" on the stack
+  LDI           // Load "i" fra stack
+  CSTI 1        
+  ADD           // Compute new value i + 1
+  STI           // Store the result of i + 1 in the address of variable "i"
+  INCSP -1      // Remove result from stack
+  INCSP 0       // Dead code generated for block
+L3:             // While-loop
+  GETBP         // Get address of "i" at offset 1
   CSTI 1
   ADD
-  CSTI 0 //i=0
-  STI
-  INCSP -1
-  GOTO "L3" //while
-L2:
-  GETBP
-  CSTI 1
-  ADD
-  LDI
-  PRINTI   //print
-  INCSP -1   
-  GETBP    //get
-  CSTI 1     //i
-  ADD
-  GETBP    //get
-  CSTI 1     //i
-  ADD      
-  LDI      //load
-  CSTI 1     //1
-  ADD      
-  STI      //i=i+1
-  INCSP -1
-  INCSP 0
-L3:
-  GETBP
-  CSTI 1
-  ADD
-  LDI
-  GETBP
+  LDI           // Access "i", put value on stack
+  GETBP         // Get address of "n" at offset 0
   CSTI 0
   ADD
-  LDI
-  LT
-  IFNZRO "L2"
-  INCSP -1
-  RET 0
+  LDI           // Access "n", put value on stack
+  LT            // "i" < "n"
+  IFNZRO "L2"   // If result of "i" < "n" is non-zero goto while-loop body
+  INCSP -1      // Else remove result of previous operation from stack
+  RET 0         // Return value
    
 ```
 
@@ -212,62 +216,62 @@ L3:
 ex5
 
 LDARGS
-CALL 1 "L1"
-STOP
-L1:
-  INCSP 1
-  GETBP
-  CSTI 1
+CALL 1 "L1"     // Call main(n) with 1 argument "n"
+STOP            // End of main()
+L1:             // main(int n) function
+  INCSP 1       // Declare variable r
+  GETBP         // Get address of "r" at offset 1
+  CSTI 1         
   ADD 
-  GETBP
+  GETBP         // Get address of "n" at offset 0
+  CSTI 0        
+  ADD            
+  LDI           // Access value of "n" via computed address
+  STI           // Store n in the address of variable "r". Assign r = n
+  INCSP -1      // Shrink stack thus removing the value of "n" from stack
+  INCSP 1       // Declare local variable "r" in block
+  GETBP         // Compute address of local variable "r" with offset 0 (in the new block), because it declared in a block.
   CSTI 0
-  ADD
-  LDI
-  STI
-  INCSP -1
-  INCSP 1
-  GETBP
-  CSTI 0
-  ADD
-  LDI
-  GETBP
+  ADD           // Put the result on the stack
+  LDI           // Access value of local variable "r" and put on stack
+  GETBP         // Accessvalue of global variable "r"
   CSTI 2
+  ADD           // Put the address of global variable "r" on stack
+  CALL 2 "L2"   // Call square() with two parameters
+  INCSP -1      // Shrink stack thus removing the basepointer left after call
+  GETBP         // access value of L2 computation "r" at offset 2
+  CSTI 2        
   ADD
-  CALL 2 "L2"
-  INCSP -1
-  GETBP
-  CSTI 2
-  ADD
-  LDI
-  PRINTI
-  INCSP -1
-  INCSP -1
+  LDI           // Access "r", put value on stack
+  PRINTI        // print "r"
+  INCSP -1      // Shrink stack thus removing the value of "r" from the stack for the print call
+  INCSP -1      // Shrink stack thus removing the value of "r" which is the local variable "r", before ending the block (local scope)
   GETBP
   CSTI 1
   ADD
-  LDI
-  PRINTI
-  INCSP -1
-  INCSP -1
-  RET 0
-L2:
-  GETBP
+  LDI           // Access "r", put value on stack
+  PRINTI        // print "r"
+  INCSP -1      // Shrink stack thus removing the value of "r" from the stack
+  INCSP -1      // Shrink stack thus removing the value of "r" which is the local variable "r", before ending the block (local scope)
+  RET 0         // Return value
+L2:             // square(int i, int *rp)
+  GETBP         // Get address of "rp" at offset 1
   CSTI 1
   ADD
-  LDI
-  GETBP
+  LDI           // Access "rp", put value on stack
+  GETBP         // Get address of "i" at offset 0
   CSTI 0
   ADD
-  LDI
-  GETBP
+  LDI           // Access "i", put value on stack
+  GETBP         // Get address of "i" at offset 0
   CSTI 0
   ADD
-  LDI
-  MUL
-  STI
-  INCSP -1
-  INCSP 0
-  RET 1
+  LDI           // Access "i", put value on stack
+  MUL           // i * i 
+  STI           // Store "i * i" at address of "rp"
+  INCSP -1      // Remove result of assignment
+  INCSP 0       // Dead code (generated for block)
+  RET 1         // Return to main()
 ```
 
 Execute the compiled programs using `java Machine ex3.out 10` and similar. Note that these micro-C programs require a command line argument (an integer) when they are executed.
@@ -286,141 +290,141 @@ Trace the execution using `java Machinetrace ex3.out 4`, and explain the stack c
 
 ```txt
 java Machinetrace examples/ex3.out 4
-[ ]{0: LDARGS} //calls the method with the argument "4" in this case
-[ 4 ]{1: CALL 1 5} //
-[ 4 -999 4 ]{5: INCSP 1}
-[ 4 -999 4 0 ]{7: GETBP}
-[ 4 -999 4 0 2 ]{8: CSTI 1}
-[ 4 -999 4 0 2 1 ]{10: ADD}
-[ 4 -999 4 0 3 ]{11: CSTI 0}
-[ 4 -999 4 0 3 0 ]{13: STI}
-[ 4 -999 4 0 0 ]{14: INCSP -1}
-[ 4 -999 4 0 ]{16: GOTO 43}
-[ 4 -999 4 0 ]{43: GETBP}
-[ 4 -999 4 0 2 ]{44: CSTI 1}
-[ 4 -999 4 0 2 1 ]{46: ADD}
-[ 4 -999 4 0 3 ]{47: LDI}
-[ 4 -999 4 0 0 ]{48: GETBP}
-[ 4 -999 4 0 0 2 ]{49: CSTI 0}
-[ 4 -999 4 0 0 2 0 ]{51: ADD}
-[ 4 -999 4 0 0 2 ]{52: LDI}
-[ 4 -999 4 0 0 4 ]{53: LT}
-[ 4 -999 4 0 1 ]{54: IFNZRO 18}
-[ 4 -999 4 0 ]{18: GETBP}
-[ 4 -999 4 0 2 ]{19: CSTI 1}
-[ 4 -999 4 0 2 1 ]{21: ADD}
-[ 4 -999 4 0 3 ]{22: LDI}
-[ 4 -999 4 0 0 ]{23: PRINTI}
-0 [ 4 -999 4 0 0 ]{24: INCSP -1}
-[ 4 -999 4 0 ]{26: GETBP}
-[ 4 -999 4 0 2 ]{27: CSTI 1}
-[ 4 -999 4 0 2 1 ]{29: ADD}
-[ 4 -999 4 0 3 ]{30: GETBP}
-[ 4 -999 4 0 3 2 ]{31: CSTI 1}
-[ 4 -999 4 0 3 2 1 ]{33: ADD}
-[ 4 -999 4 0 3 3 ]{34: LDI}
-[ 4 -999 4 0 3 0 ]{35: CSTI 1}
-[ 4 -999 4 0 3 0 1 ]{37: ADD}
-[ 4 -999 4 0 3 1 ]{38: STI}
-[ 4 -999 4 1 1 ]{39: INCSP -1}
-[ 4 -999 4 1 ]{41: INCSP 0}
-[ 4 -999 4 1 ]{43: GETBP}
-[ 4 -999 4 1 2 ]{44: CSTI 1}
-[ 4 -999 4 1 2 1 ]{46: ADD}
-[ 4 -999 4 1 3 ]{47: LDI}
-[ 4 -999 4 1 1 ]{48: GETBP}
-[ 4 -999 4 1 1 2 ]{49: CSTI 0}
-[ 4 -999 4 1 1 2 0 ]{51: ADD}
-[ 4 -999 4 1 1 2 ]{52: LDI}
-[ 4 -999 4 1 1 4 ]{53: LT}
-[ 4 -999 4 1 1 ]{54: IFNZRO 18}
-[ 4 -999 4 1 ]{18: GETBP}
-[ 4 -999 4 1 2 ]{19: CSTI 1}
-[ 4 -999 4 1 2 1 ]{21: ADD}
-[ 4 -999 4 1 3 ]{22: LDI}
-[ 4 -999 4 1 1 ]{23: PRINTI}
-1 [ 4 -999 4 1 1 ]{24: INCSP -1}
-[ 4 -999 4 1 ]{26: GETBP}
-[ 4 -999 4 1 2 ]{27: CSTI 1}
-[ 4 -999 4 1 2 1 ]{29: ADD}
-[ 4 -999 4 1 3 ]{30: GETBP}
-[ 4 -999 4 1 3 2 ]{31: CSTI 1}
-[ 4 -999 4 1 3 2 1 ]{33: ADD}
-[ 4 -999 4 1 3 3 ]{34: LDI}
-[ 4 -999 4 1 3 1 ]{35: CSTI 1}
-[ 4 -999 4 1 3 1 1 ]{37: ADD}
-[ 4 -999 4 1 3 2 ]{38: STI}
-[ 4 -999 4 2 2 ]{39: INCSP -1}
-[ 4 -999 4 2 ]{41: INCSP 0}
-[ 4 -999 4 2 ]{43: GETBP}
-[ 4 -999 4 2 2 ]{44: CSTI 1}
-[ 4 -999 4 2 2 1 ]{46: ADD}
-[ 4 -999 4 2 3 ]{47: LDI}
-[ 4 -999 4 2 2 ]{48: GETBP}
-[ 4 -999 4 2 2 2 ]{49: CSTI 0}
-[ 4 -999 4 2 2 2 0 ]{51: ADD}
-[ 4 -999 4 2 2 2 ]{52: LDI}
-[ 4 -999 4 2 2 4 ]{53: LT}
-[ 4 -999 4 2 1 ]{54: IFNZRO 18}
-[ 4 -999 4 2 ]{18: GETBP}
-[ 4 -999 4 2 2 ]{19: CSTI 1}
-[ 4 -999 4 2 2 1 ]{21: ADD}
-[ 4 -999 4 2 3 ]{22: LDI}
-[ 4 -999 4 2 2 ]{23: PRINTI}
-2 [ 4 -999 4 2 2 ]{24: INCSP -1}
-[ 4 -999 4 2 ]{26: GETBP}
-[ 4 -999 4 2 2 ]{27: CSTI 1}
-[ 4 -999 4 2 2 1 ]{29: ADD}
-[ 4 -999 4 2 3 ]{30: GETBP}
-[ 4 -999 4 2 3 2 ]{31: CSTI 1}
-[ 4 -999 4 2 3 2 1 ]{33: ADD}
-[ 4 -999 4 2 3 3 ]{34: LDI}
-[ 4 -999 4 2 3 2 ]{35: CSTI 1}
-[ 4 -999 4 2 3 2 1 ]{37: ADD}
-[ 4 -999 4 2 3 3 ]{38: STI}
-[ 4 -999 4 3 3 ]{39: INCSP -1}
-[ 4 -999 4 3 ]{41: INCSP 0}
-[ 4 -999 4 3 ]{43: GETBP}
-[ 4 -999 4 3 2 ]{44: CSTI 1}
-[ 4 -999 4 3 2 1 ]{46: ADD}
-[ 4 -999 4 3 3 ]{47: LDI}
-[ 4 -999 4 3 3 ]{48: GETBP}
-[ 4 -999 4 3 3 2 ]{49: CSTI 0}
-[ 4 -999 4 3 3 2 0 ]{51: ADD}
-[ 4 -999 4 3 3 2 ]{52: LDI}
-[ 4 -999 4 3 3 4 ]{53: LT}
-[ 4 -999 4 3 1 ]{54: IFNZRO 18}
-[ 4 -999 4 3 ]{18: GETBP}
-[ 4 -999 4 3 2 ]{19: CSTI 1}
-[ 4 -999 4 3 2 1 ]{21: ADD}
-[ 4 -999 4 3 3 ]{22: LDI}
-[ 4 -999 4 3 3 ]{23: PRINTI}
-3 [ 4 -999 4 3 3 ]{24: INCSP -1}
-[ 4 -999 4 3 ]{26: GETBP}
-[ 4 -999 4 3 2 ]{27: CSTI 1}
-[ 4 -999 4 3 2 1 ]{29: ADD}
-[ 4 -999 4 3 3 ]{30: GETBP}
-[ 4 -999 4 3 3 2 ]{31: CSTI 1}
-[ 4 -999 4 3 3 2 1 ]{33: ADD}
-[ 4 -999 4 3 3 3 ]{34: LDI}
-[ 4 -999 4 3 3 3 ]{35: CSTI 1}
-[ 4 -999 4 3 3 3 1 ]{37: ADD}
-[ 4 -999 4 3 3 4 ]{38: STI}
-[ 4 -999 4 4 4 ]{39: INCSP -1}
-[ 4 -999 4 4 ]{41: INCSP 0}
-[ 4 -999 4 4 ]{43: GETBP}
-[ 4 -999 4 4 2 ]{44: CSTI 1}
-[ 4 -999 4 4 2 1 ]{46: ADD}
-[ 4 -999 4 4 3 ]{47: LDI}
-[ 4 -999 4 4 4 ]{48: GETBP}
-[ 4 -999 4 4 4 2 ]{49: CSTI 0}
-[ 4 -999 4 4 4 2 0 ]{51: ADD}
-[ 4 -999 4 4 4 2 ]{52: LDI}
-[ 4 -999 4 4 4 4 ]{53: LT}
-[ 4 -999 4 4 0 ]{54: IFNZRO 18}
-[ 4 -999 4 4 ]{56: INCSP -1}
-[ 4 -999 4 ]{58: RET 0}
-[ 4 ]{4: STOP}
+[ ]{0: LDARGS}                    // Load commandline args, push 4 to stack
+[ 4 ]{1: CALL 1 5}                // Call method main (5) with 1 argument, push return address (-999) and basepointer (4)
+[ 4 -999 4 ]{5: INCSP 1}          // Declare i, grow stack by 1
+[ 4 -999 4 0 ]{7: GETBP}          // Compute address of i; Push basepointer (2)
+[ 4 -999 4 0 2 ]{8: CSTI 1}       // Push 1 to stack
+[ 4 -999 4 0 2 1 ]{10: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 0 3 ]{11: CSTI 0}      // Push 0 to stack
+[ 4 -999 4 0 3 0 ]{13: STI}       // Store 0 in address of i, pop address of i
+[ 4 -999 4 0 0 ]{14: INCSP -1}    // Shrink stack by 1 thus removing the value of i from the stack
+[ 4 -999 4 0 ]{16: GOTO 43}       // Go top step 43 (?)  
+[ 4 -999 4 0 ]{43: GETBP}         // Get address of i; Push basepointer (2)
+[ 4 -999 4 0 2 ]{44: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 0 2 1 ]{46: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 0 3 ]{47: LDI}         // Load value of i (0), pop address of i, push value to stack
+[ 4 -999 4 0 0 ]{48: GETBP}       // Get the address of n; Push basepointer (2)
+[ 4 -999 4 0 0 2 ]{49: CSTI 0}    // Push 0 to stack
+[ 4 -999 4 0 0 2 0 ]{51: ADD}     // Add bp with 0, pop both values, push result (2 + 0 = 2)
+[ 4 -999 4 0 0 2 ]{52: LDI}       // Acess the value of n (4), pop address of n, push value to stack
+[ 4 -999 4 0 0 4 ]{53: LT}        // i < n (0 < 4), pop 0 and 4, push result to stack (1)
+[ 4 -999 4 0 1 ]{54: IFNZRO 18}   // i < n == true goto 18, else continue
+[ 4 -999 4 0 ]{18: GETBP}         // Get address of i; Push basepointer to stack
+[ 4 -999 4 0 2 ]{19: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 0 2 1 ]{21: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 0 3 ]{22: LDI}         // Access value of i, pop address of i
+[ 4 -999 4 0 0 ]{23: PRINTI}      // Print value of i (0)
+[ 4 -999 4 0 0 ]{24: INCSP -1}    // Remove value of i from stack
+[ 4 -999 4 0 ]{26: GETBP}         // Get the address of i; Push basepointer
+[ 4 -999 4 0 2 ]{27: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 0 2 1 ]{29: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 0 3 ]{30: GETBP}       // Get the address of i; Push basepointer
+[ 4 -999 4 0 3 2 ]{31: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 0 3 2 1 ]{33: ADD}     // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 0 3 3 ]{34: LDI}       // Load the value of i, pop address of i, push value of i
+[ 4 -999 4 0 3 0 ]{35: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 0 3 0 1 ]{37: ADD}     // Add value of i with 1, pop both values, push result (0 + 1 = 1)
+[ 4 -999 4 0 3 1 ]{38: STI}       // Store 1 at address of i, pop address of i
+[ 4 -999 4 1 1 ]{39: INCSP -1}    // Shrink stack by 1 thus removing the value of i
+[ 4 -999 4 1 ]{41: INCSP 0}       // Dead code; end of code block
+[ 4 -999 4 1 ]{43: GETBP}         // Get address of i; Push basepointer
+[ 4 -999 4 1 2 ]{44: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 1 2 1 ]{46: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 1 3 ]{47: LDI}         // Load value of i, pop address of i, push value of i (1)
+[ 4 -999 4 1 1 ]{48: GETBP}       // Access address of n; Push basepointer
+[ 4 -999 4 1 1 2 ]{49: CSTI 0}    // Push 0 to stack
+[ 4 -999 4 1 1 2 0 ]{51: ADD}     // Add bp with 0, pop both values, push result (2 + 0 = 2)
+[ 4 -999 4 1 1 2 ]{52: LDI}       // Load value of n, pop address of n, push value of n (4)
+[ 4 -999 4 1 1 4 ]{53: LT}        // i < n (1 < 4), push result (1)
+[ 4 -999 4 1 1 ]{54: IFNZRO 18}   // Check if not zero, goto 18
+[ 4 -999 4 1 ]{18: GETBP}         // Access the address of i; Push basepointer (2)
+[ 4 -999 4 1 2 ]{19: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 1 2 1 ]{21: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 1 3 ]{22: LDI}         // Load value of i, pop address, push value
+[ 4 -999 4 1 1 ]{23: PRINTI}      // Print i
+[ 4 -999 4 1 1 ]{24: INCSP -1}    // Shrink stack by 1, thus removing the value of i
+[ 4 -999 4 1 ]{26: GETBP}         // Get address of i; Push basepointer (2)
+[ 4 -999 4 1 2 ]{27: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 1 2 1 ]{29: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 1 3 ]{30: GETBP}       // Access address of i; Push basepointer
+[ 4 -999 4 1 3 2 ]{31: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 1 3 2 1 ]{33: ADD}     // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 1 3 3 ]{34: LDI}       // Load value of i, pop address, push value
+[ 4 -999 4 1 3 1 ]{35: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 1 3 1 1 ]{37: ADD}     // Increment i by 1, pop both values, push result (2)
+[ 4 -999 4 1 3 2 ]{38: STI}       // Store new i by consuming, pop address
+[ 4 -999 4 2 2 ]{39: INCSP -1}    // Shrink stack by 1, thus removing the value of i
+[ 4 -999 4 2]{41: INCSP 0}        // Dead code, end of block
+[ 4 -999 4 2 ]{43: GETBP}         // Accesss address of n; Push basepointer (2)
+[ 4 -999 4 2 2 ]{44: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 2 2 1 ]{46: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 2 3 ]{47: LDI}         // Load value of i, pop address, push value
+[ 4 -999 4 2 2 ]{48: GETBP}       // Access address of n; Push basepointer (2)
+[ 4 -999 4 2 2 2 ]{49: CSTI 0}    // Push 0 to stack
+[ 4 -999 4 2 2 2 0 ]{51: ADD}     // Add bp with 0, pop both values, push result (2 + 0 = 2)
+[ 4 -999 4 2 2 2 ]{52: LDI}       // Load value of n, pop address, push value
+[ 4 -999 4 2 2 4 ]{53: LT}        // i < n (2 < 4), pop both values, push result (1)
+[ 4 -999 4 2 1 ]{54: IFNZRO 18}   // If not zero go to step 18, pop value
+[ 4 -999 4 2 ]{18: GETBP}         // Get address of i; Push basepointer (2)
+[ 4 -999 4 2 2 ]{19: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 2 2 1 ]{21: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 2 3 ]{22: LDI}         // Load value of i, pop address, push value (2)
+[ 4 -999 4 2 2 ]{23: PRINTI}      // Print value of i (2)
+2 [ 4 -999 4 2 2 ]{24: INCSP -1}  // Shrink stack by 1 thus removing the value of i
+[ 4 -999 4 2 ]{26: GETBP}         // Get address of i; Push basepointer
+[ 4 -999 4 2 2 ]{27: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 2 2 1 ]{29: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 2 3 ]{30: GETBP}       // Get address of i; Push basepointer
+[ 4 -999 4 2 3 2 ]{31: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 2 3 2 1 ]{33: ADD}     // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 2 3 3 ]{34: LDI}       // Load value of i, pop address, push value (2)
+[ 4 -999 4 2 3 2 ]{35: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 2 3 2 1 ]{37: ADD}     // Increment value of i by 1 (3)
+[ 4 -999 4 2 3 3 ]{38: STI}       // Store new value of i, pop address
+[ 4 -999 4 3 3 ]{39: INCSP -1}    // Shrink stack by, thus removing value of i
+[ 4 -999 4 3 ]{41: INCSP 0}       // Dead code, end of block
+[ 4 -999 4 3 ]{43: GETBP}         // Get address of i; Push basepointer (2)
+[ 4 -999 4 3 2 ]{44: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 3 2 1 ]{46: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 3 3 ]{47: LDI}         // Load value of i, pop address, push value
+[ 4 -999 4 3 3 ]{48: GETBP}       // Get address of n; Push basepointer
+[ 4 -999 4 3 3 2 ]{49: CSTI 0}    // Push 0 to stack
+[ 4 -999 4 3 3 2 0 ]{51: ADD}     // Add bp with 0, pop both values, push result (2 + 0 = 2)
+[ 4 -999 4 3 3 2 ]{52: LDI}       // Load value of n, pop address, push value
+[ 4 -999 4 3 3 4 ]{53: LT}        // i < n (3 < 4), pop both values, push result (1)
+[ 4 -999 4 3 1 ]{54: IFNZRO 18}   // I not zero go to step 18, pop value
+[ 4 -999 4 3 ]{18: GETBP}         // Get address of i; Push basepointer
+[ 4 -999 4 3 2 ]{19: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 3 2 1 ]{21: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 3 3 ]{22: LDI}         // Load value of i, pop address, push value (3)
+[ 4 -999 4 3 3 ]{23: PRINTI}      // Print value of i (3)
+[ 4 -999 4 3 3 ]{24: INCSP -1}    // Shrink stack by 1, thus removing the value of i
+[ 4 -999 4 3 ]{26: GETBP}         // Get the address of i; Push basepointer
+[ 4 -999 4 3 2 ]{27: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 3 2 1 ]{29: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 3 3 ]{30: GETBP}       // Get the address of i; Push basepointer
+[ 4 -999 4 3 3 2 ]{31: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 3 3 2 1 ]{33: ADD}     // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 3 3 3 ]{34: LDI}       // Load value of i, pop address, push value (3)
+[ 4 -999 4 3 3 3 ]{35: CSTI 1}    // Push 1 to stack
+[ 4 -999 4 3 3 3 1 ]{37: ADD}     // Increment value of i by 1, pop both values, push result (3 + 1 = 4)
+[ 4 -999 4 3 3 4 ]{38: STI}       // Store new value of i, pop address
+[ 4 -999 4 4 4 ]{39: INCSP -1}    // Shrink stack by 1 thus removing the value of i
+[ 4 -999 4 4 ]{41: INCSP 0}       // Dead code, end of block
+[ 4 -999 4 4 ]{43: GETBP}         // Get address of i; Push basepointer
+[ 4 -999 4 4 2 ]{44: CSTI 1}      // Push 1 to stack
+[ 4 -999 4 4 2 1 ]{46: ADD}       // Add bp with 1, pop both values, push result (2 + 1 = 3)
+[ 4 -999 4 4 3 ]{47: LDI}         // Load value of i, pop address, push value
+[ 4 -999 4 4 4 ]{48: GETBP}       // Get address of n; Push basepointer
+[ 4 -999 4 4 4 2 ]{49: CSTI 0}    // Push 0 to stack
+[ 4 -999 4 4 4 2 0 ]{51: ADD}     // Add bp with 0, pop both values, push result (2 + 0 = 2)
+[ 4 -999 4 4 4 2 ]{52: LDI}       // Load value of n, pop address, push value
+[ 4 -999 4 4 4 4 ]{53: LT}        // i < n (4 < 4), pop both values, push result (0)
+[ 4 -999 4 4 0 ]{54: IFNZRO 18}   // If not zero, continue since value is 0, pop value
+[ 4 -999 4 4 ]{56: INCSP -1}      // Shrink stack by 1
+[ 4 -999 4 ]{58: RET 0}           // Remove program counter and base pointer
+[ 4 ]{4: STOP}                    // Stop the machine
 
 Ran 0.419 seconds
 ```
@@ -493,10 +497,10 @@ Run with Machine.java:
 
 ```txt
 java Machine 8.3/examples.out 1
-1 // inc (n++)
--1 // dec (n--)
-1 // incArray (++arr[0]) 
-2 // doubleInc (++arr[++n])
+1   // inc (n++)
+-1  // dec (n--)
+1   // incArray (++arr[0]) 
+2   // doubleInc (++arr[++n])
 
 Ran 0.003 seconds
 ```
@@ -511,7 +515,9 @@ Ran 0.003 seconds
 
 Compile `ex8.c` and study the symbolic bytecode to see why it is so much slower than the handwritten 20 million iterations loop in `prog1`.
 
-> **Answer:** See below
+> **Answer:** The slow version has a lot of redundant operations which are not required to compute the actual result of the while-loop.
+>
+> This could for instance be the different labels, computing addresses for the same variables.
 
 ```c
 // micro-C example 8 -- loop 20 million times
@@ -596,7 +602,25 @@ It is slower because there are many redundant operations, such as:
 
 Compile `ex13.c` and study the symbolic bytecode to see how loops and conditionals interact; describe what you see.
 
-> **Answer:** See below
+> **Answer:**
+>
+> **Loops**
+>
+> The conditional is encoded as two labels; the body and the conditional expression (in that order).
+> If the conditional is evaluated to true, it jumps to the body label, else the loop has finished.
+> Once the body label has been evaluated, we reach the conditional label again.
+>
+> **|| (or)**
+>
+> e1 || e2 evaluates the first expression (e1), if it is true it goes to the succesive byte code instruction by jumping (thereby skipping the second expression (e2)).
+>
+> **&& (and)**
+>
+> e1 && e2 evaluates the first expression (e1), if it is false, it jumps to a label skipping the second expresion (e2). e2 is then never evaluated.
+
+```txt
+24 19 1 5 25 15 1 13 0 1 1 0 1889 12 15 -1 16 95 13 0 1 1 13 0 1 1 11 0 1 1 12 15 -1 13 0 1 1 11 0 4 5 0 0 6 17 77 13 0 1 1 11 0 100 5 0 0 6 8 18 73 13 0 1 1 11 0 400 5 0 0 6 16 75 0 1 16 79 0 0 17 91 13 0 1 1 11 22 15 -1 16 93 15 0 15 0 13 0 1 1 11 13 0 0 1 11 7 18 18 15 -1 21 0
+```
 
 ```c
 // micro-C example 13 -- optimization of andalso and orelse
@@ -729,7 +753,28 @@ and the compiler to implement conditional expressions of the form `(e1 ? e2 : e3
 
 The compilation of `e1 ? e2 : e3` should produce code that evaluates `e2` only if `e1` is true and evaluates `e3` only if `e1` is false. The compilation scheme should be the same as for the conditional statement `if (e) stmt1 else stmt2`, but expression `e2` or expression `e3` must leave its value on the stack top if evaluated, so that the entire expression `e1 ? e2 : e3` leaves its value on the stack top.
 
-> **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **ternary.c** (for tests)
+> **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **ternary.c**, **ternary.out** (for tests)
+
+Compilation output:
+
+```fsharp
+compile "MicroC/8.5/ternary";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 0; ADD;
+   CSTI 0; CSTI 2; EQ; IFZERO "L2"; CSTI 1; GOTO "L3"; Label "L2"; CSTI 1;
+   CSTI 1; EQ; IFZERO "L4"; CSTI 2; GOTO "L5"; Label "L4"; CSTI 0; Label "L5";
+   Label "L3"; STI; INCSP -1; GETBP; CSTI 0; ADD; LDI; PRINTI; INCSP -1;
+   CSTI 10; PRINTC; INCSP -1; INCSP -1; RET -1]
+```
+
+Output of Machine.java:
+
+```txt
+java .\MicroC\Machine.java .\MicroC\8.5\ternary.out
+2 
+
+Ran 0.002 seconds
+```
 
 </br>
 
@@ -755,7 +800,31 @@ switch (month) {
 Unlike in C, there should be no fall-through from one `case` to the next: after the last statement of a `case`, the code should jump to the end of the `switch` statement. The parenthesis after `switch` must contain an expression.
 The value after a `case` must be an integer constant, and a case must be followed by a statement block. A `switch` with `n` cases can be compiled using `n` labels, the last of which is at the very end of the switch. For simplicity, do not implement the `break` statement or the `default` branch.
 
-> **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **switch.c** (for tests)
+> **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **switch.c**, **switch.out** (for tests)
+
+```fsharp
+compile "MicroC/8.6/switch";;
+val it: Machine.instr list =
+  [LDARGS; CALL (1, "L1"); STOP; Label "L1"; INCSP 1; INCSP 1; GETBP; CSTI 2;
+   ADD; CSTI 2000; STI; INCSP -1; GETBP; CSTI 0; ADD; LDI; CSTI 1; EQ;
+   IFZERO "L3"; GETBP; CSTI 1; ADD; CSTI 31; STI; INCSP -1; INCSP 0; GOTO "L2";
+   Label "L3"; GETBP; CSTI 0; ADD; LDI; CSTI 2; EQ; IFZERO "L4"; GETBP; CSTI 1;
+   ADD; CSTI 28; STI; INCSP -1; GETBP; CSTI 2; ADD; LDI; CSTI 4; MOD; CSTI 0;
+   EQ; IFZERO "L5"; GETBP; CSTI 1; ADD; CSTI 29; STI; INCSP -1; GOTO "L6";
+   Label "L5"; INCSP 0; Label "L6"; INCSP 0; GOTO "L2"; Label "L4"; GETBP;
+   CSTI 0; ADD; LDI; CSTI 3; EQ; IFZERO "L7"; GETBP; CSTI 1; ADD; CSTI 31; STI;
+   INCSP -1; INCSP 0; GOTO "L2"; Label "L7"; Label "L2"; GETBP; CSTI 1; ADD;
+   LDI; PRINTI; INCSP -1; CSTI 10; PRINTC; INCSP -1; INCSP -2; RET 0]
+```
+
+Output of Machine.java:
+
+```txt
+java .\MicroC\Machine.java .\MicroC\8.6\switch.out 3
+31 
+
+Ran 0.002 seconds
+```
 
 </br>
 

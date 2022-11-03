@@ -145,12 +145,15 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
     | Return (Some e) -> 
       cExpr e varEnv funEnv @ [RET (snd varEnv)]
     // Exercise 8.6
-    | Switch(e, cases) -> 
-      let rec aux cases' varEnv =
-        match cases' with
-        | [] -> []
-        | Case(v, block) :: xs -> []
-      aux cases varEnv
+    | Switch(e, cases) ->
+      let c = cExpr e varEnv funEnv
+      let endLab = newLabel()
+      
+      let instructions = List.fold (fun acc (_ as Case(v, block)) -> 
+                          let nextCase = newLabel()
+                          acc @ c @ [CSTI v; EQ; IFZERO nextCase] @ cStmt block varEnv funEnv @ [GOTO endLab] @ [Label nextCase]
+                          ) [] cases
+      instructions @ [Label endLab]
 
 and cStmtOrDec stmtOrDec (varEnv : varEnv) (funEnv : funEnv) : varEnv * instr list = 
     match stmtOrDec with 
@@ -215,20 +218,12 @@ and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list =
     | Call(f, es) -> callfun f es varEnv funEnv
     | PreInc acc -> (cAccess acc varEnv funEnv) @ [DUP; LDI; CSTI 1; ADD; STI]  // Exercise 8.3
     | PreDec acc -> (cAccess acc varEnv funEnv) @ [DUP; LDI; CSTI 1; SUB; STI]  // Exercise 8.3
+    // Exercise 8.5
     | Ternary (e1, e2, e3) -> 
       let labElse = newLabel()
       let labEnd = newLabel()
-      cExpr e1 varEnv funEnv @ 
-      [IFZERO labElse] @ cExpr e2 varEnv funEnv @ []
-      [Label labElse]
-      
- (* |If(e, stmt1, stmt2) -> 
-      let labelse = newLabel()
-      let labend  = newLabel()
-      cExpr e varEnv funEnv @ [IFZERO labelse] 
-      @ cStmt stmt1 varEnv funEnv @ [GOTO labend]
-      @ [Label labelse] @ cStmt stmt2 varEnv funEnv
-      @ [Label labend]    *)
+      cExpr e1 varEnv funEnv @ [IFZERO labElse] @ cExpr e2 varEnv funEnv @ [GOTO labEnd] @ [Label labElse] @ cExpr e3 varEnv funEnv @ [Label labEnd] 
+     
 (* Generate code to access variable, dereference pointer or index array.
    The effect of the compiled code is to leave an lvalue on the stack.   *)
 
