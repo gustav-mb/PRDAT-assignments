@@ -149,11 +149,11 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
       let c = cExpr e varEnv funEnv
       let endLab = newLabel()
       
-      let instructions = List.fold (fun acc (v, block) -> 
-                          let nextCase = newLabel()
-                          acc @ c @ [CSTI v; EQ; IFZERO nextCase] @ cStmt block varEnv funEnv @ [GOTO endLab] @ [Label nextCase]
-                          ) [] cases
-      instructions @ [Label endLab]
+      let caseInstructions = List.fold (fun acc (v, block) -> 
+                                let nextCaseLab = newLabel()
+                                acc @ c @ [CSTI v; EQ; IFZERO nextCaseLab] @ cStmt block varEnv funEnv @ [GOTO endLab] @ [Label nextCaseLab]
+                              ) [] cases
+      caseInstructions @ [Label endLab]
 
 and cStmtOrDec stmtOrDec (varEnv : varEnv) (funEnv : funEnv) : varEnv * instr list = 
     match stmtOrDec with 
