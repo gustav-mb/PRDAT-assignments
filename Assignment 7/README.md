@@ -14,7 +14,7 @@ Download `microc.zip` from the book homepage, unpack it to a folder `MicroC`, an
 
 > **Answer:** See file **ex11.out**
 >
-> Compilation of `ex11.c` and output from run via Machine.java can be seen below
+> Compilation of **ex11.c** and output from run via Machine.java can be seen below
 
 ```fsharp
 compileToFile (fromFile "MicroC/examples/ex11.c") "ex11.out";;
@@ -32,7 +32,7 @@ val it: Machine.instr list =
    ADD; ...]
 ```
 
-Run via Machine.java:
+Run **ex11.out** with Machine.java:
 
 ```txt
 java Machine ex11.out 8       
@@ -137,9 +137,11 @@ Study the generated symbolic bytecode. Write up the bytecode in a more structure
 
 > **Answer:** See files **ex3.out** and **ex5.out**
 >
-> The block is visible in the generated code for `ex5.c` in form of a new scope for the block variables (See bytecode instruction comments) i.e., the local variable r in the block has offset 2 from the basepointer (treated as a third variable besides n and "global" r).
+> The block is visible in the generated code for **ex5.c** in form of a new scope for the block variables (See bytecode instruction comments) i.e., the local variable r in the block has offset 2 from the basepointer (treated as a third variable besides n and "global" r).
+>
+> It also executes an extra negative `INCSP` bytecode instruction to "forget" the scope.
 
-Compile output:
+Compile output of **ex3.out** and **ex5.out**:
 
 ```fsharp
 // ex3
@@ -162,7 +164,7 @@ val it: Machine.instr list =
    LDI; GETBP; CSTI 0; ADD; LDI; MUL; STI; INCSP -1; INCSP 0; RET 1]
 ```
 
-Bytecode instructions written in a structured way:
+Bytecode instructions written in a structured way for **ex3.c** and **ex5.c** respectively:
 
 ```txt
 ex3
@@ -294,7 +296,7 @@ Ran 0.002 seconds
 
 Trace the execution using `java Machinetrace ex3.out 4`, and explain the stack contents and what goes on in each step of execution, and especially how the low-level bytecode instructions map to the higher-level features of MicroC. You can capture the standard output from a command prompt (in a file `ex3trace.txt`) using the Unix-style notation: `java Machinetrace ex3.out 4 > ex3trace.txt`
 
-> **Answer:** See output below
+> **Answer:** See output and comments below
 
 ```txt
 java Machinetrace examples/ex3.out 4
@@ -501,10 +503,10 @@ val it: Machine.instr list =
    PRINTI; INCSP -1; ...]
 ```
 
-Run with Machine.java:
+Run **PreIncDecTests.out** with Machine.java:
 
 ```txt
-java Machine 8.3/examples.out 1
+java Machine 8.3/PreIncDecTests.out 1
 1   // inc (n++)
 -1  // dec (n--)
 1   // incArray (++arr[0]) 
@@ -536,41 +538,47 @@ val it: Machine.instr list =
    CSTI 20000000; STI; INCSP -1; GOTO "L3"; Label "L2"; GETBP; CSTI 0; ADD;
    GETBP; CSTI 0; ADD; LDI; CSTI 1; SUB; STI; INCSP -1; INCSP 0; Label "L3";
    GETBP; CSTI 0; ADD; LDI; IFNZRO "L2"; INCSP -1; RET -1]
-
-LDARGS
-CALL 0 L1 // main()
-STOP
-L1: // main function
-  INCSP 1 
-  GETBP 
-  CSI 0 
-  ADD 
-  CSTI 20000000
-  STI // i=20000000
-  INCSP -1
-  GOTO "L3"
-L2: // while
-  GETBP    // Redundant operations
-  CSTI 0   //
-  ADD      //
-  GETBP    //
-  CSTI 0   //
-  ADD      //
-  LDI 
-  CSTI 1
-  SUB
-  STI 
-  INCSP -1
-  INCSP 0
-L3: // while conditional i
-  GETBP
-  CSTI 0
-  ADD
-  LDI
-  IFNZRO "L2"
-  INCSP -1
-  RET -1
 ```
+
+Bytecode instructions for **ex8.c** written in a structured way:
+
+```txt
+LDARGS                // Load commandline args
+CALL 0 L1             // Call function main() with 0 arguments
+STOP                  // Halt the machine
+L1:                   // main()
+  INCSP 1             // Declare i
+  GETBP               // Compute address of i with offset 0 from basepointer
+  CSI 0               -
+  ADD                 -
+  CSTI 20000000       // Push 20000000 to stack
+  STI                 // Store 20000000 in address of i, pop address
+  INCSP -1            // Remove 20000000 from stack
+  GOTO "L3"           // Jump to while-conditional i
+L2:                   // while-loop
+  GETBP               // Push address of i with offset 0 from basepointer
+  CSTI 0              -
+  ADD                 -
+  GETBP               // Push address of i with offset 0 from basepointer
+  CSTI 0              -
+  ADD                 -
+  LDI                 // Load value of i, pop address, push value
+  CSTI 1              // Push 1 to stack
+  SUB                 // i - 1, pop both value of i and 1, push result
+  STI                 // Store result of (i - 1) in address of i, pop address
+  INCSP -1            // Remove value of (i - 1) from stack
+  INCSP 0
+L3:                   // i != 0
+  GETBP               // Push address of i with offset 0 from basepointer
+  CSTI 0              -
+  ADD                 -
+  LDI                 // Load value of i, pop address, push value
+  IFNZRO "L2"         // If value of i != 0 jump to L2 (while-body)
+  INCSP -1            // Remove value of i from stack
+  RET -1              // Dummy value; return void
+```
+
+Output from running **prog1.out** and **ex8.out** via Machine.java:
 
 ```txt
 prog1
@@ -637,28 +645,28 @@ CALL (1, "L1")    // Call main with 1 argument
 STOP              // Halt the machine
 L1:               // main(int n)
   INCSP 1         // Declare y
-  GETBP           // Compute address of y and put on stack
-  CSTI 1
-  ADD
+  GETBP           // Compute address of y with offset 1 from basepointer
+  CSTI 1          -
+  ADD             -
   CSTI 1889       // Push 1889 to stack
-  STI             // Store 1889 in address of y, pop address of y
+  STI             // Store 1889 in address of y, pop address
   INCSP -1        // Remove value of y from stack
   GOTO "L3"       // Jump to while condition
 L2:               // While-loop body
-  GETBP           // Push address of y on stack
-  CSTI 1
-  ADD
-  GETBP           // Push address of y on stack
-  CSTI 1
-  ADD
+  GETBP           // Push address of y with offset 1 from basepointer
+  CSTI 1          -
+  ADD             -
+  GETBP           // Push address of y with offset 1 from basepointer
+  CSTI 1          -
+  ADD             -
   LDI             // Load value of y, pop address, push value
   CSTI 1          // Push 1 to stack
-  ADD             // y + 1
+  ADD             // y + 1, pop both value of y and 1, push result
   STI             // Store result of y + 1 at address of y, pop address
-  INCSP -1        // Remove result of y + 1 from stack
-  GETBP           // Push address of y on stack
-  CSTI 1
-  ADD
+  INCSP -1        // Remove result of (y + 1) from stack
+  GETBP           // Push address of y with offset 1 from basepointer
+  CSTI 1          -
+  ADD             -
   LDI             // Load value of y, pop address, push value
   CSTI 4          // Push 4 on stack
   MOD             // y % 4, pop value of y and 4, push result
@@ -666,8 +674,8 @@ L2:               // While-loop body
   EQ              // (y % 4) == 0, push result
   IFZERO "L7"     // If ((y % 4) == 0) = false jump to L7 (out of If-statement)
   GETBP           // Push address of y on stack
-  CSTI 1 
-  ADD
+  CSTI 1          -
+  ADD             -
   LDI             // Load value of y, pop address, push value
   CSTI 100        // Push 100 to stack
   MOD             // y % 100, pop y and 100, push result
@@ -676,41 +684,41 @@ L2:               // While-loop body
   NOT             // !((y % 100) == 0), pop ((y % 100) == 0), push result
   IFNZRO "L9"     // If !((y % 100) == 0) is non zero jump to L9 (false or)
   GETBP           // Push address of y
-  CSTI 1
-  ADD
+  CSTI 1          -
+  ADD             -
   LDI             // Load value of y, pop address, push value
   CSTI 400        // Push 400 to stack
   MOD;            // y % 400, pop y and 400, push result
   CSTI 0          // Push 0 to stack
   EQ              // (y % 400) == 0, pop (y % 400) and 0, push result
   GOTO "L8"       // Jump to L8 (true or)
-L9: 
+L9:               
   CSTI 1          // Push 1 to stack
-L8:
+L8:               
   GOTO "L6"       // Jump to L6 (If-body)
 L7:               // Ensure out of if statement
   CSTI 0          // Push 0 to stack
 L6:               // If-body
   IFZERO "L4"     // If top of stack is 0 goto L4
   GETBP           // Push address of y
-  CSTI 1
-  ADD
+  CSTI 1          -
+  ADD             -
   LDI             // Load value of y, pop address, push value
   PRINTI          // Print value of y
   INCSP -1        // Remove value of y from stack
   GOTO "L5"       // Jump to L5 (out of if-block)
-L4: 
+L4:               
   INCSP 0;        // Dead code, out of block
 L5: 
   INCSP 0         // Dead code, out of block
 L3:               // y < n
   GETBP           // Push address of y
-  CSTI 1 
-  ADD 
+  CSTI 1          -
+  ADD             -
   LDI             // Load value stored at the address of y, pop address, push value
   GETBP           // Get address of n
-  CSTI 0 
-  ADD 
+  CSTI 0          -
+  ADD             -
   LDI             // Load value stored at the address of n, pop address, push value
   LT              // y < n, pop both values for y and n, push result on stack
   IFNZRO "L2"     // If y < n != 0 goto While body (L2), pop result of LT
@@ -733,7 +741,7 @@ The compilation of `e1 ? e2 : e3` should produce code that evaluates `e2` only i
 
 > **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **8.5/ternary.c**, **8.5/ternary.out** (for tests)
 
-Compilation output:
+Compilation output of **ternary.c**:
 
 ```fsharp
 compile "MicroC/8.5/ternary";;
@@ -745,7 +753,7 @@ val it: Machine.instr list =
    CSTI 10; PRINTC; INCSP -1; INCSP -1; RET -1]
 ```
 
-Output of Machine.java when running `ternary.out`:
+Output of Machine.java when running **ternary.out**:
 
 ```txt
 java .\MicroC\Machine.java .\MicroC\8.5\ternary.out
@@ -780,6 +788,8 @@ The value after a `case` must be an integer constant, and a case must be followe
 
 > **Answer:** See files **Absyn**, **Interp.fs**, **CLex.fsl**, **CPar.fsy**, **Comp.fs**, and **8.6/switch.c**, **8.6/switch.out** (for tests)
 
+Compilation output of **switch.c**:
+
 ```fsharp
 compile "MicroC/8.6/switch";;
 val it: Machine.instr list =
@@ -795,7 +805,7 @@ val it: Machine.instr list =
    LDI; PRINTI; INCSP -1; CSTI 10; PRINTC; INCSP -1; INCSP -2; RET 0]
 ```
 
-Output of Machine.java when running `switch.out`:
+Output of Machine.java when running **switch.out**:
 
 ```txt
 java .\MicroC\Machine.java .\MicroC\8.6\switch.out 2
