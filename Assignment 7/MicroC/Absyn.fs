@@ -33,20 +33,16 @@ and access =
   | AccIndex of access * expr        (* Array indexing         a[e] *)
                                                                    
 and stmt =                                                         
-  | If of expr * stmt * stmt         (* Conditional                 *)
-  | While of expr * stmt             (* While loop                  *)
-  | Expr of expr                     (* Expression statement   e;   *)
-  | Return of expr option            (* Return from method          *)
-  | Block of stmtordec list          (* Block: grouping and scope   *)
-  | Switch of expr * case list       (* Switch(e) statement            *)      // Exercise 8.6      
+  | If of expr * stmt * stmt            (* Conditional                 *)
+  | While of expr * stmt                (* While loop                  *)
+  | Expr of expr                        (* Expression statement   e;   *)
+  | Return of expr option               (* Return from method          *)
+  | Block of stmtordec list             (* Block: grouping and scope   *)
+  | Switch of expr * (int * stmt) list  (* Switch(e) statement         *)      // Exercise 8.6      
 
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
   | Stmt of stmt                     (* A statement                 *)
-
-// Exercise 8.6
-and case =
-  | Case of int * stmt               (* Case block for a switch statement *)
 
 and topdec = 
   | Fundec of typ option * string * (typ * string) list * stmt

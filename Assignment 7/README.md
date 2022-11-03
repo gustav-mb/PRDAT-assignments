@@ -12,7 +12,9 @@ Download `microc.zip` from the book homepage, unpack it to a folder `MicroC`, an
 
 (i) As a warm-up, compile one of the micro-C examples provided, such as that in source file `ex11.c`, then run it using the abstract machine implemented in Java, as described also in step (B) of the README file. When run with command line argument 8, the program prints the 92 solutions to the eight queens problem: how to place eight queens on a chessboard so that none of them can attack any of the others.
 
-> **Answer:** Compilation of ex11.c and output from run via Machine.java can be seen below
+> **Answer:** See file **ex11.out**
+>
+> Compilation of `ex11.c` and output from run via Machine.java can be seen below
 
 ```fsharp
 compileToFile (fromFile "MicroC/examples/ex11.c") "ex11.out";;
@@ -133,9 +135,9 @@ Ran 0.251 seconds
 (ii) Now compile the example micro-C programs `ex3.c` and `ex5.c` using functions `compileToFile` and `fromFile` from `ParseAndComp.fs` as above.
 Study the generated symbolic bytecode. Write up the bytecode in a more structured way with labels only at the beginning of the line (as in this chapter). Write the corresponding micro-C code to the right of the stack machine code. Note that `ex5.c` has a nested scope (a block ... inside a function body); how is that visible in the generated code?
 
-> **Answer:** See below
+> **Answer:** See files **ex3.out** and **ex5.out**
 >
-> The block is visible in the generated code for `ex5.c` in form of a new scope for the block. See code comments.
+> The block is visible in the generated code for `ex5.c` in form of a new scope for the block variables (See bytecode instruction comments).
 
 Compile output:
 
@@ -279,14 +281,20 @@ Execute the compiled programs using `java Machine ex3.out 10` and similar. Note 
 > **Answer:** See output below
 
 ```txt
+ex3
 java Machine examples/ex3.out 10
 0 1 2 3 4 5 6 7 8 9 
 Ran 0.033 seconds
+
+ex5
+java Machine examples/ex5.out 2
+4 2 
+Ran 0.002 seconds
 ```
 
 Trace the execution using `java Machinetrace ex3.out 4`, and explain the stack contents and what goes on in each step of execution, and especially how the low-level bytecode instructions map to the higher-level features of MicroC. You can capture the standard output from a command prompt (in a file `ex3trace.txt`) using the Unix-style notation: `java Machinetrace ex3.out 4 > ex3trace.txt`
 
-> **Answer:** See below
+> **Answer:** See output below
 
 ```txt
 java Machinetrace examples/ex3.out 4
@@ -423,7 +431,7 @@ java Machinetrace examples/ex3.out 4
 [ 4 -999 4 4 4 4 ]{53: LT}        // i < n (4 < 4), pop both values, push result (0)
 [ 4 -999 4 4 0 ]{54: IFNZRO 18}   // If not zero, continue since value is 0, pop value
 [ 4 -999 4 4 ]{56: INCSP -1}      // Shrink stack by 1
-[ 4 -999 4 ]{58: RET 0}           // Remove program counter and base pointer
+[ 4 -999 4 ]{58: RET 0}           // Pop program counter and base pointer
 [ 4 ]{4: STOP}                    // Stop the machine
 
 Ran 0.419 seconds
@@ -515,21 +523,11 @@ Ran 0.003 seconds
 
 Compile `ex8.c` and study the symbolic bytecode to see why it is so much slower than the handwritten 20 million iterations loop in `prog1`.
 
-> **Answer:** The slow version has a lot of redundant operations which are not required to compute the actual result of the while-loop.
+> **Answer:** See file **prog1.out** and below comments
 >
-> This could for instance be the different labels, computing addresses for the same variables.
-
-```c
-// micro-C example 8 -- loop 20 million times
-
-void main() {
-  int i;
-  i = 20000000;
-  while (i) {
-    i = i - 1;
-  }
-}
-```
+> The slow version has a lot of redundant operations which are not required to compute the actual result of the while-loop.
+>
+> This could for instance be the different labels, computing addresses for the same variables, handling new scopes, setup functions.
 
 ```fsharp
 compile "MicroC/examples/ex8";;
@@ -538,7 +536,6 @@ val it: Machine.instr list =
    CSTI 20000000; STI; INCSP -1; GOTO "L3"; Label "L2"; GETBP; CSTI 0; ADD;
    GETBP; CSTI 0; ADD; LDI; CSTI 1; SUB; STI; INCSP -1; INCSP 0; Label "L3";
    GETBP; CSTI 0; ADD; LDI; IFNZRO "L2"; INCSP -1; RET -1]
-
 
 LDARGS
 CALL 0 L1 // main()
@@ -565,44 +562,31 @@ L2: // while
   STI 
   INCSP -1
   INCSP 0
-L3:
+L3: // while conditional i
   GETBP
   CSTI 0
   ADD
   LDI
-  FINZRO "L2"
+  IFNZRO "L2"
   INCSP -1
   RET -1
 ```
 
 ```txt
 prog1
-0 20000000 16 7 0 1 2 9 18 4 25
 
-CSTI 20000000
-GOTO 7
-CSTI 1
-SUB
-DUP
-IFNZRO 4
-STOP
-
-
-java Machine .\prog1         
+java Machine ./prog1         
 Ran 0.297 seconds
 
 java Machine examples/ex8.out
-Ran 1.18 seconds
-
-It is slower because there are many redundant operations, such as: 
-  GETBP    
-  CSTI 0   
-  ADD      
+Ran 1.18 seconds    
 ```
 
 Compile `ex13.c` and study the symbolic bytecode to see how loops and conditionals interact; describe what you see.
 
-> **Answer:**
+In a later chapter we shall see an improved micro-C compiler that generates fewer extraneous labels and jumps.
+
+> **Answer:** See commented structured bytecode instructions and below:
 >
 > **Loops**
 >
@@ -612,15 +596,11 @@ Compile `ex13.c` and study the symbolic bytecode to see how loops and conditiona
 >
 > **|| (or)**
 >
-> e1 || e2 evaluates the first expression (e1), if it is true it goes to the succesive byte code instruction by jumping (thereby skipping the second expression (e2)).
+> e1 || e2 evaluates the first expression (e1), if it is true it jumps over the bytecode for the second expression (e2) (thereby skipping the evaluation of it). If e1 is false, we must evaluate e2.
 >
 > **&& (and)**
 >
-> e1 && e2 evaluates the first expression (e1), if it is false, it jumps to a label skipping the second expresion (e2). e2 is then never evaluated.
-
-```txt
-24 19 1 5 25 15 1 13 0 1 1 0 1889 12 15 -1 16 95 13 0 1 1 13 0 1 1 11 0 1 1 12 15 -1 13 0 1 1 11 0 4 5 0 0 6 17 77 13 0 1 1 11 0 100 5 0 0 6 8 18 73 13 0 1 1 11 0 400 5 0 0 6 16 75 0 1 16 79 0 0 17 91 13 0 1 1 11 22 15 -1 16 93 15 0 15 0 13 0 1 1 11 13 0 0 1 11 7 18 18 15 -1 21 0
-```
+> e1 && e2 evaluates the first expression (e1), if it is false, it jumps to a label skipping the second expresion (e2). e2 is then never evaluated. If e1 is true, it must also evaluate e2
 
 ```c
 // micro-C example 13 -- optimization of andalso and orelse
@@ -652,93 +632,91 @@ val it: Machine.instr list =
 ```
 
 ```txt
-LDARGS
-CALL (1, "L1")
-STOP
-L1:
-  INCSP 1
-  GETBP
+LDARGS            // Load commandline arguments
+CALL (1, "L1")    // Call main with 1 argument
+STOP              // Halt the machine
+L1:               // main(int n)
+  INCSP 1         // Declare y
+  GETBP           // Compute address of y and put on stack
   CSTI 1
   ADD
-  CSTI 1889
-  STI
-  INCSP -1
-  GOTO "L3"
-L2:
-  GETBP
+  CSTI 1889       // Push 1889 to stack
+  STI             // Store 1889 in address of y, pop address of y
+  INCSP -1        // Remove value of y from stack
+  GOTO "L3"       // Jump to while condition
+L2:               // While-loop body
+  GETBP           // Push address of y on stack
   CSTI 1
   ADD
-  GETBP
+  GETBP           // Push address of y on stack
   CSTI 1
   ADD
-  LDI
+  LDI             // Load value of y, pop address, push value
+  CSTI 1          // Push 1 to stack
+  ADD             // y + 1
+  STI             // Store result of y + 1 at address of y, pop address
+  INCSP -1        // Remove result of y + 1 from stack
+  GETBP           // Push address of y on stack
   CSTI 1
   ADD
-  STI
-  INCSP -1
-  GETBP
+  LDI             // Load value of y, pop address, push value
+  CSTI 4          // Push 4 on stack
+  MOD             // y % 4, pop value of y and 4, push result
+  CSTI 0          // Push 0 to stack
+  EQ              // (y % 4) == 0, push result
+  IFZERO "L7"     // If ((y % 4) == 0) = false jump to L7 (out of If-statement)
+  GETBP           // Push address of y on stack
+  CSTI 1 
+  ADD
+  LDI             // Load value of y, pop address, push value
+  CSTI 100        // Push 100 to stack
+  MOD             // y % 100, pop y and 100, push result
+  CSTI 0          // Push 0 to stack
+  EQ              // (y % 100) == 0, pop (y % 100) and 0, push result
+  NOT             // !((y % 100) == 0), pop ((y % 100) == 0), push result
+  IFNZRO "L9"     // If !((y % 100) == 0) is non zero jump to L9 (false or)
+  GETBP           // Push address of y
   CSTI 1
   ADD
-  LDI
-  CSTI 4
-  MOD
-  CSTI 0
-  EQ
-  IFZERO "L7"
-  GETBP
-  CSTI 1
-  ADD
-  LDI
-  CSTI 100
-  MOD
-  CSTI 0
-  EQ
-  NOT
-  IFNZRO "L9"
-  GETBP
-  CSTI 1
-  ADD
-  LDI
-  CSTI 400
-  MOD;
-  CSTI 0
-  EQ
-  GOTO "L8" 
+  LDI             // Load value of y, pop address, push value
+  CSTI 400        // Push 400 to stack
+  MOD;            // y % 400, pop y and 400, push result
+  CSTI 0          // Push 0 to stack
+  EQ              // (y % 400) == 0, pop (y % 400) and 0, push result
+  GOTO "L8"       // Jump to L8 (true or)
 L9: 
-  CSTI 1
+  CSTI 1          // Push 1 to stack
 L8:
-  GOTO "L6"
-L7:
-  CSTI 0
-L6:
-  IFZERO "L4"
-  GETBP
+  GOTO "L6"       // Jump to L6 (If-body)
+L7:               // Ensure out of if statement
+  CSTI 0          // Push 0 to stack
+L6:               // If-body
+  IFZERO "L4"     // If top of stack is 0 goto L4
+  GETBP           // Push address of y
   CSTI 1
   ADD
-  LDI
-  PRINTI
-  INCSP -1
-  GOTO "L5" 
+  LDI             // Load value of y, pop address, push value
+  PRINTI          // Print value of y
+  INCSP -1        // Remove value of y from stack
+  GOTO "L5"       // Jump to L5 (out of if-block)
 L4: 
-  INCSP 0; 
+  INCSP 0;        // Dead code, out of block
 L5: 
-  INCSP 0
-L3 
-  GETBP 
+  INCSP 0         // Dead code, out of block
+L3:               // y < n
+  GETBP           // Push address of y
   CSTI 1 
   ADD 
-  LDI
-  GETBP 
+  LDI             // Load value stored at the address of y, pop address, push value
+  GETBP           // Get address of n
   CSTI 0 
   ADD 
-  LDI 
-  LT
-  IFNZRO "L2"
-  INCSP -1
-  RET 0
+  LDI             // Load value stored at the address of n, pop address, push value
+  LT              // y < n, pop both values for y and n, push result on stack
+  IFNZRO "L2"     // If y < n != 0 goto While body (L2), pop result of LT
+  INCSP -1        // Remove result of y < n from stack
+  RET 0           // End of block return
 ```
-
-In a later chapter we shall see an improved micro-C compiler that generates fewer extraneous labels and jumps.
 
 </br>
 
@@ -767,7 +745,7 @@ val it: Machine.instr list =
    CSTI 10; PRINTC; INCSP -1; INCSP -1; RET -1]
 ```
 
-Output of Machine.java:
+Output of Machine.java when running `ternary.out`:
 
 ```txt
 java .\MicroC\Machine.java .\MicroC\8.5\ternary.out
@@ -791,7 +769,7 @@ switch (month) {
   case 1:
     { days = 31; }
   case 2:
-    { days = 28; if (y%4==0) days = 29; }
+    { days = 28; if (y % 4 == 0) days = 29; }
   case 3:
     { days = 31; }
 }
@@ -817,13 +795,13 @@ val it: Machine.instr list =
    LDI; PRINTI; INCSP -1; CSTI 10; PRINTC; INCSP -1; INCSP -2; RET 0]
 ```
 
-Output of Machine.java:
+Output of Machine.java when running `switch.out`:
 
 ```txt
-java .\MicroC\Machine.java .\MicroC\8.6\switch.out 3
-31 
+java .\MicroC\Machine.java .\MicroC\8.6\switch.out 2
+29
 
-Ran 0.002 seconds
+Ran 0.003 seconds
 ```
 
 </br>

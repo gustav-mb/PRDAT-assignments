@@ -144,11 +144,11 @@ let rec exec stmt (locEnv : locEnv) (gloEnv : gloEnv) (store : store) : store =
       loop stmts (locEnv, store) 
     // Exercise 8.6
     | Switch(e, cases) ->
-      let (v, store1) = eval e locEnv gloEnv store
+      let (eValue, store1) = eval e locEnv gloEnv store
       let rec aux cases' =
         match cases' with
         | [] -> store1
-        | Case(value, block) :: xs -> if value = v then exec block locEnv gloEnv store1 else aux xs
+        | (v, block) :: xs -> if v = eValue then exec block locEnv gloEnv store1 else aux xs
       aux cases
     | Return _ -> failwith "return not implemented"
 

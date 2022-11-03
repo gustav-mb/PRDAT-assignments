@@ -149,7 +149,7 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
       let c = cExpr e varEnv funEnv
       let endLab = newLabel()
       
-      let instructions = List.fold (fun acc (_ as Case(v, block)) -> 
+      let instructions = List.fold (fun acc (v, block) -> 
                           let nextCase = newLabel()
                           acc @ c @ [CSTI v; EQ; IFZERO nextCase] @ cStmt block varEnv funEnv @ [GOTO endLab] @ [Label nextCase]
                           ) [] cases

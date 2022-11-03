@@ -105,14 +105,14 @@ StmtM:  /* No unbalanced if-else */
   | Block                                                   { $1                         }
   | IF LPAR Expr RPAR StmtM ELSE StmtM                      { If($3, $5, $7)             }
   | WHILE LPAR Expr RPAR StmtM                              { While($3, $5)              }
-  | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM            { Block([Stmt(Expr($3)); Stmt(While($5, Block([Stmt($9); Stmt(Expr($7))])))])  } // Exercise 7.3
-  | SWITCH LPAR Expr RPAR LBRACE CaseBlockSeq RBRACE        { Switch($3, $6)             }    // Exercise 8.6
+  | FOR LPAR Expr SEMI Expr SEMI Expr RPAR StmtM            { Block([Stmt(Expr($3)); Stmt(While($5, Block([Stmt($9); Stmt(Expr($7))])))]) } // Exercise 7.3
+  | SWITCH LPAR Expr RPAR LBRACE CaseSeq RBRACE             { Switch($3, $6)             }    // Exercise 8.6
 ;
 
 // Exercise 8.6
-CaseBlockSeq:
+CaseSeq:
     /* empty */                                { [] }
-  | CASE CSTINT COLON Block CaseBlockSeq       { Case($2, $4) :: $5 }
+  | CASE CSTINT COLON Block CaseSeq            { ($2, $4) :: $5 }
 ;
 
 StmtU:
