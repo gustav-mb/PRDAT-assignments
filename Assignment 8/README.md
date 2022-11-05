@@ -61,7 +61,7 @@ Hand in the two edited bytecode files with your comments.
 
 This exercise investigates the garbage collection impact in Microsoft .NET of using repeated string concatenation to create a long string. This exercise also requires a Visual Studio Command Prompt.
 
-(i) Compile the C# program `StringConcatSpeed.cs` and run it with count in the program set to 30,000:
+(i) Compile the C# program `StringConcatSpeed.cs` and run it with `count` in the program set to 30,000:
 
 ```txt
 csc /o StringConcatSpeed.cs StringConcatSpeed
