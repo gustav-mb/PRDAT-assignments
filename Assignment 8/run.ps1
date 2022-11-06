@@ -1,10 +1,13 @@
 $selsortPath = ".\9.1\Selsort"
 
 function Main {
+    (Test-Path -Path ".\9.1") ? $null : (New-Item -ItemType Directory -Force -Path ./9.1 > $null)
+    (Test-Path -Path ".\9.2") ? $null : (New-Item -ItemType Directory -Force -Path ./9.2 > $null)
+
     # Selsort
     Write-Host "SETTING UP SELSORT" -BackgroundColor Green -ForegroundColor White
     Write-Host
-    csc.exe /o .\Virtual\Selsort.cs -out:9.1/Selsort.exe
+    csc.exe /o .\Virtual\Selsort.cs -out:./9.1/Selsort.exe
     javac -d .\9.1 .\Virtual\Selsort.java
 
     # Create bytecode files
