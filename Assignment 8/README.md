@@ -73,7 +73,7 @@ csc /o StringConcatSpeed.cs StringConcatSpeed
 You will probably observe that the first computation (using a StringBuilder) is tremendously fast compared to the second one (repeated string concatenation), although they compute exactly the same result.
 The reason is that the latter allocates a lot of temporary strings, each one slightly larger than the previous one, and copies all the characters from the old string to the new one.
 
-> **Answer:**
+> **Answer:** See output from test run of program **StringConcatSpeed.exe** below
 
 ```txt
 <output goes here>
@@ -96,7 +96,7 @@ The reason is that the latter allocates a lot of temporary strings, each one sli
 
 > **Answer:**
 
-(iii) Find another long-running C# program or application (you may well run it from within Visual Studio) and measure the time spent in garbage collection using the perfmon as above. Note: It is very important that you attach the performance counter to the particular process ("instance") that you want to measure, in the step marked (***) above, otherwise the results will be meaningless.
+(iii) Find another long-running C# program or application (you may well run it from within Visual Studio) and measure the time spent in garbage collection using the `perfmon` as above. Note: It is very important that you attach the performance counter to the particular process ("instance") that you want to measure, in the step marked (***) above, otherwise the results will be meaningless.
 
 > **Answer:**
 
