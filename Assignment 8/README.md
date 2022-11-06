@@ -37,6 +37,10 @@ To see the precise description of a .NET Common Language Infrastructure bytecode
 
 > **Answer:** See file **9.1/Selsort.il**
 
+```txt
+<output goes here>
+```
+
 (ii) Now do the same with the corresponding Java method in file `Selsort.java`. Compile it, then disassemble the Selsort class:
 
 ```txt
