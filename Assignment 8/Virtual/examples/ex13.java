@@ -8,18 +8,18 @@ class ex13 {
     while (y < n) {
       y = y + 1;
       if (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0))
-        InOut.printi(y);
+	InOut.printi(y);
     }
-    InOut.printc((char) 10);
+    InOut.printc((char)10);
   }
 }
 
 class InOut {
-  public static void printi(int i) {
+  public static void printi(int i) { 
     System.out.print(i + " ");
   }
 
-  public static void printc(char c) {
+  public static void printc(char c) { 
     System.out.print(c);
   }
 }

@@ -1,33 +1,27 @@
 // micro-C example 13, in C#
 
-class ex13
-{
-    static void Main(string[] args)
-    {
-        int n = int.Parse(args[0]);
-        int y;
-        y = 1889;
-        while (y < n)
-        {
-            y = y + 1;
-            if (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0))
-                InOut.PrintI(y);
-        }
-        InOut.PrintC(10);
+class ex13 {
+  static void Main(string[] args) {
+    int n = int.Parse(args[0]);
+    int y;
+    y = 1889;
+    while (y < n) {
+      y = y + 1;
+      if (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0))
+        InOut.PrintI(y);
     }
+    InOut.PrintC(10);
+  }
 }
 
-class InOut
-{
-    public static void PrintI(int i)
-    {
-        System.Console.Write(i + " ");
-    }
+class InOut {
+  public static void PrintI(int i) { 
+    System.Console.Write(i + " "); 
+  }
 
-    public static void PrintC(int c)
-    {
-        System.Console.Write((char)c);
-    }
+  public static void PrintC(int c) { 
+    System.Console.Write((char)c); 
+  }
 }
 
 /*
