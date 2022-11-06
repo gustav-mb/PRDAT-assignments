@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Assignment_9</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <fsLex Include="./ListC/CLex.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </fsLex>
+    <fsyacc Include="./ListC/CPar.fsy">
+      <OtherFlags>--module CPar</OtherFlags>
+    </fsyacc>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="./ListC/Absyn.fs" />
+    <Compile Include="./ListC/Machine.fs" />
+    <Compile Include="./CPar.fsi" />
+    <Compile Include="./CPar.fs" />
+    <Compile Include="./CLex.fs" />
+    <Compile Include="./ListC/Comp.fs" />
+    <Compile Include="./ListC/Parse.fs" />
+    <Compile Include="./ListC/ParseAndComp.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
+    <PackageReference Include="FsLexYacc.Runtime" Version="10.2.0" />
+  </ItemGroup>
+
+</Project>
