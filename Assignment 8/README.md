@@ -21,7 +21,9 @@ public static void SelectionSort(int[] arr)
         for (int j = i + 1; j < arr.Length; j++)
             if (arr[j] < arr[least])
                 least = j;
-        int tmp = arr[i]; arr[i] = arr[least]; arr[least] = tmp;
+        int tmp = arr[i];
+        arr[i] = arr[least];
+        arr[least] = tmp;
     }
 }
 ```
@@ -38,10 +40,6 @@ Open `Selsort.il` in a text editor, find method `SelectionSort` and its body (by
 To see the precise description of a .NET Common Language Infrastructure bytecode instruction such as `ldc.i4.0`, consult the Ecma-335 standard [[10](https://www.ecma-international.org/publications-and-standards/standards/ecma-335/)], find Partition III (PDF pages 324-471 in the December 2010 version) of that document, and search for `ldc`.
 
 > **Answer:** See file **9.1/Selsort.il**
-
-```txt
-<output goes here>
-```
 
 (ii) Now do the same with the corresponding Java method in file `Selsort.java`. Compile it, then disassemble the Selsort class:
 
@@ -62,14 +60,14 @@ Hand in the two edited bytecode files with your comments.
 
 </br>
 
-## PLC 9.2 (ONLY IF NOT 9.3)
+## PLC 9.2
 
 This exercise investigates the garbage collection impact in Microsoft .NET of using repeated string concatenation to create a long string. This exercise also requires a Visual Studio Command Prompt.
 
 (i) Compile the C# program `StringConcatSpeed.cs` and run it with `count` in the program set to 30,000:
 
 ```txt
-csc /o StringConcatSpeed.cs StringConcatSpeed
+csc /o StringConcatSpeed.cs
 ```
 
 You will probably observe that the first computation (using a StringBuilder) is tremendously fast compared to the second one (repeated string concatenation), although they compute exactly the same result.
@@ -78,7 +76,18 @@ The reason is that the latter allocates a lot of temporary strings, each one sli
 > **Answer:** See output from test run of program **StringConcatSpeed.exe** below
 
 ```txt
-<output goes here>
+.\StringConcatSpeed.exe
+Initialization: Building array of small strings
+
+Concatenate using StringBuilder:
+Result length: 168894;    time:   0,000 sec
+
+
+Press return to continue...
+
+
+Concatenate using repeated string concatenation:
+Result length: 168894;    time:   0,946 sec
 ```
 
 (ii)  In this part, try to use the Windows Performance Monitor to observe the .NET garbage collector’s behavior when running StringConcatSpeed.
