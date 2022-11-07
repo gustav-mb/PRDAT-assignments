@@ -7,7 +7,7 @@ function Main {
     # Selsort
     Write-Host "SETTING UP SELSORT" -BackgroundColor Green -ForegroundColor White
     Write-Host
-    csc.exe /o .\Virtual\Selsort.cs -out:./9.1/Selsort.exe
+    csc /o .\Virtual\Selsort.cs -out:./9.1/Selsort.exe
     javac -d .\9.1 .\Virtual\Selsort.java
 
     # Create bytecode files
@@ -16,7 +16,7 @@ function Main {
     # StringConcatSpeed
     Write-Host "STRING CONCAT SPEED" -BackgroundColor Green -ForegroundColor White
     Write-Host
-    csc.exe /o .\Virtual\StringConcatSpeed.cs -out:9.2/StringConcatSpeed.exe
+    csc /o .\Virtual\StringConcatSpeed.cs -out:9.2/StringConcatSpeed.exe
 }
 
 function CreateFiles($path) {
@@ -56,7 +56,7 @@ function Override([string]$name, [string]$path) {
 }
 
 function Il([string]$name, [string]$path) {
-    ildasm.exe /text "$path.exe" > $name
+    ildasm /text "$path.exe" > $name
 }
 
 function JVMByteCode([string]$name, [string]$path) {
