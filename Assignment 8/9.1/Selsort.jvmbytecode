@@ -50,7 +50,7 @@ public static void SelectionSort(int[]);
       37: aload_0                               // Load reference to argument 0 (arr)
       38: iload_1                               // Load value of local variable 1 (i)
       39: iaload                                // Push value at arr[i]
-      40: istore_3                              // Store into local variable 3 (j) (using j instead of "tmp" to store arr[i])
+      40: istore_3                              // Store into local variable 3 (tmp = arr[i]) (tmp now has index 3 because j is out of scope)
       41: aload_0                               // Load reference to argument 0 (arr)
       42: iload_1                               // Load value of local variable 1 (i)
       43: aload_0                               // Load reference to argument 0 (arr)
@@ -59,8 +59,8 @@ public static void SelectionSort(int[]);
       46: iastore                               // Store value at arr[i]
       47: aload_0                               // Load reference to argument 0 (arr)
       48: iload_2                               // Load value of local variable 2 (least)
-      49: iload_3                               // Load value of local variable 3 (j)
-      50: iastore                               // Store value at arr[least]
+      49: iload_3                               // Load value of local variable 3 (tmp)
+      50: iastore                               // Store value at arr[least] = tmp
       51: iinc          1, 1                    // Increment local variable by constant. Format: incc index const. i++
       54: goto          2                       // Jump to instruction 2. for (int i = 0; i < arr.length; i++) {
       57: return                                // Return
