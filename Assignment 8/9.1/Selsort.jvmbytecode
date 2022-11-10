@@ -21,7 +21,7 @@ public static void SelectionSort(int[]);
   Code:
     stack=4, locals=4, args_size=1
         0: iconst_0                             // Push int constant 0
-        1: istore_1                             // Store into local variable array at index 1 (i) (i = 0). localvar[1] = 0
+        1: istore_1                             // Store int 0 in local variable 1 (i) (i = 0)
         2: iload_1                              // Load value of local variable 1 (i)
         3: aload_0                              // Load reference to argument 0 (arr)
         4: arraylength                          // Get length of array (arr)
@@ -50,7 +50,7 @@ public static void SelectionSort(int[]);
       37: aload_0                               // Load reference to argument 0 (arr)
       38: iload_1                               // Load value of local variable 1 (i)
       39: iaload                                // Push value at arr[i]
-      40: istore_3                              // Store into local variable 3 (j)
+      40: istore_3                              // Store into local variable 3 (j) (using j instead of "tmp" to store arr[i])
       41: aload_0                               // Load reference to argument 0 (arr)
       42: iload_1                               // Load value of local variable 1 (i)
       43: aload_0                               // Load reference to argument 0 (arr)
@@ -64,5 +64,3 @@ public static void SelectionSort(int[]);
       51: iinc          1, 1                    // Increment local variable by constant. Format: incc index const. i++
       54: goto          2                       // Jump to instruction 2. for (int i = 0; i < arr.length; i++) {
       57: return                                // Return
-
-      //ASK TA: Hvor er tmp ? XD (tihi)

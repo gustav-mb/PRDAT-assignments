@@ -109,15 +109,15 @@ Result length: 168894;    time:   0,946 sec
 >
 > Microsoft Windows 11
 >
-> Dotnet version 6.0.203
+> .NET version 6.0.203
 
 ![9.2ii](appendix/9.2i.png)
 
 (iii) Find another long-running C# program or application (you may well run it from within Visual Studio) and measure the time spent in garbage collection using the `perfmon` as above. Note: It is very important that you attach the performance counter to the particular process ("instance") that you want to measure, in the step marked (***) above, otherwise the results will be meaningless.
 
-> **Answer:** See files **9.2/Fib.cs** and **9.2/Fib.exe**
+> **Answer:** See files **9.2/LinkedList.cs** and **9.2/LinkedList.exe**
 >
-> We chosen to implement a class which calculates the first 1.000.000 Fibonnachi numbers.
+> We have chosen to implement a class that adds and removes elements from a LinkedList of strings.
 >
 > Fib(1000000)
 
