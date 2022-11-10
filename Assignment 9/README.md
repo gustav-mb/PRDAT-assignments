@@ -26,47 +26,49 @@ To understand how the abstract machine and the garbage collector work and how th
 >
 > **`ADD`:**
 >
-> \<answer goes here\>
+> To execute `ADD` the two values at the top of the stack  are  popped first. To do this we untag the two values at the top of the stack. We then add these values together and tag the result.
 >
 > **`CSTI i`:**
 >
-> \<answer goes here\>
+> To execute `CST i` the abstract machine looks up the CSTI instruction in the program array `p` with the index of the program counter `pc` (which is post incremented afterwards by 1). The integer found is then tagged and pushed to the stack at the stack pointer plus 1.
 >
 > **`NIL`:**
 >
-> \<answer goes here\>
+>To execute `NIL` the value at the stack pointer is set to 0. Afterwards the stackpointer is incremented to prepare for the next command.
 >
 > **`IFZERO`:**
 >
-> \<answer goes here\>
+> To execute `IFZERO` The word at the stackpointer is saved in local variable v. Then the stackpointer is decremented. First we check whether or not v is an integer. Then we check if the integer is equal to zero. If that is the case, then the next instruction will the one after the current instruction. If not, it will jump to the instruction after that
 >
 > **`CONS`:**
 >
-> \<answer goes here\>
+> To execute `CONS` the abstract machine first allocates a 2-byte header to the heap with a CONSTAG (0). This returns a pointer to the created cons cell. It then adds the two values from the stack to the cons cell and adds the pointer to the cons cell to the stack.
 >
 > **`CAR`:**
 >
-> \<answer goes here\>
+> To execute `CAR`, the word saved at the stackpointers location is saved. If the reference is 0, then the reference is null and the program returns. If it is a valid reference, then the value at the stackpointer location will be set to the first block of the word(p[1]).
 >
 > **`SETCAR`:**
 >
-> \<answer goes here\>
+> To execute `SETCAR` the abstract machine first pops a value `v` from the stack. It then pops the reference to a cons cell and sets the first component to `v`.
+>
 
-(ii) Describe the result of applying each C macro `Length`, `Color` and `Paint` from Sect. 10.7.4 to a block header `ttttttttnnnnnnnnnnnnnnnnnnnnnngg`, that is, a 32-bit word, as described in the source code comments.
+(ii) Describe the result of applying each C macro `Length`, `Color` and `Paint` from Sect. 10.7.4 to a block header `ttttttttnnnn...nnnngg`, that is, a 64-bit word, as described in the source code comments.
 
 > **Answer:**
 >
 > **`Length`:**
 >
-> \<answer goes here\>
+> #define Length(hdr)   (((hdr)>>2)&0x003FFFFFFFFFFFFF)
+> ttttttttnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnngg
 >
 > **`Color`:**
 >
-> \<answer goes here\>
+> #define Color(hdr)    ((hdr)&3)
 >
 > **`Paint`:**
 >
-> \<answer goes here\>
+> #define Paint(hdr, color)  (((hdr)&(0xFFFFFFFFFFFFFFFC))|(color))
 
 (iii) When does the abstract machine, or more precisely, its instruction interpretation loop, call the `allocate(…)` function? Is there any other interaction between the abstract machine (also called the mutator) and the garbage collector?
 
