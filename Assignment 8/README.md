@@ -118,8 +118,6 @@ Result length: 168894;    time:   0,946 sec
 > **Answer:** See files **9.2/LinkedList.cs** and **9.2/LinkedList.exe**
 >
 > We have chosen to implement a class that adds and removes elements from a LinkedList of strings.
->
-> Fib(1000000)
 
 ![9.2iii](appendix/9.2ii.png)
 
