@@ -39,7 +39,7 @@ Open `Selsort.il` in a text editor, find method `SelectionSort` and its body (by
 
 To see the precise description of a .NET Common Language Infrastructure bytecode instruction such as `ldc.i4.0`, consult the Ecma-335 standard [[10](https://www.ecma-international.org/publications-and-standards/standards/ecma-335/)], find Partition III (PDF pages 324-471 in the December 2010 version) of that document, and search for `ldc`.
 
-> **Answer:** See file **9.1/Selsort.il**
+> **Answer:** See files **9.1/Selsort.il** and **9.1/Selsort.exe**
 
 (ii) Now do the same with the corresponding Java method in file `Selsort.java`. Compile it, then disassemble the Selsort class:
 
@@ -52,7 +52,7 @@ Then investigate and comment `Selsort.jvmbytecode` as suggested above. For the p
 
 Hand in the two edited bytecode files with your comments.
 
-> **Answer:** See file **9.1/Selsort.jvmbytecode**
+> **Answer:** See files **9.1/Selsort.jvmbytecode** and **9.1/Selsort.class**
 
 </br>
 
@@ -73,7 +73,7 @@ csc /o StringConcatSpeed.cs
 You will probably observe that the first computation (using a StringBuilder) is tremendously fast compared to the second one (repeated string concatenation), although they compute exactly the same result.
 The reason is that the latter allocates a lot of temporary strings, each one slightly larger than the previous one, and copies all the characters from the old string to the new one.
 
-> **Answer:** See output from test run of program **StringConcatSpeed.exe** below
+> **Answer:** See output from test run of program **9.2/StringConcatSpeed.exe** below
 
 ```txt
 .\StringConcatSpeed.exe
@@ -106,18 +106,22 @@ Result length: 168894;    time:   0,946 sec
 * Hand in your quantitative observations together with a description of the platform (version of .NET etc).
 
 > **Answer:**
+>
+> Microsoft Windows 11
+>
+> Dotnet version 6.0.203
+
+![9.2ii](appendix/9.2i.png)
 
 (iii) Find another long-running C# program or application (you may well run it from within Visual Studio) and measure the time spent in garbage collection using the `perfmon` as above. Note: It is very important that you attach the performance counter to the particular process ("instance") that you want to measure, in the step marked (***) above, otherwise the results will be meaningless.
 
-> **Answer:**
+> **Answer:** See files **9.2/Fib.cs** and **9.2/Fib.exe**
+>
+> We chosen to implement a class which calculates the first 1.000.000 Fibonnachi numbers.
+>
+> Fib(1000000)
 
-</br>
-
----
-
-</br>
-
-## PLC 9.3 (ONLY IF NOT 9.2)
+![9.2iii](appendix/9.2ii.png)
 
 </br>
 
