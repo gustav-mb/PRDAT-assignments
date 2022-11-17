@@ -21,15 +21,40 @@ let rec len xs =
 
 Try calling the resulting function with `lenc [2; 5; 7] id`, where the initial continuation `let id = fun v -> v` is the identity function, and with `lenc [2; 5; 7] (printf "The answer is '%d' \n")`, where the initial continuation consumes the result and prints it.
 
-> **Answer:**
+> **Answer:** See file **Cont.fs** and output below
+
+```fsharp
+lenc [2; 5; 7] id;;
+val it: int = 3
+
+lenc [2; 5; 7] (printf "The answer is '%d' \n");;
+The answer is '3' 
+val it: unit = ()
+```
 
 (ii) What happens if you call it as `lenc xs (fun v -> 2*v)` instead?
 
-> **Answer:**
+> **Answer:** See file **Cont.fs**
+>
+> It returns the double of the numbers of elements in the list
+>
+> See output below
+
+```fsharp
+lenc [2; 5; 7] (fun v -> 2*v);;
+val it: int = 6
+```
 
 (iii) Write also a tail-recursive version `leni : int list -> int -> int` of the length function, whose second parameter is an accumulating parameter. The function should be called as `leni xs 0`. What is the relation between `lenc` and `leni`?
 
-> **Answer:**
+> **Answer:** See file **Cont.fs**
+>
+> They are both tail-recursive using less stack frames. The integer **acc** is a simple way to represent continuation function **c**
+
+```fsharp
+leni [2; 5; 7] 0;;
+val it: int = 3
+```
 
 </br>
 
@@ -50,15 +75,30 @@ let rec rev xs =
 
 The resulting function `revc` should have type `'a list -> ('a list -> 'a list) -> 'a list` or a more general type such as `'a list -> ('a list -> 'b) -> 'b`. The function may be called as `revc xs id`, where `let id = fun v -> v` is the identity function.
 
-> **Answer:**
+> **Answer:** See file **Cont.fs**
+
+```fsharp
+revc [2; 5; 7] id;;
+val it: int list = [7; 5; 2]
+```
 
 (ii) What happens if you call it as `revc xs (fun v -> v @ v)` instead?
 
-> **Answer:**
+> **Answer:** It duplicates the reversed result of the list per continuation function.
+
+```fsharp
+revc [2; 5; 7] (fun v -> v @ v);; 
+val it: int list = [7; 5; 2; 7; 5; 2]
+```
 
 (iii) Write a tail-recursive reversal function `revi : 'a list -> 'a list-> 'a list`, whose second parameter is an accumulating parameter, and which should be called as `revi xs []`.
 
-> **Answer:**
+> **Answer:** See file **Cont.fs** and output below
+
+```fsharp
+revi [2; 5; 7] [];;
+val it: int list = [7; 5; 2]
+```
 
 </br>
 
@@ -77,7 +117,12 @@ let rec prod xs =
     | x::xr -> x * prod xr;;
 ```
 
-> **Answer:**
+> **Answer:** See file **Cont.fs** and output below
+
+```fsharp
+prod [2; 5; 7] id;;
+val it: int = 70
+```
 
 </br>
 
@@ -89,7 +134,16 @@ let rec prod xs =
 
 Optimize the CPS version of the `prod` function above. It could terminate as soon as it encounters a zero in the list (because any list containing a zero will have product zero), assuming that its continuation simply multiplies the result by some factor. Try calling it in the same two ways as the `lenc` function in Exercise [11.1](#plc-111). Note that even if the non-tail-recursive `prod` were improved to return 0 when encountering a 0, the returned 0 would still be multiplied by all the x values previously encountered.
 
-> **Answer:**
+> **Answer:** See file **Cont.fs**
+
+```fsharp
+optProd [2; 5; 0; 7] id;;
+val it: int = 0
+
+optProd [2; 5; 0; 7] (printf "The answer is '%d' \n");;
+The answer is '0' 
+val it: unit = ()
+```
 
 Write a tail-recursive version `prodi` of the `prod` function that also terminates as soon as it encounters a zero in the list.
 
