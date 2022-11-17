@@ -724,13 +724,6 @@ void sweepPhase()
   }
 }
 
-// test:
-// gcc -o listmachine .\ListVM\ListVM\listmachine.c
-// .\listmachine.exe .\examples\ex30.out 1000
-// .\listmachine.exe -trace .\examples\ex30.out 4
-// .\listmachine.exe .\examples\ex35.out // Should print: 33 33 and 44 44
-// .\listmachine.exe .\examples\ex36.out // Should print: 1 1
-
 void collect(word s[], word sp)
 {
   markPhase(s, sp);

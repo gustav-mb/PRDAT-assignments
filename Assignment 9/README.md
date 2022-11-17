@@ -192,7 +192,48 @@ Improve the sweep phase so that it joins adjacent dead blocks into a single dead
 
 Don't forget to run the list-C programs `ex35.lc` and `ex36.lc` as in Exercise [10.2](#plc-102).
 
-> **Answer:** See file **listmachine.c**
+> **Answer:** See file **listmachine.c** (and new `sweepPhase` function below)
+
+```c
+void sweepPhase()
+{
+  printf("sweeping ...\n");
+
+  word *block = heap;
+
+  // Go through entire heap
+  // Paint black blocks white, and white blocks blue
+  while (inHeap(block))
+  {
+    if (Color(block[0]) == Black)
+    {
+      block[0] = Paint(block[0], White); // Set color to white
+    }
+
+    if (Color(block[0]) == White)
+    {
+      // block[0] = Paint(block[0], Blue); // Set color to blue
+
+      block[1] = (word)freelist; // Set next element to point at the free list
+      freelist = block;          // Set the free list to point to the current free block
+
+      word *adjacentblock = block + Length(block[0]) + 1; // Get pointer to adjacent block
+
+      if (Color(adjacentblock[0]) == White) // Check if color is white
+      {
+        int combinedsize = Length(block[0]) + Length(adjacentblock[0]) + 1; // Combine sizes of blocks
+        block[0] = mkheader(BlockTag(block[0]), combinedsize, Blue);        // Create new header with updated size and color blue
+      }
+      else
+      {
+        block[0] = Paint(block[0], Blue);
+      }
+    }
+
+    block += Length(block[0]) + 1; // Go to next block
+  }
+}
+```
 
 ```txt
 .\listmachine.exe .\examples\ex35.out
