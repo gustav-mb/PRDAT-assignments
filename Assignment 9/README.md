@@ -26,27 +26,27 @@ To understand how the abstract machine and the garbage collector work and how th
 >
 > **`ADD`:**
 >
-> To execute `ADD` the two values at the top of the stack  are  popped first. To do this we untag the two values at the top of the stack. We then add these values together and tag the result.
+> To execute `ADD`, the two values at the top of the stack are popped, untagged and added together. The result is then tagged and pushed to the stack.
 >
 > **`CSTI i`:**
 >
-> To execute `CST i` the abstract machine looks up the CSTI instruction in the program array `p` with the index of the program counter `pc` (which is post incremented afterwards by 1). The integer found is then tagged and pushed to the stack at the stack pointer plus 1.
+> To execute `CST i`, the abstract machine looks up the CSTI instruction in the program array `p` with the index of the program counter `pc` (which is post incremented afterwards by 1). The integer found is then tagged and pushed to the stack at the stack pointer plus 1.
 >
 > **`NIL`:**
 >
->To execute `NIL` the value at the stack pointer is set to 0. Afterwards the stackpointer is incremented to prepare for the next command.
+> To execute `NIL`, the value at the stack pointer is set to 0 (thereby signifying a reference, since LSB is 0). Afterwards the stackpointer is incremented to prepare for the next command.
 >
 > **`IFZERO`:**
 >
-> To execute `IFZERO` The word at the stackpointer is saved in local variable v. Then the stackpointer is decremented. First we check whether or not v is an integer. Then we check if the integer is equal to zero. If that is the case, then the next instruction will the one after the current instruction. If not, it will jump to the instruction after that
+> To execute `IFZERO`, the word at the stackpointer is saved in local variable v. Then the stackpointer is decremented. First we check whether or not v is an integer. If true, we untag v and check if it is 0, If that is the case, then the next instruction will the one after the current instruction. If not, it will jump to the instruction after that (by incrementing `pc`).
 >
 > **`CONS`:**
 >
-> To execute `CONS` the abstract machine first allocates a 2-byte header to the heap with a CONSTAG (0). This returns a pointer to the created cons cell. It then adds the two values from the stack to the cons cell and adds the pointer to the cons cell to the stack.
+> To execute `CONS`, the abstract machine first allocates a word pointer of size 2. It then adds the two top values from the stack to the cons cell and adds the pointer to the cons cell to the stack.
 >
 > **`CAR`:**
 >
-> To execute `CAR`, the word saved at the stackpointers location is saved. If the reference is 0, then the reference is null and the program returns. If it is a valid reference, then the value at the stackpointer location will be set to the first block of the word(p[1]).
+> To execute `CAR`, the word saved at the stackpointers location is saved. If the reference is 0, then the reference is `nil` and the program returns. If it is a valid reference, then the value at the stackpointer location will be set to the first block of the word (`p[1]`).
 >
 > **`SETCAR`:**
 >
@@ -61,13 +61,33 @@ To understand how the abstract machine and the garbage collector work and how th
 >
 > The result of applying the macro Length returns the length part of the block header. We know that a block has all 0s for type (t), and by bit shifting right by 2, we remove the color bits. The bitwise AND enforces that we only obtain the block length (the ns) because of the bitmask.
 >
+> `tttttttt nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnngg >> 2` ->
+>
+> `tttttttt ttnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn` &
+>
+> `00000000 00111111 11111111 11111111 11111111 11111111 11111111 11111111` ->
+>
+> `00000000 00nnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn`
+>
 > **`Color`:**
 >
 > The result of applying the macro Color returns the color part of the block header. The bit mask 3 has the last two bits set to 1 and all others 0, which when applying bitwise AND to the header, returns the last 2 bits.
 >
+> `tttttttt nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnngg` &
+>
+> `00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000011` ->
+>
+> `00000000 00000000 00000000 00000000 00000000 00000000 00000000 000000gg`
+>
 > **`Paint`:**
 >
-> As result of applying the mask we mantain the tag and length and ignore the last two bits from the header, to then with the operation OR ( | color) add the macro Color to the original tag and length.  
+> As result of applying the mask we mantain the tag and length and ignore the last two color bits from the header. We then take the bitwise OR of the color and the "colorless header" which adds the color bits to the header.
+>
+> (`tttttttt nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnngg` &
+>
+> `11111111 11111111 11111111 11111111 11111111 11111111 11111111 11111100`) |
+>
+> `tttttttt nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnGG`
 
 (iii) When does the abstract machine, or more precisely, its instruction interpretation loop, call the `allocate(…)` function? Is there any other interaction between the abstract machine (also called the mutator) and the garbage collector?
 
