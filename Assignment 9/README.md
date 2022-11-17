@@ -59,24 +59,23 @@ To understand how the abstract machine and the garbage collector work and how th
 >
 > **`Length`:**
 >
-> #define Length(hdr)   (((hdr)>>2)&0x003FFFFFFFFFFFFF)
-> ttttttttnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnngg
+> The result of applying the macro Length returns the length part of the block header. We know that a block has all 0s for type (t), and by bit shifting right by 2, we remove the color bits. The bitwise AND enforces that we only obtain the block length (the ns) because of the bitmask.
 >
 > **`Color`:**
 >
-> #define Color(hdr)    ((hdr)&3)
+> The result of applying the macro Color returns the color part of the block header. The bit mask 3 has the last two bits set to 1 and all others 0, which when applying bitwise AND to the header, returns the last 2 bits.
 >
 > **`Paint`:**
 >
-> #define Paint(hdr, color)  (((hdr)&(0xFFFFFFFFFFFFFFFC))|(color))
+> As result of applying the mask we mantain the tag and length and ignore the last two bits from the header, to then with the operation OR ( | color) add the macro Color to the original tag and length.  
 
 (iii) When does the abstract machine, or more precisely, its instruction interpretation loop, call the `allocate(…)` function? Is there any other interaction between the abstract machine (also called the mutator) and the garbage collector?
 
-> **Answer:**
+> **Answer:** It calls the `allocate(…)` function when the Abstract Machine encounters a `CONS` instruction (i.e., we need to find a free block for the block to be allocated to).
 
 (iv) In what situation will the garbage collector's `collect(…)` function be called?
 
-> **Answer:**
+> **Answer:** The Garbage Collector only calls `colllect(…)` when failing to find a fitting free block during allocation.
 
 </br>
 
@@ -95,7 +94,7 @@ void collect(int s[], int sp) {
 }
 ```
 
-Your `markPhase` function should scan the abstract machine stack `s[0..sp]` and call an auxiliary function `mark(word* block)` on each non-nil heap reference in the stack, to mark live blocks in the heap. Function mark(word* block) should recursively mark everything reachable from the block.
+Your `markPhase` function should scan the abstract machine stack `s[0..sp]` and call an auxiliary function `mark(word* block)` on each non-nil heap reference in the stack, to mark live blocks in the heap. Function `mark(word* block)` should recursively mark everything reachable from the block.
 
 The `sweepPhase` function should scan the entire heap, put white blocks on the freelist, and paint black blocks white. It should ignore blue blocks; they are either already on the freelist or they are orphan blocks which are neither used for data nor on the freelist, because they consist only of a block header, so there is no way to link them into the freelist.
 
@@ -105,7 +104,7 @@ Running `listmachine ex30.out 1000` should now work, also for arguments that are
 
 Remember that the listmachine has a tracing mode `listmachine -trace ex30.out 4` so you can see the stack state just before your garbage collector crashes.
 
-Also, calling the `heapStatistics ()` function in `listmachine.c` performs some checking of the heap's consistency and reports some statistics on the number of used and free blocks and so on. It may be informative to call it before and after garbage collection, and between the mark and sweep phases.
+Also, calling the `heapStatistics()` function in `listmachine.c` performs some checking of the heap's consistency and reports some statistics on the number of used and free blocks and so on. It may be informative to call it before and after garbage collection, and between the mark and sweep phases.
 
 When your garbage collector works, use it to run the list-C programs `ex35.lc` and `ex36.lc` and check that they produce the expected output (described in their source files). These programs build shared and cyclic data structures in the heap, and this may reveal flaws in your garbage collector.
 
