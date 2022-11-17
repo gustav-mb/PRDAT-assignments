@@ -108,7 +108,97 @@ Also, calling the `heapStatistics()` function in `listmachine.c` performs some c
 
 When your garbage collector works, use it to run the list-C programs `ex35.lc` and `ex36.lc` and check that they produce the expected output (described in their source files). These programs build shared and cyclic data structures in the heap, and this may reveal flaws in your garbage collector.
 
-> **Answer:**
+> **Answer:** See file **listmachine.c** (and below)
+
+```c
+void markPhase(word s[], word sp)
+{
+  printf("marking ...\n");
+
+  // Go through stack [0..sp] and call mark
+  for (int i = 0; i <= sp; i++)
+  {
+    if (inHeap((word *)s[i]))
+    {
+      // Check if s[i] is a reference and not nil
+      if (!IsInt(s[i]) && s[i] != 0)
+      {
+        mark((word *)s[i]);
+      }
+    }
+  }
+}
+
+// Exercise 10.2
+void mark(word *block)
+{
+  if (inHeap(block))
+  {
+    block[0] = Paint(block[0], Black);
+
+    // Recursively mark anything reachable from the block
+    for (int i = 1; i <= Length(block[0]); i++)
+    {
+      mark((word *)block[i]);
+    }
+  }
+}
+
+// Exercise 10.2
+void sweepPhase()
+{
+  printf("sweeping ...\n");
+
+  word *h = heap;
+
+  // Go through entire heap
+  // Paint black blocks white, and white blocks blue
+  while (h < afterHeap)
+  {
+    if (Color(h[0]) == Black)
+    {
+      h[0] = Paint(h[0], White);
+    }
+
+    if (Color(h[0]) == White)
+    {
+      h[0] = Paint(h[0], Blue);
+
+      // Put on free list
+      h[1] = (word)freelist;
+      freelist = h;
+    }
+
+    h = h + Length(h[0]) + 1; // Pointer to next block
+  }
+}
+```
+
+```txt
+.\listmachine.exe .\examples\ex35.out
+33 33 
+
+COLLECT
+marking ...
+Heap: 333 blocks (666 words); of which 0 free (0 words, largest 0 words); 1 orphans
+
+SWEEP
+sweeping ...
+Heap: 333 blocks (666 words); of which 333 free (666 words, largest 2 words); 1 orphans
+
+44 44
+Used 0 cpu milli-seconds
+```
+
+```txt
+Example ex36 not working:
+Cyclic Scturcture ?
+
+❯ .\listmachine.exe .\examples\ex36.out
+1 
+COLLECT
+marking ...
+```
 
 </br>
 
@@ -122,7 +212,33 @@ Improve the sweep phase so that it joins adjacent dead blocks into a single dead
 
 Don't forget to run the list-C programs `ex35.lc` and `ex36.lc` as in Exercise [10.2](#plc-102).
 
-> **Answer:**
+> **Answer:** See file **listmachine.c**
+
+```txt
+.\listmachine.exe .\examples\ex35.out
+33 33 
+
+COLLECT
+marking ...
+Heap: 333 blocks (666 words); of which 0 free (0 words, largest 0 words); 1 orphans
+
+SWEEP
+sweeping ...
+Heap: 333 blocks (666 words); of which 333 free (666 words, largest 2 words); 1 orphans
+
+44 44
+Used 0 cpu milli-seconds
+```
+
+Example ex36 not working:
+Cyclic Scturcture ?
+
+```txt
+.\listmachine.exe .\examples\ex36.out
+1 
+COLLECT
+marking ...
+```
 
 </br>
 
