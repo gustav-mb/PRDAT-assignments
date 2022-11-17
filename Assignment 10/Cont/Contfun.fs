@@ -125,7 +125,7 @@ let run1 e = eval1 e []
     * An environment env in which to evalute it.
     * A success continuation cont which accepts as argument the value
       of the expression.
-    * A error continuation econt, which is applied when an exception
+    * An error continuation econt, which is applied when an exception
       is thrown
 
    It returns an answer: Result i or Abort s.  When the evaluation
@@ -177,7 +177,7 @@ let rec coEval2 (e : expr) (env : value env) (cont : int -> answer)
             let fBodyEnv = (x, Int xVal) :: (f, fClosure) :: fDeclEnv
             coEval2 fBody fBodyEnv cont econt)
            econt
-       | _ -> raise (Failure "eval Call: not a function")
+       | _ -> Abort "eval Call: not a function"
     | Raise exn -> econt exn
     | TryWith (e1, exn, e2) -> 
       let econt1 thrown =
@@ -194,7 +194,6 @@ let eval2 e env =
         (fun (Exn s) -> Abort ("Uncaught exception: " + s))
 
 let run2 e = eval2 e []
-
 
 (* Examples in abstract syntax *)
 
@@ -253,3 +252,9 @@ let ex6 = TryWith(Prim("*", CstI 11, Raise (Exn "Outahere")),
 let ex7 = TryWith(Prim("*", CstI 11, Raise (Exn "Outahere")),
                   Exn "Outahere", 
                   CstI 999);
+
+(* Examples to get Abort in coEval1 *)
+let ex10 = Letfun("foo", "y", CstI 3, Var "foo")    (* Function foo used as variable. *)
+let ex11 = Prim("foo", CstI 3, CstI 4)              (* Unknown primitime *)
+let ex12 = Let("foo", CstI 3, Call("foo", CstI 4))  (* foo is not a function *)
+let ex13 = Raise (Exn "Uncaught")
