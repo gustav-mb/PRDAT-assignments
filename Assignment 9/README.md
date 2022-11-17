@@ -128,68 +128,33 @@ Also, calling the `heapStatistics()` function in `listmachine.c` performs some c
 
 When your garbage collector works, use it to run the list-C programs `ex35.lc` and `ex36.lc` and check that they produce the expected output (described in their source files). These programs build shared and cyclic data structures in the heap, and this may reveal flaws in your garbage collector.
 
-> **Answer:** See file **listmachine.c** (and below)
+> **Answer:** See file **listmachine.c** (and function `sweepPhase` below)
 
 ```c
-void markPhase(word s[], word sp)
-{
-  printf("marking ...\n");
-
-  // Go through stack [0..sp] and call mark
-  for (int i = 0; i <= sp; i++)
-  {
-    if (inHeap((word *)s[i]))
-    {
-      // Check if s[i] is a reference and not nil
-      if (!IsInt(s[i]) && s[i] != 0)
-      {
-        mark((word *)s[i]);
-      }
-    }
-  }
-}
-
-// Exercise 10.2
-void mark(word *block)
-{
-  if (inHeap(block))
-  {
-    block[0] = Paint(block[0], Black);
-
-    // Recursively mark anything reachable from the block
-    for (int i = 1; i <= Length(block[0]); i++)
-    {
-      mark((word *)block[i]);
-    }
-  }
-}
-
-// Exercise 10.2
 void sweepPhase()
 {
   printf("sweeping ...\n");
 
-  word *h = heap;
+  word *block = heap;
 
   // Go through entire heap
   // Paint black blocks white, and white blocks blue
-  while (h < afterHeap)
+  while (inHeap(block))
   {
-    if (Color(h[0]) == Black)
+    if (Color(block[0]) == Black)
     {
-      h[0] = Paint(h[0], White);
+      block[0] = Paint(block[0], White); // Set color to white
     }
 
-    if (Color(h[0]) == White)
+    if (Color(block[0]) == White)
     {
-      h[0] = Paint(h[0], Blue);
+      block[0] = Paint(block[0], Blue); // Set color to blue
 
-      // Put on free list
-      h[1] = (word)freelist;
-      freelist = h;
+      block[1] = (word)freelist; // Set next element to point at the free list
+      freelist = block;          // Set the free list to point to the current free block
     }
 
-    h = h + Length(h[0]) + 1; // Pointer to next block
+    block += Length(block[0]) + 1; // Go to next block
   }
 }
 ```
@@ -197,27 +162,22 @@ void sweepPhase()
 ```txt
 .\listmachine.exe .\examples\ex35.out
 33 33 
-
-COLLECT
 marking ...
 Heap: 333 blocks (666 words); of which 0 free (0 words, largest 0 words); 1 orphans
-
-SWEEP
 sweeping ...
-Heap: 333 blocks (666 words); of which 333 free (666 words, largest 2 words); 1 orphans
-
+Heap: 168 blocks (831 words); of which 168 free (831 words, largest 5 words); 1 orphans
 44 44
 Used 0 cpu milli-seconds
 ```
 
 ```txt
-Example ex36 not working:
-Cyclic Scturcture ?
-
-❯ .\listmachine.exe .\examples\ex36.out
 1 
-COLLECT
 marking ...
+Heap: 333 blocks (666 words); of which 0 free (0 words, largest 0 words); 1 orphans
+sweeping ...
+Heap: 167 blocks (832 words); of which 167 free (832 words, largest 5 words); 1 orphans
+1 
+Used 0 cpu milli-seconds
 ```
 
 </br>
@@ -237,27 +197,23 @@ Don't forget to run the list-C programs `ex35.lc` and `ex36.lc` as in Exercise [
 ```txt
 .\listmachine.exe .\examples\ex35.out
 33 33 
-
-COLLECT
 marking ...
 Heap: 333 blocks (666 words); of which 0 free (0 words, largest 0 words); 1 orphans
-
-SWEEP
 sweeping ...
-Heap: 333 blocks (666 words); of which 333 free (666 words, largest 2 words); 1 orphans
-
+Heap: 168 blocks (831 words); of which 168 free (831 words, largest 5 words); 1 orphans
 44 44
 Used 0 cpu milli-seconds
 ```
 
-Example ex36 not working:
-Cyclic Scturcture ?
-
 ```txt
 .\listmachine.exe .\examples\ex36.out
 1 
-COLLECT
 marking ...
+Heap: 333 blocks (666 words); of which 0 free (0 words, largest 0 words); 1 orphans
+sweeping ...
+Heap: 167 blocks (832 words); of which 167 free (832 words, largest 5 words); 1 orphans
+1
+Used 0 cpu milli-seconds
 ```
 
 </br>

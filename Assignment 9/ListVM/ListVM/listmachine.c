@@ -631,13 +631,10 @@ void markPhase(word s[], word sp)
   // Go through stack [0..sp] and call mark
   for (int i = 0; i <= sp; i++)
   {
-    if (inHeap((word *)s[i]))
+    // Check if s[i] is a reference and not nil
+    if (!IsInt(s[i]) && s[i] != 0)
     {
-      // Check if s[i] is a reference and not nil
-      if (!IsInt(s[i]) && s[i] != 0)
-      {
-        mark((word *)s[i]);
-      }
+      mark((word *)s[i]);
     }
   }
 }
@@ -645,44 +642,45 @@ void markPhase(word s[], word sp)
 // Exercise 10.2
 void mark(word *block)
 {
-  if (inHeap(block))
-  {
-    block[0] = Paint(block[0], Black);
+  block[0] = Paint(block[0], Black);
 
-    // Recursively mark anything reachable from the block
-    for (int i = 1; i <= Length(block[0]); i++)
+  // Recursively mark anything reachable from the block
+  for (int i = 1; i <= Length(block[0]); i++)
+  {
+    word *child = (word *)block[i];
+
+    if (!IsInt(block[i]) && Color(child[0]) != Black)
     {
-      mark((word *)block[i]);
+      mark((word *)child[i]);
     }
   }
 }
 
-// // Exercise 10.2
+// Exercise 10.2
 // void sweepPhase()
 // {
 //   printf("sweeping ...\n");
 
-//   word *h = heap;
+//   word *block = heap;
 
 //   // Go through entire heap
 //   // Paint black blocks white, and white blocks blue
-//   while (h < afterHeap)
+//   while (inHeap(block))
 //   {
-//     if (Color(h[0]) == Black)
+//     if (Color(block[0]) == Black)
 //     {
-//       h[0] = Paint(h[0], White);
+//       block[0] = Paint(block[0], White); // Set color to white
 //     }
 
-//     if (Color(h[0]) == White)
+//     if (Color(block[0]) == White)
 //     {
-//       h[0] = Paint(h[0], Blue);
+//       block[0] = Paint(block[0], Blue); // Set color to blue
 
-//       // Put on free list
-//       h[1] = (word)freelist;
-//       freelist = h;
+//       block[1] = (word)freelist; // Set next element to point at the free list
+//       freelist = block;          // Set the free list to point to the current free block
 //     }
 
-//     h = h + Length(h[0]) + 1; // Pointer to next block
+//     block += Length(block[0]) + 1; // Go to next block
 //   }
 // }
 
@@ -691,41 +689,38 @@ void sweepPhase()
 {
   printf("sweeping ...\n");
 
-  word *p = heap;
+  word *block = heap;
 
   // Go through entire heap
   // Paint black blocks white, and white blocks blue
-  while (p < afterHeap)
+  while (inHeap(block))
   {
-    if (Color(p[0]) == Black)
+    if (Color(block[0]) == Black)
     {
-      p[0] = Paint(p[0], White);
+      block[0] = Paint(block[0], White); // Set color to white
     }
 
-    if (Color(p[0]) == White)
+    if (Color(block[0]) == White)
     {
-      int n = Length(p[0]);
+      // block[0] = Paint(block[0], Blue); // Set color to blue
 
-      // Coalescing
-      // while (1)
-      // {
-      //   if (Color(p[1 + n]) == White)
-      //   {
-      //     n += Length(p[1 + n]);
-      //     continue;
-      //   }
+      block[1] = (word)freelist; // Set next element to point at the free list
+      freelist = block;          // Set the free list to point to the current free block
 
-      //   break;
-      // }
+      word *adjacentblock = block + Length(block[0]) + 1; // Get pointer to adjacent block
 
-      p[0] = mkheader(BlockTag(p[0]), n, Blue);
-
-      // Put on free list
-      p[1] = (word)freelist;
-      freelist = p;
+      if (Color(adjacentblock[0]) == White) // Check if color is white
+      {
+        int combinedsize = Length(block[0]) + Length(adjacentblock[0]) + 1; // Combine sizes of blocks
+        block[0] = mkheader(BlockTag(block[0]), combinedsize, Blue);        // Create new header with updated size and color blue
+      }
+      else
+      {
+        block[0] = Paint(block[0], Blue);
+      }
     }
 
-    p = p + Length(p[0]) + 1; // Pointer to next block
+    block += Length(block[0]) + 1; // Go to next block
   }
 }
 
@@ -738,10 +733,8 @@ void sweepPhase()
 
 void collect(word s[], word sp)
 {
-  printf("\nCOLLECT\n");
   markPhase(s, sp);
   heapStatistics();
-  printf("\nSWEEP\n");
   sweepPhase();
   heapStatistics();
 }
