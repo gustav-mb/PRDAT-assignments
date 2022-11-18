@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Assignment_11</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <fsLex Include="./MicroC/CLex.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </fsLex>
+    <fsyacc Include="./MicroC/CPar.fsy">
+      <OtherFlags>--module CPar</OtherFlags>
+    </fsyacc>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="./MicroC/Absyn.fs" />
+    <Compile Include="./MicroC/Machine.fs" />
+    <Compile Include="./MicroC/Interp.fs" />
+    <Compile Include="./MicroC/Comp.fs" />
+    <Compile Include="./MicroC/Contcomp.fs" />
+    <Compile Include="./CPar.fsi" />
+    <Compile Include="./CPar.fs" />
+    <Compile Include="./CLex.fs" />
+    <Compile Include="./MicroC/Parse.fs" />
+    <Compile Include="./MicroC/MicroCC.fs" />
+    <Compile Include="./MicroC/ParseAndComp.fs" />
+    <Compile Include="./MicroC/ParseAndContcomp.fs" />
+    <Compile Include="./MicroC/ParseAndRun.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
+    <PackageReference Include="FsLexYacc.Runtime" Version="10.2.0" />
+  </ItemGroup>
+
+</Project>
