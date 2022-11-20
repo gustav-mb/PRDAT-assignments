@@ -12,7 +12,7 @@ Assignments are from Programming Language Concepts (PLC), by Peter Sestoft, Spri
 
 Download `microsml.zip` from the book homepage, unpack it to a folder `Sml`, and build the micro-SML compiler as explained in `README.TXT` step A to C.
 
-Compile the micro-SML exampleex09.smlwith all options, `-opt`, `-verbose` and `-eval`, enabled. This provides the following result:
+Compile the micro-SML `exampleex09.sml` with all options, `-opt`, `-verbose` and `-eval`, enabled. This provides the following result:
 
 * A file `ex09.out` being the byte code for file `ex09.sml`
 * A lot of output on the console, including abstract syntax with tail call and type information, the result of evaluating the program and the assembly byte code
@@ -102,7 +102,13 @@ Interpreting the program you get
 You can use the following steps to implement support for pairs:
 
 1. Write type rules for the primitives `fst` and `snd`, see Fig. 13.6
+
+    ![13.6](appendix/fig13.6.png)
+
 2. Write evaluation rules for the primitives `fst` and `snd`, see Fig. 13.7.
+
+    ![13.7](appendix/fig13.7.png)
+
 3. **FunLex.fsl**: Extend with token `COMMA` and unary primitives `snd` and `fst`.
 4. **FunPar.fsy**: Extend with token `COMMA` and a rule for creating a pair. The concrete syntax is `(e1, e2)`.
 5. **Absyn.fs**: Extend the abstract syntax with a pair expression:
