@@ -71,16 +71,42 @@ let test12 = prodi [2; 5; 7] 1
 
 // Exercise 11.8 (i)
 // 3 5 7 9 
-
-let i = run(Every(Write(Prim("+", FromTo(1, 4), FromTo(2, 5)))))
-
+// 1 + 2 * 1 = 3
+// 1 + 2 * 2 = 5
+// 1 + 2 * 3 = 7
+// 1 + 2 * 4 = 9
+let i = run(Every(Write(Prim("+", CstI 1, Prim("*", CstI 2, FromTo(1, 4))))))
 
 // 21 22 31 32 41 42
+// 10 * (2, 4) + (1, 2)
+// 10 * 2 + 1 = 21
+// 10 * 2 + 2 = 22
+// 10 * 3 + 1 = 31
+// 10 * 3 + 2 = 32
+// 10 * 4 + 1 = 41
+// 10 * 4 + 2 = 42
+let i2 = run(Every(Write(Prim("+", Prim("*", CstI 10, FromTo(2, 4)), FromTo(1, 2)))))
 
 // Exercise 11.8 (ii)
+// The least multiple of 7 that is greater than 50
 
+// 56 < 7 * (0-10)
+// ...
+// 7 * 7 = %
+// 7 * 8 = 56 (least)
+// 7 * 9 = %
+// ...
+let ii = run(Write(Prim("<", CstI 50, Prim("*", CstI 7, FromTo(0, 10)))))
 
 // Exercise 11.8 (iii)
+// sqr 9 16 25 36
+let iii1 = run(Every(Write(Prim1("sqr", FromTo(3, 6)))))
 
+// even 2 4 6
+let iii2 = run(Every(Write(Prim1("even", FromTo(1, 7)))))
 
 // Exercise 11.8 (iv)
+// multiples 3 = 3 6 9 12 ... 
+// let iv1 = run(Every(Write(Prim1("multiples", CstI 3))))
+// multiples (3 to 4) = 3 6 9 12 never backtracking to 4
+// let iv2 = run(Every(Write(Prim1("multiples", FromTo(3, 4)))))

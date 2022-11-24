@@ -151,7 +151,6 @@ val it: int = 0
 
 prodi [2; 5; 7] 1
 val it: int = 70
-
 ```
 
 </br>
@@ -173,11 +172,24 @@ using the interpreter in `Icon.fs` and using abstract syntax instead of the conc
 
 (i) Write an expression that produces and prints the values `3 5 7 9`. Write an expression that produces and prints the values `21 22 31 32 41 42`.
 
-> **Answer:**
+> **Answer:** See file **Cont.fs** and below for output
+
+```fsharp
+run(Every(Write(Prim("+", CstI 1, Prim("*", CstI 2, FromTo(1, 4))))));;
+3 5 7 9 val it: value = Int 0
+
+run(Every(Write(Prim("+", Prim("*", CstI 10, FromTo(2, 4)), FromTo(1, 2)))));;
+21 22 31 32 41 42 val it: value = Int 0
+```
 
 (ii) The micro-Icon language (like real Icon) has no boolean values. Instead, failure is used to mean `false`, and success means `true`. For instance, the less-than comparison operator (<) behaves as follows: `3 < 2` fails, and `3 < 4` succeeds (once) with the value 4. Similarly, thanks to backtracking, `3 < (1 to 5)` succeeds twice, giving the values 4 and 5. Use this to write an expression that prints the least multiple of 7 that is greater than 50.
 
-> **Answer:**
+> **Answer:** See file **Cont.fs** and below for output
+
+```fsharp
+run(Write(Prim("<", CstI 50, Prim("*", CstI 7, FromTo(0, 10)))));;
+56 val it: value = Int 56
+```
 
 (iii) Extend the abstract syntax with unary (one-argument) primitive functions, like this:
 
@@ -193,11 +205,21 @@ Extend the interpreter `eval` to handle such unary primitives, and define two su
 
 (b) Define a primitive `even` that fails if its argument is odd, and succeeds if it is even (producing the argument as result). For instance, `square(3 to 6)` should succeed four times, with the results 9, 16, 25, 36, and `even(1 to 7)` should succeed three times with the results 2, 4, 6.
 
-> **Answer:** See file **Icon.fs**
+> **Answer:** See files **Icon.fs** and **Cont.fs** (for tests)
+
+```fsharp
+run(Every(Write(Prim1("sqr", FromTo(3, 6)))));;
+9 16 25 36 val iii1: value = Int 0
+
+run(Every(Write(Prim1("even", FromTo(1, 7)))));;
+2 4 6 val it: value = Int 0
+```
 
 (iv) Define a unary primitive `multiples` that succeeds infinitely many times, producing all multiples of its argument. For instance, `multiple (3)` should produce 3, 6, 9, .... Note that `multiples(3 to 4)` would produce multiples of 3 forever, and would never backtrack to the subexpression `(3 to 4)` to begin producing multiples of 4.
 
-> **Answer:** See file **Icon.fs**
+> **Answer:** See files **Icon.fs** and **Cont.fs** (for tests)
+
+![11.8iv](appendix/11.8(iv)_output.png)
 
 </br>
 
