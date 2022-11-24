@@ -79,27 +79,72 @@ For instance, `11 < 22` should compile to the same code as `true`, and `22 < 11`
 > **Answer:** See files **Contcomp.fs** and **12/12.2i.c** (for test)
 
 ```fsharp
-// Not optimized
+// NOT OPTIMIZED
 contCompileToFile (fromFile "12/12.2i.c") "12.2i.out";;
 val it: Machine.instr list =
   [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 11; CSTI 22;
-   LT; STI; INCSP -1; GETBP; CSTI 11; CSTI 10; LT; STI; RET 1]
+   LT; STI; INCSP -1; GETBP; CSTI 11; CSTI 11; LT; STI; INCSP -1; GETBP;
+   CSTI 11; CSTI 10; LT; STI; RET 1]
 
+// OPTIMIZED
 // True 11 < 22  -> CSTI 1
+// False 11 < 11 -> CSTI 0
 // False 11 < 10 -> CSTI 0
 contCompileToFile (fromFile "12/12.2i.c") "12.2i.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
+   INCSP -1; GETBP; CSTI 0; STI; INCSP -1; GETBP; CSTI 0; STI; RET 1]
+```
+
+Further improve the code generation so that all comparisons with constant arguments are compiled to the same code as `true` (e.g. `11 <= 22` and `11 != 22` and `22 > 11` and `22 >= 11`) or `false`.
+
+> **Answer:** See files **Contcomp.fs**, **12/12.2ii.c** and **12/12.2iii.c** (for test)
+
+```fsharp
+// NOT OPTIMIZED
+contCompileToFile (fromFile "12/12.2ii.c") "12.2ii.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 11; CSTI 22;
+   SWAP; LT; NOT; STI; INCSP -1; GETBP; CSTI 11; CSTI 11; SWAP; LT; NOT; STI;
+   INCSP -1; GETBP; CSTI 11; CSTI 10; SWAP; LT; NOT; STI; RET 1]
+
+// OPTIMIZED
+// True 11 <= 22  -> CSTI 1
+// True 11 <= 11  -> CSTI 1
+// False 11 <= 10 -> CSTI 0
+contCompileToFile (fromFile "12/12.2ii.c") "12.2ii.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
+   INCSP -1; GETBP; CSTI 1; STI; INCSP -1; GETBP; CSTI 0; STI; RET 1]
+```
+
+```fsharp
+// NOT OPTIMIZED
+contCompileToFile (fromFile "12/12.2iii.c") "12.2iii.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 11; CSTI 22;
+   EQ; NOT; STI; INCSP -1; GETBP; CSTI 11; CSTI 11; EQ; STI; RET 1]
+
+// OPTIMIZED
+// True 11 != 22  -> CSTI 1
+// False 11 != 11  -> CSTI 0
+contCompileToFile (fromFile "12/12.2iii.c") "12.2iii.out";;
 val it: Machine.instr list =
   [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
    INCSP -1; GETBP; CSTI 0; STI; RET 1]
 ```
 
-Further improve the code generation so that all comparisons with constant arguments are compiled to the same code as `true` (e.g. `11 <= 22` and `11 != 22` and `22 > 11` and `22 >= 11`) or `false`.
-
-> **Answer:** See files **Contcomp.fs** and **12/12.2ii.c** (for test)
-
 Check that `if (11 <=22) print 33;` compiles to code that unconditionally executes `print 33` without performing any test or jump.
 
-> **Answer:**
+> **Answer:** See files **Contcomp.fs** and **12/12.2iv.c** (for test)
+
+```fsharp
+// NOT OPTIMIZED
+contCompileToFile (fromFile "12/12.2iv.c") "12.2iv.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; CSTI 11; CSTI 22; SWAP; LT;
+   IFNZRO "L2"; IFZERO "L2"; CSTI 33; PRINTI; RET 0; Label "L2"; RET -1]
+```
 
 </br>
 

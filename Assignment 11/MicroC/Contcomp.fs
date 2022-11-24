@@ -108,6 +108,9 @@ let rec addCST i C =
     // CSTI 11; CSTI 22; SWAP; LT; NOT
     | (i1, CSTI i2 :: SWAP :: LT :: NOT :: C1) -> 
           if i1 <= i2 then CSTI 1 :: C1 else CSTI 0 :: C1
+    // CSTI 11; CSTI 22; EQ; NOT;
+    | (i1, CSTI i2 :: EQ :: NOT :: C1) -> 
+          if i1 <> i2 then CSTI 1 :: C1 else CSTI 0 :: C1    
     | _                     -> CSTI i :: C
 
 // Exercise 12.1
