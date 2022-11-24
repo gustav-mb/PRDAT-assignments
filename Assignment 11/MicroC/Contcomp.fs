@@ -102,7 +102,23 @@ let rec addCST i C =
     | (_, IFZERO lab :: C1) -> C1
     | (0, IFNZRO lab :: C1) -> C1
     | (_, IFNZRO lab :: C1) -> addGOTO lab C1
+    // Exercise 12.2 i
+    | (i1, CSTI i2 :: LT :: C1) -> if i1 < i2 then CSTI 1 :: C1 else CSTI 0 :: C1    
+    // Exercise 12.2 ii
+    // CSTI 11; CSTI 22; SWAP; LT; NOT
+    | (i1, CSTI i2 :: SWAP :: LT :: NOT :: C1) -> 
+          if i1 <= i2 then CSTI 1 :: C1 else CSTI 0 :: C1
     | _                     -> CSTI i :: C
+
+// Exercise 12.1
+let rec addIFZERO (lab3: label) C =
+  match C with
+  | IFZERO l3 :: GOTO l2 :: Label l3' :: C1 when lab3 = l3 && lab3 = l3' ->
+      IFNZRO l2 :: Label lab3 :: C1
+  | IFNZRO l3 :: GOTO l2 :: Label l3' :: C1 when lab3 = l3 && lab3 = l3' ->
+      IFZERO l2 :: Label lab3 :: C1
+  | _ -> 
+    IFZERO lab3 :: C
             
 (* ------------------------------------------------------------------- *)
 
@@ -188,8 +204,9 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr 
     | If(e, stmt1, stmt2) -> 
       let (jumpend, C1) = makeJump C
       let (labelse, C2) = addLabel (cStmt stmt2 varEnv funEnv C1)
-      cExpr e varEnv funEnv (IFZERO labelse 
-       :: cStmt stmt1 varEnv funEnv (addJump jumpend C2))
+      cExpr e varEnv funEnv (addIFZERO labelse (IFZERO labelse :: cStmt stmt1 varEnv funEnv (addJump jumpend C2)))
+      // (IFZERO labelse
+      //   :: cStmt stmt1 varEnv funEnv (addJump jumpend C2))
     | While(e, body) ->
       let labbegin = newLabel()
       let (jumptest, C1) = 

@@ -49,15 +49,21 @@ where the conditional jump jumps over an unconditional jump. Instead it should g
 IFNZRO L2; Label L3; ....
 ```
 
-> **Answer:**
-
 Define a new auxiliary function `addIFZERO lab3 C` which tests whether `C` has the structure shown above. In the code generation for `If(e,s1,s2)` in `cStmt`, instead of doing `IFZERO labelse:: code` you must call the auxiliary to do the consing, as in `addIFZERO labelse code`.
 
 In fact, everywhere in the compiler where you would previously just cons `IFZERO lab` onto something, you should call `addIFZERO` instead to make sure the code gets optimized.
 
 A similar optimization can be made for `IFNZRO L3; GOTO L2; Label L3`. This is done in much the same way.
 
-> **Answer:**
+> **Answer:** See file **Contcomp.fs** and output below
+
+```txt
+contCompileToFile (fromFile ".\MicroC\examples\ex16.c") "ex16.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (1, "L1"); STOP; Label "L1"; GETBP; LDI; IFNZRO "L2";
+   Label "L3"; CSTI 1111; PRINTI; INCSP -1; Label "L2"; CSTI 2222; PRINTI;
+   RET 1]
+```
 
 </br>
 
@@ -70,11 +76,26 @@ A similar optimization can be made for `IFNZRO L3; GOTO L2; Label L3`. This is d
 Improve code generation in the continuation-based micro-C compiler so that a less-than comparison with *constant* arguments is compiled to its truth value.
 For instance, `11 < 22` should compile to the same code as `true`, and `22 < 11` should compile to the same code as `false`. This can be done by a small extension of the `addCST` function in `Contcomp.fs`.
 
-> **Answer:**
+> **Answer:** See files **Contcomp.fs** and **12/12.2i.c** (for test)
+
+```fsharp
+// Not optimized
+contCompileToFile (fromFile "12/12.2i.c") "12.2i.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 11; CSTI 22;
+   LT; STI; INCSP -1; GETBP; CSTI 11; CSTI 10; LT; STI; RET 1]
+
+// True 11 < 22  -> CSTI 1
+// False 11 < 10 -> CSTI 0
+contCompileToFile (fromFile "12/12.2i.c") "12.2i.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
+   INCSP -1; GETBP; CSTI 0; STI; RET 1]
+```
 
 Further improve the code generation so that all comparisons with constant arguments are compiled to the same code as `true` (e.g. `11 <= 22` and `11 != 22` and `22 > 11` and `22 >= 11`) or `false`.
 
-> **Answer:**
+> **Answer:** See files **Contcomp.fs** and **12/12.2ii.c** (for test)
 
 Check that `if (11 <=22) print 33;` compiles to code that unconditionally executes `print 33` without performing any test or jump.
 
