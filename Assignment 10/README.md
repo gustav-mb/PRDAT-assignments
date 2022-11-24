@@ -134,20 +134,25 @@ val it: int = 70
 
 Optimize the CPS version of the `prod` function above. It could terminate as soon as it encounters a zero in the list (because any list containing a zero will have product zero), assuming that its continuation simply multiplies the result by some factor. Try calling it in the same two ways as the `lenc` function in Exercise [11.1](#plc-111). Note that even if the non-tail-recursive `prod` were improved to return 0 when encountering a 0, the returned 0 would still be multiplied by all the x values previously encountered.
 
-> **Answer:** See file **Cont.fs**
+> **Answer:** See file **Cont.fs** and output below
 
 ```fsharp
 optProd [2; 5; 0; 7] id;;
 val it: int = 0
-
-optProd [2; 5; 0; 7] (printf "The answer is '%d' \n");;
-The answer is '0' 
-val it: unit = ()
 ```
 
 Write a tail-recursive version `prodi` of the `prod` function that also terminates as soon as it encounters a zero in the list.
 
-> **Answer:**
+> **Answer:** See file **Cont.fs** and output
+
+```fsharp
+prodi [2; 5; 0; 7] 1;;
+val it: int = 0
+
+prodi [2; 5; 7] 1
+val it: int = 70
+
+```
 
 </br>
 

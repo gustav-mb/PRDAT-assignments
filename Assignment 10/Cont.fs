@@ -50,25 +50,32 @@ let rec prod xs c =
 let test8 = prod [2; 5; 7] id
 
 // Exercise 11.4
-// let rec optProd xs c =
-//     match xs with
-//     | []              -> c 1
-//     | x::_ when x = 0 -> c 0
-//     | x::xr            -> prod xr (fun v -> c(v * x))
+let rec optProd xs c =
+    match xs with
+    | []         -> c 1
+    | 0 :: _     -> 0
+    | x :: xr    -> optProd xr (fun v -> c(v * x))
 
-// let test9 = optProd [2; 5; 0; 7] id
+let test9 = optProd [2; 5; 0; 7] id
+let test9x = optProd [2; 5; 7] id
 // let test10 = optProd [2; 5; 0; 7] (printf "The answer is '%d' \n")
 
-// let rec prodi xs acc =
-//     match xs with
-//     | []    -> acc
-//     | x::xr -> prodi 
+let rec prodi xs acc =
+    match xs with
+    | []      -> acc
+    | 0 :: _  -> 0
+    | x :: xr -> prodi xr (acc * x)
 
-// let test11 = prodi [2; 5; 0; 7] 1
-// let test12 = prodi [2; 5; 0; 7] 1
+let test11 = prodi [2; 5; 0; 7] 1
+let test12 = prodi [2; 5; 7] 1
 
 // Exercise 11.8 (i)
+// 3 5 7 9 
 
+let i = run(Every(Write(Prim("+", FromTo(1, 4), FromTo(2, 5)))))
+
+
+// 21 22 31 32 41 42
 
 // Exercise 11.8 (ii)
 
