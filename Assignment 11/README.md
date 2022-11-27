@@ -228,6 +228,8 @@ Extend the micro-C abstract syntax (file `Absyn.fs`) with conditional expression
 
 The expression `Cond(e1, e2, e3)` must evaluate `e1`, and if the result is nonzero, must evaluate `e2`, otherwise `e3`. (If you want to extend also the lexer and parser to accept this new syntax, then note that `?` and `:` are right associative; but implementing them in the lexer and parser is not strictly necessary for this exercise).
 
+> **Answer:** See files **Absyn**, **CLex.fsl** and **CPar.fsy**
+
 Schematically, the conditional expression should be compiled to the code shown below:
 
 ```txt
@@ -238,8 +240,6 @@ Schematically, the conditional expression should be compiled to the code shown b
 L1: <e3>
 L2:
 ```
-
-> **Answer:**
 
 Extend the continuation-based micro-C compiler (file `Contcomp.fs`) to compile conditional expressions to stack machine code. Your compiler should optimize code while generating it. Check that your compiler compiles the following two examples to code that works properly:
 
@@ -253,9 +253,16 @@ The first one has abstract syntax `Cond(CstI 1, CstI 1111, CstI 2222)`. Unless y
 cExpr (Cond(CstI 1, CstI 1111, CstI 2222)) ([], 0) [] [];
 ```
 
-Do not waste too much effort trying to get your compiler to optimize  away everything that is not needed. This seems impossible without traversing and modifying already generated code.
+Do not waste too much effort trying to get your compiler to optimize away everything that is not needed. This seems impossible without traversing and modifying already generated code.
 
-> **Answer:**
+> **Answer:** See file **Contcomp.fs** and **12/12.3.c** (for test)
+
+```fsharp
+contCompileToFile (fromFile "12/12.3.c") "12.3.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; CSTI 1111; GOTO "L3"; Label "L4";
+   CSTI 2222; Label "L3"; INCSP -1; Label "L2"; CSTI 2222; RET 0]
+```
 
 </br>
 
