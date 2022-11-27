@@ -70,11 +70,24 @@ let rec deadcode C =
     | Label lab :: _  -> C
     | _         :: C1 -> deadcode C1
 
+// Exercise 12.1
+let addIFZERO (lab3: label) C =
+    match C with
+    | GOTO l2 :: Label l3 :: C1 when lab3 = l3 ->
+        IFNZRO l2 :: Label lab3 :: C1
+    | _ -> IFZERO lab3 :: C
+
+let addIFNZRO (lab3 :label) C =
+    match C with
+    | GOTO l2 :: Label l3 :: C1 when lab3 = l3 ->
+        IFZERO l2 :: Label lab3 :: C1
+    | _ -> IFNZRO lab3 :: C
+
 let addNOT C =
     match C with
     | NOT        :: C1 -> C1
-    | IFZERO lab :: C1 -> IFNZRO lab :: C1 
-    | IFNZRO lab :: C1 -> IFZERO lab :: C1 
+    | IFZERO lab :: C1 -> addIFNZRO lab C1 
+    | IFNZRO lab :: C1 -> addIFZERO lab C1 
     | _                -> NOT :: C
 
 let addJump jump C =                    (* jump is GOTO or RET *)
@@ -117,19 +130,6 @@ let rec addCST i C =
     | (i1, CSTI i2 :: LT :: C1) ->                      // <
         if i1 < i2 then addCST 1 C1 else addCST 0 C1   
     | _                     -> CSTI i :: C
-
-// Exercise 12.1
-let addIFZERO (lab3: label) C =
-    match C with
-    | GOTO l2 :: Label l3 :: C1 when lab3 = l3 ->
-        IFNZRO l2 :: Label lab3 :: C1
-    | _ -> IFZERO lab3 :: C
-
-let addIFNZRO (lab3 :label) C =
-    match C with
-    | GOTO l2 :: Label l3 :: C1 when lab3 = l3 ->
-        IFZERO l2 :: Label lab3 :: C1
-    | _ -> IFNZRO lab3 :: C
 
 (* ------------------------------------------------------------------- *)
 
