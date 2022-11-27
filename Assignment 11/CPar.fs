@@ -1033,7 +1033,7 @@ let _fsyacc_reductions ()  =    [|
                 (
                    (
 # 138 "./MicroC/CPar.fsy"
-                                                               Conditional(_1, _3, _5) 
+                                                               Cond(_1, _3, _5)    
                    )
 # 138 "./MicroC/CPar.fsy"
                  : 'gentype_ExprNotAccess));

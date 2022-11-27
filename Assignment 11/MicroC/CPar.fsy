@@ -135,7 +135,7 @@ ExprNotAccess:
   | Expr LE    Expr                     { Prim2("<=", $1, $3) }
   | Expr SEQAND Expr                    { Andalso($1, $3)     }
   | Expr SEQOR  Expr                    { Orelse($1, $3)      }
-  | Expr QUESTIONMARK Expr COLON Expr   { Conditional($1, $3, $5) } // Exercise 12.3
+  | Expr QUESTIONMARK Expr COLON Expr   { Cond($1, $3, $5)    } // Exercise 12.3
 ;
 
 AtExprNotAccess:

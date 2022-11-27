@@ -23,7 +23,7 @@ and expr =
   | Andalso of expr * expr           (* Sequential and              *)
   | Orelse of expr * expr            (* Sequential or               *)
   | Call of string * expr list       (* Function call f(...)        *)
-  | Conditional of expr * expr * expr // Exercise 12.3
+  | Cond of expr * expr * expr       (* Ternary e1 ? e2 : e3        *) // Exercise 12.3
                                                                    
 and access =                                                       
   | AccVar of string                 (* Variable access        x    *) 
