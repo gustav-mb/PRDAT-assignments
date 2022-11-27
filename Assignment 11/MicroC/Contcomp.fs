@@ -77,6 +77,7 @@ let addIFZERO (lab3: label) C =
         IFNZRO l2 :: Label lab3 :: C1
     | _ -> IFZERO lab3 :: C
 
+// Exercise 12.1
 let addIFNZRO (lab3 :label) C =
     match C with
     | GOTO l2 :: Label l3 :: C1 when lab3 = l3 ->
