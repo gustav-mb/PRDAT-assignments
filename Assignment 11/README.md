@@ -55,9 +55,9 @@ In fact, everywhere in the compiler where you would previously just cons `IFZERO
 
 A similar optimization can be made for `IFNZRO L3; GOTO L2; Label L3`. This is done in much the same way.
 
-> **Answer:** See file **Contcomp.fs** and output below
+> **Answer:** See file **Contcomp.fs** and output from `ex16.c` below
 
-```txt
+```fsharp
 contCompileToFile (fromFile ".\MicroC\examples\ex16.c") "ex16.out";;
 val it: Machine.instr list =
   [LDARGS; CALL (1, "L1"); STOP; Label "L1"; GETBP; LDI; IFNZRO "L2";
@@ -98,9 +98,31 @@ val it: Machine.instr list =
 
 Further improve the code generation so that all comparisons with constant arguments are compiled to the same code as `true` (e.g. `11 <= 22` and `11 != 22` and `22 > 11` and `22 >= 11`) or `false`.
 
-> **Answer:** See files **Contcomp.fs**, **12/12.2ii.c** and **12/12.2iii.c** (for test)
+> **Answer:** See files **Contcomp.fs** and **12/12.2i(2).c**, **12/12.2ii.c**, **12/12.2ii(2).c**, **12/12.2iii.c**, **12/12.2iii(2).c** (for tests)
 
 ```fsharp
+// x > y
+
+// NOT OPTIMIZED
+contCompileToFile (fromFile "12/12.2i(2).c") "12.2i(2).out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 22; CSTI 11;
+   SWAP; LT; STI; INCSP -1; GETBP; CSTI 22; CSTI 22; SWAP; LT; STI; INCSP -1;
+   GETBP; CSTI 10; CSTI 11; SWAP; LT; STI; RET 1]
+
+// OPTIMIZED
+// 22 > 11  -> CSTI 1
+// 22 > 22  -> CSTI 0
+// 10 > 11 -> CSTI 0
+contCompileToFile (fromFile "12/12.2i(2).c") "12.2i(2).out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
+   INCSP -1; GETBP; CSTI 0; STI; INCSP -1; GETBP; CSTI 0; STI; RET 1]
+```
+
+```fsharp
+// x <= y
+
 // NOT OPTIMIZED
 contCompileToFile (fromFile "12/12.2ii.c") "12.2ii.out";;
 val it: Machine.instr list =
@@ -109,9 +131,9 @@ val it: Machine.instr list =
    INCSP -1; GETBP; CSTI 11; CSTI 10; SWAP; LT; NOT; STI; RET 1]
 
 // OPTIMIZED
-// True 11 <= 22  -> CSTI 1
-// True 11 <= 11  -> CSTI 1
-// False 11 <= 10 -> CSTI 0
+// 11 <= 22  -> CSTI 1
+// 11 <= 11  -> CSTI 1
+// 11 <= 10 -> CSTI 0
 contCompileToFile (fromFile "12/12.2ii.c") "12.2ii.out";;
 val it: Machine.instr list =
   [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
@@ -119,6 +141,28 @@ val it: Machine.instr list =
 ```
 
 ```fsharp
+// x >= y
+
+// NOT OPTIMIZED
+contCompileToFile (fromFile "12/12.2ii(2).c") "12.2ii(2).out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 22; CSTI 11;
+   LT; NOT; STI; INCSP -1; GETBP; CSTI 11; CSTI 11; LT; NOT; STI; INCSP -1;
+   GETBP; CSTI 10; CSTI 11; LT; NOT; STI; RET 1]
+
+// OPTIMIZED
+// 22 >= 11 -> CSTI 1
+// 11 >= 11 -> CSTI 1
+// 10 >= 11 -> CSTI 0
+contCompileToFile (fromFile "12/12.2ii(2).c") "12.2ii(2).out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
+   INCSP -1; GETBP; CSTI 1; STI; INCSP -1; GETBP; CSTI 0; STI; RET 1]
+```
+
+```fsharp
+// x != y
+
 // NOT OPTIMIZED
 contCompileToFile (fromFile "12/12.2iii.c") "12.2iii.out";;
 val it: Machine.instr list =
@@ -126,15 +170,33 @@ val it: Machine.instr list =
    EQ; NOT; STI; INCSP -1; GETBP; CSTI 11; CSTI 11; EQ; STI; RET 1]
 
 // OPTIMIZED
-// True 11 != 22  -> CSTI 1
-// False 11 != 11  -> CSTI 0
+// 11 != 22 -> CSTI 1
+// 11 != 11 -> CSTI 0
 contCompileToFile (fromFile "12/12.2iii.c") "12.2iii.out";;
 val it: Machine.instr list =
   [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
    INCSP -1; GETBP; CSTI 0; STI; RET 1]
 ```
 
-Check that `if (11 <=22) print 33;` compiles to code that unconditionally executes `print 33` without performing any test or jump.
+```fsharp
+// x == y
+
+// NOT OPTIMIZED
+contCompileToFile (fromFile "12/12.2iii(2).c") "12.2iii(2).out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 11; CSTI 11;
+   EQ; STI; INCSP -1; GETBP; CSTI 12; CSTI 11; EQ; STI; RET 1]
+
+// OPTIMIZED
+// 11 == 11 -> CSTI 1
+// 12 == 11 -> CSTI 0
+contCompileToFile (fromFile "12/12.2iii(2).c") "12.2iii(2).out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; STI;
+   INCSP -1; GETBP; CSTI 0; STI; RET 1]
+```
+
+Check that `if (11 <= 22) print 33;` compiles to code that unconditionally executes `print 33` without performing any test or jump.
 
 > **Answer:** See files **Contcomp.fs** and **12/12.2iv.c** (for test)
 
@@ -144,6 +206,12 @@ contCompileToFile (fromFile "12/12.2iv.c") "12.2iv.out";;
 val it: Machine.instr list =
   [LDARGS; CALL (0, "L1"); STOP; Label "L1"; CSTI 11; CSTI 22; SWAP; LT;
    IFNZRO "L2"; IFZERO "L2"; CSTI 33; PRINTI; RET 0; Label "L2"; RET -1]
+
+// OPTIMIZED
+contCompileToFile (fromFile "12/12.2iv.c") "12.2iv.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; CSTI 33; PRINTI; RET 0;
+   Label "L2"; RET -1]
 ```
 
 </br>
