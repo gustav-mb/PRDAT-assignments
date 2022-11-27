@@ -19,14 +19,16 @@ let nl = CstI 10
 %token EQ NE GT LT GE LE
 %token NOT SEQOR SEQAND
 %token LPAR RPAR LBRACE RBRACE LBRACK RBRACK SEMI COMMA ASSIGN AMP
+%token QUESTIONMARK COLON // Exercise 12.3
 %token EOF
 
 %right ASSIGN             /* lowest precedence */
+%right QUESTIONMARK COLON // Exercise 12.3
 %nonassoc PRINT
 %left SEQOR
 %left SEQAND
 %left EQ NE 
-%nonassoc GT LT GE LE
+%left GT LT GE LE
 %left PLUS MINUS
 %left TIMES DIV MOD 
 %nonassoc NOT AMP 
@@ -133,6 +135,7 @@ ExprNotAccess:
   | Expr LE    Expr                     { Prim2("<=", $1, $3) }
   | Expr SEQAND Expr                    { Andalso($1, $3)     }
   | Expr SEQOR  Expr                    { Orelse($1, $3)      }
+  | Expr QUESTIONMARK Expr COLON Expr   { Conditional($1, $3, $5) } // Exercise 12.3
 ;
 
 AtExprNotAccess:
