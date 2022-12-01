@@ -52,6 +52,8 @@ type typ =
   | TypV of typevar                     (* type variable              *)
   | TypL of typ                         (* lists                      *)
   | TypE                                (* Exception type             *)
+  // Exercise 13.2
+  | TypP of typ * typ                   (* Pair type *)
 
 and tyvarkind =  
   | NoLink of string                    (* uninstantiated type var.   *)
@@ -104,6 +106,7 @@ let rec freeTypeVars t : typevar list =
   | TypF(t1,t2) -> union(freeTypeVars t1, freeTypeVars t2)
   | TypL t      -> freeTypeVars t
   | TypE        -> []
+  | TypP(t1, t2)-> [] // Exercise 13.2
 
 let occurCheck tyvar tyvars =                     
   if mem tyvar tyvars then failwith "type error: circularity" else ()
@@ -134,6 +137,8 @@ let rec typeToString t : string =
   | TypF(t1, t2) -> "function"
   | TypL t       -> "list"
   | TypE         -> "exn"
+  // Exercise 13.2
+  | TypP(_, _)   -> "pair"
             
 (* Unify two types, equating type variables with types as necessary *)
 
@@ -159,7 +164,10 @@ let rec unify t1 t2 : unit =
   | (TypF _,   t) -> failwith ("type error: function and " + typeToString t)
   | (TypL _,   t) -> failwith ("type error: list and " + typeToString t)
   | (TypE,     t) -> failwith ("type error: exception and " + typeToString t)
-  
+  // Exercise 13.2
+  | (TypP _, TypP _) -> failwith ( "pair can't unify")
+  | _ -> failwith "not implemented"
+
 (* Generate fresh type variables *)
 
 let tyvarno = ref 0
@@ -197,11 +205,13 @@ let rec copyType subst t : typ =
               | (NoLink _, _)  -> t
               | (LinkTo t1, _) -> copyType subst t1
     loop subst
-  | TypF(t1,t2) -> TypF(copyType subst t1, copyType subst t2)
-  | TypL t      -> TypL(copyType subst t)  
-  | TypI        -> TypI
-  | TypB        -> TypB
-  | TypE        -> TypE
+  | TypF(t1,t2)  -> TypF(copyType subst t1, copyType subst t2)
+  | TypL t       -> TypL(copyType subst t)  
+  | TypI         -> TypI
+  | TypB         -> TypB
+  | TypE         -> TypE
+  // Exercise 13.2
+  | TypP(t1, t2) -> TypP(copyType subst t1, copyType subst t2)
 
 (* Create a type from a type scheme (tvs, t) by instantiating all the
    type scheme's parameters tvs with fresh type variables *)
@@ -227,6 +237,8 @@ let rec showType t : string =
     | TypF(t1, t2) -> "(" + pr t1 + " -> " + pr t2 + ")"
     | TypL t       -> "(" + pr t + " list" + ")"
     | TypE         -> "exn"
+    // Exercise 13.2
+    | TypP(t1, t2) -> "(" + pr t1 + ", " + pr t2 + ")"
   pr t 
 
 (* A type environment maps a program variable name to a typescheme *)
@@ -331,6 +343,15 @@ let rec typExpr (lvl : int) (env : tenv) (e : expr<'a>) : typ * expr<typ> =
     unify t1 t2;
     unify typX TypE;
     (t1, TryWith(e1',ExnVar x,e2'))
+  // Exercise 13.2
+  | Pair(e1, e2, _) -> 
+    failwith "not implemented"
+    // let (t1, e1') = typExpr lvl env e1
+    // let (t2, e2') = typExpr lvl env e2 
+    // unify TypB t1;
+    // unify TypB t2;
+    // (TypP,Pair(e1',e2',Some TypP))
+    
 and typValdec (lvl:int) (env:tenv) (t:valdec<'a>) : tenv * valdec<typ> =
   match t with
   | Fundecs fs -> 

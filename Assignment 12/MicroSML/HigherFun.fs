@@ -45,6 +45,7 @@ type value =
   | Int of int
   | List of value list
   | ClosureRef of closure ref
+  | PairV of value * value // Exercise 13.2
 and closure =
   Closure of string * string * expr<typ> * value env       (* (f, x, fBody, fDeclEnv) *)
 
@@ -59,6 +60,8 @@ let rec ppValue = function
   | ClosureRef closRef ->
     match !closRef with
     | Closure(f,x,fBody,fDeclEnv) -> "Closure("+f+","+x+"fBody" + "," + "fDeclEnv" + ")"
+  // Exercise 13.2
+  | PairV(v1, v2) -> "(" + (ppValue v1) + ", " + (ppValue v2) + ")"
 
 let ppEnv fPP env =
   let ppEntry (s,v) acc = sprintf "  %s |-> %s \n" s (fPP v) + acc
@@ -165,6 +168,9 @@ let rec evalExpr (env : value env) (e : expr<typ>)
        match lookupOpt env exn with
        | None -> Abort ("HigherFun.TryWith: Can't find exception " + exn)
        | Some vExn2 -> if vExn1 = vExn2 then evalExpr env e2 cont econt else econt vExn1)
+  // Exercise 13.2
+  | Pair(e1, e2, _) -> 
+      evalExpr env e1 (fun v1 -> evalExpr env e2 (fun v2 -> cont (PairV(v1, v2))) econt) econt
 and evalValdecs (env:value env) (ts:valdec<typ> list) (body: expr<typ>)
                 (cont: value -> answer) (econt: value -> answer) : answer =
   match ts with
@@ -212,6 +218,8 @@ let check e =
     | Call(eFun,eArg,_,_) -> check' eFun env && check' eArg env
     | Raise(e,_) -> check' e env 
     | TryWith(e1,ExnVar exn,e2) -> check' e1 env && check' e2 env && List.exists ((=)exn) env
+    // Exercise 13.2
+    | Pair(e1, e2, _) -> check' e1 env && check' e2 env
   and checkValdec' (b : bool, env : string list) (valdec : valdec<'a>) : bool * string list =
     match valdec with
     |  Fundecs fs -> 

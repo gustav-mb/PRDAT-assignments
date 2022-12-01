@@ -213,6 +213,9 @@ int silent=0; /* Glocal boolean value to run the interpreter in silent mode. Def
 #define THROW 40
 #define PUSHHDLR 41
 #define POPHDLR 42
+// Exercise 13.2
+#define PAIR 43
+#define PRINTP 44
 
 // We check for stack overflow in execcode inbetween execution of two byte code instructions.
 // Such instructions can increate the stack arbitraily, e.g., INCSP. The STACKSAFETYSIZE
@@ -271,6 +274,9 @@ void printInstruction(word p[], word pc) {
   case THROW:     printf("THROW"); break;
   case PUSHHDLR:  printf("PUSHHDLR " WORD_FMT, p[pc+1]); break;
   case POPHDLR:   printf("POPHDLR"); break;
+  // Exercise 13.2
+  case PAIR:      printf("PAIR" WORD_FMT, p[pc+1]); break;
+  case PRINTP:    printf("PRINTP"); break;
   default:     printf("<unknown> " WORD_FMT, p[pc]); break; 
   }
 }
@@ -678,6 +684,11 @@ int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trac
       s[sp-3] = s[sp];
       sp = sp - 3;
     } break;
+
+    //13.2
+    //PAIR
+    //PRINTP
+
     default:                  
       printf("Illegal instruction " WORD_FMT " at address " WORD_FMT " (" WORD_FMT ")\n", p[pc-1], pc-1, (word)&p[pc-1]);
       heapStatistics();

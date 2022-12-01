@@ -338,6 +338,9 @@ You can use the following steps to implement support for pairs:
 
     Some compiler functions must also be extended to handle pair expressions: `ppProg`, `getOptExpr`, `tailcalls` and `freevars`.
 
+// ASK TA ABOUT
+TypeInference.fs Pair on Unify Function
+
 6. **TypeInference.fs**: Extend the `typ` type with the new pair type:
 
     ```fsharp
