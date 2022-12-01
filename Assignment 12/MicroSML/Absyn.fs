@@ -140,6 +140,8 @@ let rec freevars e : string Set =
   | OrElse(e1,e2,_) -> (freevars e1) + (freevars e2)
   | Seq(e1,e2,_) -> (freevars e1) + (freevars e2)
   | Let(valdecs,letBody) ->
+    (* Below (... +fvs - bvs) assumes alpha conversion. See ex11.sml for an example where
+       it fails. Alpha conversion is covered as an exercise. *)  
     let (fvs,bvs) = List.fold freevarsValdec (Set.empty, Set.empty) valdecs
     (freevars letBody) + fvs - bvs 
   | If(e1, e2, e3) -> (freevars e1) + (freevars e2) + (freevars e3)
@@ -148,9 +150,14 @@ let rec freevars e : string Set =
   | Raise(e1,_) -> freevars e1
   | TryWith(e1,ExnVar exn,e2) -> (freevars e1) + (set [exn]) + (freevars e2) (* exn is also free *)
 and freevarsValdec (fvs, bvs) = function (* bvs are bound variables, either globally or in locally. *)
-    Valdec(x,eRhs) -> (fvs + ((freevars eRhs) - set [x]),bvs + set [x])
+    Valdec(x,eRhs) -> (fvs + ((freevars eRhs) - set [x]),bvs + set [x]) 
   | Exn (ExnVar exn,aOpt) -> (fvs,bvs + set [exn])
   | Fundecs(fs) -> 
     let fEnv = Set.ofList (List.map (fun (f,_,_) -> f) fs) (* fBody may recursively call f *)
     let funFree = List.foldBack (fun (_,x,fBody) acc -> (acc + (freevars fBody - fEnv - set [x]))) fs fvs 
     (funFree, bvs + fEnv)
+
+(* Alpha conversion is implemented as an exercise.
+   Example ex11.sml does not work without alpha conversion. *)
+let alphaConv p : program<'a> = p
+

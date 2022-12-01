@@ -54,11 +54,11 @@ type instr =
   | SETCDR                             (* set second field of cons cell   *)
   | PUSHLAB of label                   (* push label on stack             *)
   | ACLOS of int                       (* allocate a closure              *)
-  | HEAPSTI of int                     (* STI operation on heap object    *)
-  | HEAPLDI of int                     (* LDI operation on heap object    *)
-  | THROW                              (* Find exn handler, execute code  *)
-  | PUSHHDLR of label                  (* Push exception handler on stack *)
-  | POPHDLR                            (* Pop exception handler off stack *)
+  | HEAPSTI of int                     (* STI operation on heap allocated object *)
+  | HEAPLDI of int                     (* LDI operation on heap allocated object *)
+  | THROW                              (* Search for exception handle and execute affiliated exception code *)
+  | PUSHHDLR of label                  (* Push exception handler on stack.                                  *)
+  | POPHDLR                            (* Pop exception handler                                             *)
 
 (* Generate new distinct labels *)
 

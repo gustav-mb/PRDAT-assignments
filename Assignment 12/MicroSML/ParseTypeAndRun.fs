@@ -63,9 +63,13 @@ let run s =
   with 
     Failure s -> sprintf "ParseTypeAndRun.run giving error %s" s
 
-let compProg' (opt_p,debug_p,verbose_p,eval_p,program,fname) =
+let compProg' (opt_p,debug_p,verbose_p,eval_p,alpha_p,program,fname) =
   try
-    let p = Absyn.tailcalls program
+    let p = if alpha_p then Absyn.alphaConv program else program
+    let _ = if verbose_p && alpha_p
+              then printf "\nProgram after alpha conversion (exercise):\n%s"
+                    (Absyn.ppProg (fun _ -> "") p)
+    let p = Absyn.tailcalls p
     let _ = if verbose_p && opt_p
             then printf "\nProgram with tailcalls:\n%s" (Absyn.ppProg (fun _ -> "") p)
     let (typ',env',p') = TypeInference.inferProg p
@@ -85,7 +89,7 @@ let compProg' (opt_p,debug_p,verbose_p,eval_p,program,fname) =
     Failure eMsg -> printf "ParseTypeAndRun.compProg' ERROR: %s \n" eMsg
 
 let compProg (program,fname) =
-  compProg' (false,false,false,false,fromString program,fname)
+  compProg' (false,false,false,false,false,fromString program,fname)
 
-let compFile (opt_p,debug_p,verbose_p,eval_p,pname,fname) =
-  compProg' (opt_p,debug_p,verbose_p,eval_p,fromFile pname,fname)    
+let compFile (opt_p,debug_p,verbose_p,eval_p,alpha_p,pname,fname) =
+  compProg' (opt_p,debug_p,verbose_p,eval_p,alpha_p,fromFile pname,fname)    

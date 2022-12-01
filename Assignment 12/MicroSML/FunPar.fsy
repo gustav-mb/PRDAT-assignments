@@ -22,11 +22,15 @@
 %token EOF
 
 %left SEMICOLON               /* lowest precedence  */
-%left ELSE
+%nonassoc LET
+%nonassoc END
+%nonassoc FUN FN TRY WITH RARROW
+%nonassoc IN
+%nonassoc IF ELSE
 %left SEQOR
 %left SEQAND
 %left EQ NE 
-%nonassoc GT LT GE LE
+%left GT LT GE LE
 %right CONS
 %left PLUS MINUS
 %left TIMES DIV MOD

@@ -1,5 +1,6 @@
 (* Example shows the limitation to Absyn.freevars where
-   global variables are identified as free variables to local let constructs. *)
+   global variables are identified as free variables to local let constructs. 
+   Global variables are removed when compiling code for closures, see Contcomp.fs. *)
 
 val x = 1
 val y = 2
