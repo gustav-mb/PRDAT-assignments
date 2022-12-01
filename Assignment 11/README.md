@@ -258,6 +258,14 @@ Do not waste too much effort trying to get your compiler to optimize away everyt
 > **Answer:** See file **Contcomp.fs** and **12/12.3.c** (for test)
 
 ```fsharp
+// NOT OPTIMIZED
+contCompileToFile (fromFile "12/12.3.c") "12.3.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; CSTI 1; Label "L4"; CSTI 1111;
+   GOTO "L3"; Label "L4"; CSTI 2222; Label "L3"; INCSP -1; CSTI 0; Label "L2";
+   CSTI 1111; RET 0; Label "L2"; CSTI 2222; RET 0]
+
+// OPTIMIZED
 contCompileToFile (fromFile "12/12.3.c") "12.3.out";;
 val it: Machine.instr list =
   [LDARGS; CALL (0, "L1"); STOP; Label "L1"; CSTI 1111; GOTO "L3"; Label "L4";
@@ -279,11 +287,53 @@ $$\text{\texttt{e1 || e2} is equivalent to \texttt{(e1 ? 1 : e2)}}$$
 
 Implement the sequential logical operators (`&&` and `||`) this way in your extended compiler from Exercise [12.3](#plc-123). You should change the parser specification in `CPar.fsy` to build `Cond(...)` expressions instead of `Andalso(...)` or `Orelse(...)`.
 
-> **Answer:**
+> **Answer:** See file **CPar.fsy**
 
 Test this approach on file `ex13.c` and possibly other examples. How does the code quality compare to the existing complicated compilation of `&&` and `||`?
 
-> **Answer:**
+> **Answer:** See output below
+>
+> The implementation of `Andalso` and `Orelse` with `Cond` has more instructions thereby making the code quality worse even though the original implementation was more complicated. `Cond` lacks more optimizations to produce greater code quality.
+
+```fsharp
+// NOT WITH COND
+contCompileToFile (fromFile "MicroC/examples/ex13.c") "ex13.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (1, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; ADD;
+  CSTI 1889; STI; INCSP -1; GOTO "L3"; Label "L2"; GETBP; CSTI 1; ADD; GETBP;
+  CSTI 1; ADD; LDI; CSTI 1; ADD; STI; INCSP -1; GETBP; CSTI 1; ADD; LDI;
+  CSTI 4; MOD; IFNZRO "L3"; GETBP; CSTI 1; ADD; LDI; CSTI 100; MOD;
+  IFNZRO "L4"; GETBP; CSTI 1; ADD; LDI; CSTI 400; MOD; IFNZRO "L3";
+  Label "L4"; GETBP; CSTI 1; ADD; LDI; PRINTI; INCSP -1; Label "L3"; GETBP;
+  CSTI 1; ADD; LDI; GETBP; LDI; LT; IFNZRO "L2"; RET 1]
+
+// WITH COND
+contCompileToFile (fromFile "MicroC/examples/ex13.c") "ex13.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (1, "L1"); STOP; Label "L1"; INCSP 1; GETBP; CSTI 1; ADD;
+   CSTI 1889; STI; INCSP -1; GOTO "L3"; Label "L2"; GETBP; CSTI 1; ADD; GETBP;
+   CSTI 1; ADD; LDI; CSTI 1; ADD; STI; INCSP -1; GETBP; CSTI 1; ADD; LDI;
+   CSTI 4; MOD; IFNZRO "L5"; GETBP; CSTI 1; ADD; LDI; CSTI 100; MOD;
+   IFZERO "L6"; CSTI 1; GOTO "L4"; Label "L6"; GETBP; CSTI 1; ADD; LDI;
+   CSTI 400; MOD; NOT; GOTO "L4"; Label "L5"; CSTI 0; Label "L4"; IFZERO "L3";
+   GETBP; CSTI 1; ADD; LDI; PRINTI; INCSP -1; Label "L3"; GETBP; CSTI 1; ADD;
+   LDI; GETBP; LDI; LT; IFNZRO "L2"; RET 1]
+```
+
+Output of running `12/12.4.c`:
+
+```fsharp
+// WITHOUT COND
+contCompileToFile (fromFile "12/12.4.c") "12.4.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; Label "L2"; RET -1]
+
+// WITH COND
+contCompileToFile (fromFile "12/12.4.c") "12.4.out";;
+val it: Machine.instr list =
+  [LDARGS; CALL (0, "L1"); STOP; Label "L1"; CSTI 0; GOTO "L3"; Label "L4";
+   CSTI 0; Label "L3"; IFZERO "L2"; CSTI 0; PRINTI; RET 0; Label "L2"; RET -1]
+```
 
 </br>
 
