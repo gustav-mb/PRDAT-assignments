@@ -8,7 +8,7 @@
 *)
 
 //module Comp
-module Comp1
+module Comp
 
 open System.IO
 open Absyn

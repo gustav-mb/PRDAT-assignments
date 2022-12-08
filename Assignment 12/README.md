@@ -377,7 +377,7 @@ You can use the following steps to implement support for pairs:
 
 10. **Machine.fs**: The byte code instructions `PRINTP` and `PAIR` must be added. You have to assign unique instruction codes to `PRINTP` and `PAIR` that match with same instructions in `msmlmachine.c`.
 
-> **Answer:** See files **Absyn.fs**, **Funlex.fsl**, **FunPar.fsy**, **TypeInference**
+> **Answer:** See file **pair1.sml** and **pair.sml** (for tests)
 >
 > 1\. Not done
 >
@@ -387,22 +387,24 @@ You can use the following steps to implement support for pairs:
 >
 > 4\. DONE - See file **FunPar.fsy**
 >
-> 5\. DONE. Tailcall, Freevars
+> 5\. DONE - See file **Absyn.fs**
 >
-> 6\. Half Done. unify? typExpr?
+> 6\. Half Done (unify? typExpr?) - See file **TypeInference.fs**
 >
-> 7\. DONE (missing testing) ?
+> 7\. DONE - See file **HigherFun.fs**
 >
-> 8\. Half Done.
-> PrintP ?
+> 8\. DONE - See file **msmlmachine.fs**
+>
 > Pair has instruction 43 instead because 42 is taken by instruction `POPHDLR`.
 >
-> 9\. DONE
+> </br>
 >
-> 10\. DONE
+> 9\. DONE - See file **ContComp.fs** and **Comp.fs**
+>
+> 10\. DONE - See file **Machine.fs**
 
 ```txt
-Dette er vores egne eksampel: pair1.sml
+This is our own example: pair1.sml
 
 ./microsmlc.exe -opt -verbose -eval ./13/pair1.sml
 Micro-SML compiler v 1.1 of 2018-11-18
@@ -480,7 +482,9 @@ Compiled to file ./13/pair1.out
 
 ## PLC 13.3
 
-> **Answer:**
+Implement alpha conversion.
+
+> **Answer:** Not done
 
 </br>
 
