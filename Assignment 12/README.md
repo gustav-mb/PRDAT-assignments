@@ -134,7 +134,11 @@ Using the information above, answer the following:
 >
 > 1\. The result value is "4".
 >
+> </br>
+>
 > 2\. Result type is type int.
+>
+> </br>
 >
 > 3\. Function `f` and `g` has ben annotated as tail calls in:
 
@@ -149,6 +153,8 @@ end
 > It matches the intuition behind a tail call in the way that if we have an if-statement of the form $\text{if } e_{1} \text{ then } e_{2} \text{ else } e_{3}$ then $e_{2}$ and $e_{3}$ is in a possible tail-call position.
 >
 > In this case we call mutual recursive functions, which are in tail positions of `f`.
+>
+> </br>
 >
 > 4\. The call `g 4` has type int, `f (x - 1)` in the else-case of `f` has type int, and the call `f 2` has type int.
 
