@@ -1,6 +1,6 @@
 (* File Assembly/X86Comp.sml
 
-   Micro-C compiler that generates an x86 assembler-oriented bytecode.
+   Micro-C compiler that generate an x86 assembler-oriented bytecode.
    Based on Niels Kokholm's SML version (March 2002) and
    MicroC/Comp.fs
 

@@ -1,27 +1,11 @@
 Running x86 assembly programs (Assembly/nasm/README.TXT)
 --------------------------------------------------------
 
-The *.asm files used below are in archive assembly.zip 
-
 A1. To assemble and run assembly program macsimple.asm on MacOS:
 
-   First assemble the textual assembly file into a binary object file
-   using Nasm.  The "-f macho" flag specifies MacOS output format.
-
-   nasm -f macho macsimple.asm -o try.o
-
-   Then link the object file with the C library for the 32-bit x86
-   (i386) architecture, producing an executable file called "try":
-   
-   gcc -arch i386 -Wl,-no_pie try.o -o try
-
-   Then run the executable file:
-
-   ./try
-
+NOT SUPPORTED
 
 A2. To assemble and run assembly program linsimple.asm on Linux:
-    UNTESTED
 
    nasm -f elf linsimple.asm -o try.o
 

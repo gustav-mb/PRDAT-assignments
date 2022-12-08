@@ -30,7 +30,7 @@ C. Build a micro-C compiler (generating assembly code) as a command-line program
 
    fslex --unicode CLex.fsl
    fsyacc --module CPar CPar.fsy
-   fsharpc -r FsLexYacc.Runtime.dll  Absyn.fs CPar.fs CLex.fs Parse.fs X86.fs X86Comp.fs ParseAndComp.fs MicroCCAsm.fs -o microccasm.exe
+   fsharpc --standalone -r FsLexYacc.Runtime.dll  Absyn.fs CPar.fs CLex.fs Parse.fs X86.fs X86Comp.fs ParseAndComp.fs MicroCCAsm.fs -o microccasm.exe
 
    fsc -r FsLexYacc.Runtime.dll  Absyn.fs CPar.fs CLex.fs Parse.fs X86.fs X86Comp.fs ParseAndComp.fs MicroCCAsm.fs -o microccasm.exe
 
@@ -40,16 +40,7 @@ C. Build a micro-C compiler (generating assembly code) as a command-line program
 
 ASSEMBLING, LINKING AND RUNNING COMPILED MICRO-C PROGRAMS
 
-MacOS:
-
-   gcc -arch i386 -c driver.c
-   nasm -f macho ex11.asm
-   gcc -arch i386 -Wl,-no_pie driver.o ex11.o -o try11
-   ./try11 8
-
-   Must use underscore-prefixed external names _printi, _printc, ...
-
-   Added new stack alignment stuff macros call_prolog and call_epilog.
+MacOS: NOT SUPPORTED
 
 ------
 
