@@ -393,7 +393,7 @@ You can use the following steps to implement support for pairs:
 >
 > 7\. DONE - See file **HigherFun.fs**
 >
-> 8\. DONE - See file **msmlmachine.fs**
+> 8\. DONE - See file **msmlmachine.c**
 >
 > Pair has instruction 43 instead because 42 is taken by instruction `POPHDLR`.
 >
