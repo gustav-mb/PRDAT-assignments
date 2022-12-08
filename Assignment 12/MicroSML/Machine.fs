@@ -44,6 +44,8 @@ type instr =
   | PRINTB                             (* print s[sp] as true/false       *)
   | PRINTC                             (* print s[sp] as character        *)
   | PRINTL                             (* print s[sp] as list             *)
+  | PRINTP                             (* print s[sp] as pair             *) // Exercise 13.2 (10)
+  | PAIR                               (* create pair cell and load ref   *) // Exercise 13.2 (10)
   | LDARGS                             (* load command line args on stack *)
   | STOP                               (* halt the abstract machine       *)
   | NIL                                (* load nil on stack               *)
@@ -128,6 +130,9 @@ let CODEPRINTL    = 39;
 let CODETHROW     = 40;
 let CODEPUSHHDLR  = 41;
 let CODEPOPHDLR   = 42;
+// Exercise 13.2 (10)
+let CODEPAIR      = 43;
+let CODEPRINTP    = 44;
 
 (* Bytecode emission, first pass: build environment that maps 
    each label to an integer address in the bytecode.
@@ -179,6 +184,9 @@ let sizeInst instr =
   | THROW          -> 1
   | PUSHHDLR _     -> 2
   | POPHDLR        -> 1
+  // Excercise 13.2 (10)
+  | PAIR _         -> 1
+  | PRINTP         -> 1
 
 let makelabenv (addr, labenv) instr =
   let size = sizeInst instr      
@@ -233,6 +241,9 @@ let emitints getlab instr ints =
   | THROW          -> CODETHROW :: ints
   | PUSHHDLR lab   -> CODEPUSHHDLR :: getlab lab :: ints
   | POPHDLR        -> CODEPOPHDLR :: ints
+  // Exercise 13.2 (10)
+  | PAIR           -> CODEPAIR :: ints
+  | PRINTP         -> CODEPRINTP :: ints
 
 let ppInst (addr,strs) instr =
   let indent s = (addr + sizeInst instr,"  " + (addr.ToString().PadLeft(4)) + ": " + s :: strs)
@@ -281,6 +292,9 @@ let ppInst (addr,strs) instr =
   | THROW          -> indent "THROW"
   | PUSHHDLR lab   -> indent ("PUSHHDLR " + lab)
   | POPHDLR        -> indent "POPHDLR"
+  // Exercise 13.2 (10)
+  | PAIR           -> indent "PAIR"
+  | PRINTP         -> indent "PRINTP"
 
 (* Convert instruction list to int list in two passes:
    Pass 1: build label environment

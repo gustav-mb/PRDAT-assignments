@@ -273,6 +273,11 @@ let rec typExpr (lvl : int) (env : tenv) (e : expr<'a>) : typ * expr<typ> =
     | "isnil" -> let tv = TypV(newTypeVar lvl)
                  unify (TypL tv) t1;
                  (TypB,Prim1(ope,e1',Some TypB))
+    // Exercise 13.2
+    | "fst"   -> let tfst = TypV(newTypeVar lvl)
+                 (tfst, Prim1(ope, e1', Some tfst))
+    | "snd"   -> let tsnd = TypV(newTypeVar lvl)
+                 (tsnd, Prim1(ope, e1', Some tsnd))
     | _ -> failwith ("typ of Prim1 " + ope + " not implemented")
   | Prim2(ope,e1,e2,_) -> 
     let (t1,e1') = typExpr lvl env e1
@@ -345,12 +350,9 @@ let rec typExpr (lvl : int) (env : tenv) (e : expr<'a>) : typ * expr<typ> =
     (t1, TryWith(e1',ExnVar x,e2'))
   // Exercise 13.2
   | Pair(e1, e2, _) -> 
-    failwith "not implemented"
-    // let (t1, e1') = typExpr lvl env e1
-    // let (t2, e2') = typExpr lvl env e2 
-    // unify TypB t1;
-    // unify TypB t2;
-    // (TypP,Pair(e1',e2',Some TypP))
+    let (t1, e1') = typExpr lvl env e1
+    let (t2, e2') = typExpr lvl env e2 
+    (TypP(t1, t2), Pair(e1', e2', Some (TypP(t1, t2))))
     
 and typValdec (lvl:int) (env:tenv) (t:valdec<'a>) : tenv * valdec<typ> =
   match t with

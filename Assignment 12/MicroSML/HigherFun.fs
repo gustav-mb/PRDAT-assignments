@@ -102,6 +102,13 @@ let rec evalExpr (env : value env) (e : expr<typ>)
                                       | List [] -> cont (Int 1)
                                       | List _ -> cont (Int 0)
                                       | _ -> Abort ("Prim1: isnil on non list value: " + (ppValue v1))
+                     // Exercise 13.2
+                     | ("fst", _) -> match v1 with
+                                     | PairV(v1', _) -> cont v1'
+                                     | _ -> Abort ("Prim1: Can't do fst on non pair value")
+                     | ("snd", _) -> match v1 with
+                                     | PairV(_, v2') -> cont v2'
+                                     | _ -> Abort ("Prim1: Can't do snd on non pair value")
                      | _ -> Abort ("Prim1 "+ope+" not implemented")) econt
   | Prim2(ope, e1, e2,_) ->
     evalExpr env e1

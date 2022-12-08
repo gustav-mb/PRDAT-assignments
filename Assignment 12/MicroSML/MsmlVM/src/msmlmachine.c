@@ -154,8 +154,9 @@ word* readfile(char* filename);
 #endif
 
 #define CONSTAG 0
-#define NILVALUE 0
 #define CLOSTAG 1
+#define PAIRTAG 2 // Exercise 13.2 (8.)
+#define NILVALUE 0
 
 // Heap size in words
 
@@ -214,7 +215,7 @@ int silent=0; /* Glocal boolean value to run the interpreter in silent mode. Def
 #define PUSHHDLR 41
 #define POPHDLR 42
 // Exercise 13.2
-#define PAIR 43
+#define PAIR 43 //42?
 #define PRINTP 44
 
 // We check for stack overflow in execcode inbetween execution of two byte code instructions.
@@ -348,7 +349,7 @@ void printL(word i) {
       if (IsInt(hd)) printf(WORD_FMT, Untag(hd));
       else {
         //int *vPtr = (int *)hd;
-	if (hd == NILVALUE || (BlockTag(*((word *)hd)) == CONSTAG)) printL(hd);
+	      if (hd == NILVALUE || (BlockTag(*((word *)hd)) == CONSTAG)) printL(hd);
         else printf("Unexpected hd=" WORD_FMT "\n", hd);
       }
       if (tl != NILVALUE) {
@@ -360,6 +361,27 @@ void printL(word i) {
     } while (!done);
     printf("]");
   } 
+  return;
+}
+
+// Exercise 13.2 (8.)
+void printP(word i) {
+  word *pairPtr = (word *)i;
+
+  if(!(BlockTag(*pairPtr) == PAIRTAG)) {
+    printf("PRINTP: Expected PAIRTAG.\n");
+    exit(-1);
+  }
+
+  word fst = pairPtr[1];
+  word snd = pairPtr[2];
+
+  printf("(");
+    if (IsInt(fst)) printf(WORD_FMT, Untag(fst));
+  printf(", ");
+    if (IsInt(snd)) printf(WORD_FMT, Untag(snd));
+  printf(")\n");
+
   return;
 }
 
@@ -685,10 +707,19 @@ int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trac
       sp = sp - 3;
     } break;
 
-    //13.2
-    //PAIR
-    //PRINTP
+    //13.2 (8.)
+    case PAIR: {
+       word* p = allocate(PAIRTAG, 2, s, sp); // Allocate space on heap for pair cell
+       p[1] = (word)s[sp-1];  // Add fst to pair cell from stack
+       p[2] = (word)s[sp];    // Add snd to pair cell from stack
+       s[sp-1] = (word)p;     // Overwrite fst on stack with pair cell pointer
+       sp--;                  // Remove snd from stack
+    } break;
 
+    case PRINTP: {
+      printP(s[sp]); break;
+    }
+    
     default:                  
       printf("Illegal instruction " WORD_FMT " at address " WORD_FMT " (" WORD_FMT ")\n", p[pc-1], pc-1, (word)&p[pc-1]);
       heapStatistics();

@@ -20,7 +20,7 @@
 %token CONS NIL HEAD TAIL
 %token LPAR RPAR SEMICOLON COLON
 %token EOF
-%token COMMA FST SND // Excercise 13.2
+%token COMMA FST SND // Excercise 13.2 (4.)
 
 %left SEMICOLON               /* lowest precedence  */
 %nonassoc LET
@@ -35,7 +35,7 @@
 %right CONS
 %left PLUS MINUS
 %left TIMES DIV MOD
-%nonassoc PRIM1 RAISE HEAD TAIL NOT           /* highest precedence  */
+%nonassoc PRIM1 RAISE HEAD TAIL NOT FST SND /* highest precedence  */ // Excercise 13.2 (4.)
 
 %start Main
 %type <Absyn.program<'a>> Main
@@ -91,7 +91,9 @@ Expr:
   | Expr SEQAND Expr                    { AndAlso($1, $3, None)                }
   | Expr SEQOR Expr                     { OrElse($1, $3, None)                 }
   | Expr SEMICOLON Expr                 { Seq($1, $3, None)                    }
-  | LPAR Expr COMMA Expr RPAR           { Pair($2, $4, None)                   }  // Exercise 13.2
+  | LPAR Expr COMMA Expr RPAR           { Pair($2, $4, None)                   } // Exercise 13.2 (4.)
+  | FST Expr                            { Prim1("fst", $2, None)               } // Exercise 13.2 (4.)
+  | SND Expr                            { Prim1("snd", $2, None)               } // Exercise 13.2 (4.)
 ;
 
 AtExpr:

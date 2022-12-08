@@ -344,9 +344,6 @@ You can use the following steps to implement support for pairs:
 
     Some compiler functions must also be extended to handle pair expressions: `ppProg`, `getOptExpr`, `tailcalls` and `freevars`.
 
-// ASK TA ABOUT
-TypeInference.fs Pair on Unify Function
-
 6. **TypeInference.fs**: Extend the `typ` type with the new pair type:
 
     ```fsharp
@@ -380,7 +377,100 @@ TypeInference.fs Pair on Unify Function
 
 10. **Machine.fs**: The byte code instructions `PRINTP` and `PAIR` must be added. You have to assign unique instruction codes to `PRINTP` and `PAIR` that match with same instructions in `msmlmachine.c`.
 
-> **Answer:**
+> **Answer:** See files **Absyn.fs**, **Funlex.fsl**, **FunPar.fsy**, **TypeInference**
+>
+> 1\. Not done
+>
+> 2\. Not done
+>
+> 3\. DONE - See file **Funlex.fsl**
+>
+> 4\. DONE - See file **FunPar.fsy**
+>
+> 5\. DONE. Tailcall, Freevars
+>
+> 6\. Half Done. unify? typExpr?
+>
+> 7\. DONE (missing testing) ?
+>
+> 8\. Half Done.
+> PrintP ?
+> Pair has instruction 43 instead because 42 is taken by instruction `POPHDLR`.
+>
+> 9\. DONE
+>
+> 10\. DONE
+
+```txt
+Dette er vores egne eksampel: pair1.sml
+
+./microsmlc.exe -opt -verbose -eval ./13/pair1.sml
+Micro-SML compiler v 1.1 of 2018-11-18
+Compiling ./13/pair1.sml to ./13/pair1.out
+
+Program after alpha conversion (exercise):
+val p = (1, 43)
+begin
+  if ((fst(p) - 1) < 0) then print((fst(p) - 1)) else print((snd(p) - 1))
+end
+Program with tailcalls:
+val p = (1, 43)
+begin
+  if ((fst(p) - 1) < 0) then print((fst(p) - 1)) else print((snd(p) - 1))
+end
+Program with types:
+val p = (1:int, 43:int):(int, int)
+begin
+  if ((fst(p:(int, int)):int - 1:int):int < 0:int):bool then print((fst(p:(int, int)):int - 1:int):int):int else print((snd(p:(int, int)):int - 1:int):int):int
+end
+Result type: int
+
+Evaluating Program
+42 
+Result value: Result (Int 42)
+Used: Elapsed 29ms, CPU 31ms
+Compiled to ./13/pair1.out
+LABEL G_ExnVar_L2
+     0: CSTI 0
+     2: CSTI 0
+     4: STI
+LABEL G_Valdecs_L3
+     5: PAIR
+     6: GETSP
+     7: CSTI 1
+     9: SUB
+    10: CALL 0 L1
+    13: STI
+    14: INCSP -2
+    16: STOP
+LABEL L1
+    17: CSTI 1
+    19: LDI
+    20: CAR
+    21: CSTI 1
+    23: SUB
+    24: CSTI 0
+    26: LT
+    27: IFZERO L4
+    29: CSTI 1
+    31: LDI
+    32: CAR
+    33: CSTI 1
+    35: SUB
+    36: PRINTI
+    37: RET 0
+LABEL L4
+    39: CSTI 1
+    41: LDI
+    42: CDR
+    43: CSTI 1
+    45: SUB
+    46: PRINTI
+    47: RET 0
+
+
+Compiled to file ./13/pair1.out
+```
 
 </br>
 

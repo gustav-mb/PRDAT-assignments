@@ -104,6 +104,7 @@ let rec compExpr (kind: int->var) (varEnv : varEnv) (e : expr<typ>) : instr list
   | CstB (b,_) -> if b then [CSTI 1] else [CSTI 0]
   | CstN _     -> [NIL]  
   | Var (x,_)  -> loadVar varEnv x
+  | Pair _     -> [PAIR] // Exercise 13.2
   | Prim1(ope,e1,_) ->
     compExpr kind varEnv e1 @
     (match (ope,getTypExpr e1) with
@@ -115,6 +116,8 @@ let rec compExpr (kind: int->var) (varEnv : varEnv) (e : expr<typ>) : instr list
      | ("hd",_)    -> [CAR]  
      | ("tl",_)    ->  [CDR]  
      | ("isnil",_) -> [NIL;EQ]
+     | ("fst", _)  -> [CAR] // Exercise 13.2
+     | ("snd", _)  -> [CDR] // Exercise 13.2
      | _ -> failwith ("compExpr.Prim1 "+ope+" not implemented"))
   | Prim2(ope, e1, e2,_) ->
     compExpr kind varEnv e1 @
