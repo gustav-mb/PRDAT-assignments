@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Exercise_3_4</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <fsLex Include="./Fun/FunLex.fsl">
+      <OtherFlags>--unicode</OtherFlags>
+    </fsLex>
+    <fsyacc Include="./Fun/FunPar.fsy">
+      <OtherFlags>--module FunPar</OtherFlags>
+    </fsyacc>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="./Fun/Absyn.fs" />
+    <Compile Include="./FunPar.fsi" />
+    <Compile Include="./FunPar.fs" />
+    <Compile Include="./FunLex.fs" />
+    <Compile Include="./Fun/Fun.fs" />
+    <Compile Include="./Fun/Parse.fs" />
+    <Compile Include="./Fun/ParseAndRun.fs" />
+    <Compile Include="./HigherFun/HigherFun.fs" />
+    <Compile Include="./HigherFun/ParseAndRunHigher.fs" />
+    <Compile Include="./HigherFun/TypeInference.fs" />
+    <Compile Include="./HigherFun/ParseAndType.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FsLexYacc" Version="10.2.0" />
+    <PackageReference Include="FsLexYacc.Runtime" Version="10.2.0" />
+  </ItemGroup>
+
+</Project>
