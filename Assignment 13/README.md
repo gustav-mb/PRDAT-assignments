@@ -1,6 +1,6 @@
 # Programs as Data - Assignment 13
 
-Non-code answers to the exercises are answered in this document!
+We have chosen to do assignment 3, 4 and 5 in exam set from January 2017.
 
 Exercises are from the written exam in Programs as Data from the 12.-13. of January 2017.
 
