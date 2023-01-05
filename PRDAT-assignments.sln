@@ -27,6 +27,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Assignment 11", "Assignment
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Assignment 12", "Assignment 12\Assignment 12.fsproj", "{1BC8B081-5E19-4C97-9693-364D00CF3561}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Exam 2022", "Exam 2022\Exam 2022.fsproj", "{89F3F59A-F4F5-4138-A26A-7DFC0C2537DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,5 +86,9 @@ Global
 		{1BC8B081-5E19-4C97-9693-364D00CF3561}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BC8B081-5E19-4C97-9693-364D00CF3561}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BC8B081-5E19-4C97-9693-364D00CF3561}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89F3F59A-F4F5-4138-A26A-7DFC0C2537DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89F3F59A-F4F5-4138-A26A-7DFC0C2537DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89F3F59A-F4F5-4138-A26A-7DFC0C2537DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89F3F59A-F4F5-4138-A26A-7DFC0C2537DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
