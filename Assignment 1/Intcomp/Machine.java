@@ -1,5 +1,3 @@
-package javaimp.intcomp1;
-
 /* Java implementation of a unified-stack abstract machine 
    sestoft@itu.dk * 2001-02-05 
    In a real stack machine, the stack is an array (not a list as in

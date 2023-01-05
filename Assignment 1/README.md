@@ -1,14 +1,18 @@
 # Programs as Data - Assignment 1
 
-Assignments are from Programming Language Concepts, by Peter Sestoft, Springer 2017.
+Non-code answers to the exercises are answered in this document!
+
+Assignments are from Programming Language Concepts (PLC), by Peter Sestoft, Springer 2017.
+
+---
 
 </br>
 
-## Exercise 1.1
+## PLC 1.1
 
 ### 1.1 (i)
 
-File `Intro2.fs` contains a definition of the `expr` expression langauge and an evaluation function `eval`. Extend the `eval` function to handle three additional operators: "`max`", "`min`", and "`==`". Like the existing operators, they take two argument expressions. The eequals operator should return 1 when true and 0 when false.
+File `Intro2.fs` contains a definition of the `expr` expression langauge and an evaluation function `eval`. Extend the `eval` function to handle three additional operators: "`max`", "`min`", and "`==`". Like the existing operators, they take two argument expressions. The equals operator should return 1 when true and 0 when false.
 
 </br>
 
@@ -56,7 +60,7 @@ Note that various strange and non-standard interpretations might start by testin
 
 </br>
 
-## Exercise 1.2
+## PLC 1.2
 
 ### 1.2 (i)
 
@@ -122,7 +126,7 @@ $${d \over dx}(e_1*e_2)=({d \over dx}e_1)*e_2+e_1*({d \over dx}e_2)$$
 
 </br>
 
-## Exercise 1.4
+## PLC 1.4
 
 This chapter has shown how to represent abstract syntax in functional langauges such as F# (using algebraic datatypes) and in object-oriented languages such as Java or C# (using a class hierarchy and composites).
 
@@ -165,7 +169,7 @@ The goal of these exercises is to understand the compilation and evaluation of s
 
 </br>
 
-## Exercise 2.1
+## PLC 2.1
 
 Extend the expression langauge `expr` from Intcomp1.fs with multiple sequential let-bindings, such as this (in concrete syntax):
 
@@ -191,19 +195,19 @@ Revise the `eval` interpreter from `Intcomp1.fs` to work for the `expr` language
 
 </br>
 
-## Exercise 2.2
+## PLC 2.2
 
-Revise the function `freevars : expr -> string list` to work for the language as extended in Exercise 2.1. Note that the example expression in the beginning of Exercise 2.1 has no free variables, but `let x1 = x1+7 in x1+8 end` has the free variable `x1`, because the variable `x1` is bound only in the body `(x1+8)`, not in the right-hand side `(x1+7)`, of its own binding. There *are* programming languages where a bariable can be used in the right-hand side of its own binding, but ours is not such a language.
+Revise the function `freevars : expr -> string list` to work for the language as extended in Exercise 2.1. Note that the example expression in the beginning of Exercise 2.1 has no free variables, but `let x1 = x1+7 in x1+8 end` has the free variable `x1`, because the variable `x1` is bound only in the body `(x1+8)`, not in the right-hand side `(x1+7)`, of its own binding. There *are* programming languages where a variable can be used in the right-hand side of its own binding, but ours is not such a language.
 
 </br>
 
-## Exercise 2.3
+## PLC 2.3
 
 Revise the `expr`-to-`texpr` compiler `tcomp : expr -> texpr` from `Intcomp1.fs` to work for the extended `expr` langauge. There is no need to modify the `texpr` language or the `teval` interpreter to accomodate multiple sequential let-bindings.
 
 </br>
 
-## Exercise 2.6 (optional)
+## PLC 2.6 (optional)
 
 Now modify the interpretation of the language from Exercise 2.1 so that multiple let-bindings are *simultaneous* rather than sequential. For instance,
 

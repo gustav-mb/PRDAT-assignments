@@ -47,17 +47,17 @@ let rec eval e (env : (string * int) list) : int =
     | Prim("-", e1, e2) -> eval e1 env - eval e2 env
     // Exercise 1.1 (i)
     | Prim("max", e1, e2) ->
-        let first = eval e1 env
-        let second = eval e2 env
-        if first > second then first else second
+        let e1' = eval e1 env
+        let e2' = eval e2 env
+        if e1' > e2' then e1' else e2'
     | Prim("min", e1, e2) ->
-        let first = eval e1 env
-        let second = eval e2 env
-        if first > second then second else first
+        let e1' = eval e1 env
+        let e2' = eval e2 env
+        if e1' > e2' then e2' else e1'
     | Prim("==", e1, e2) ->
-        let first = eval e1 env
-        let second = eval e2 env
-        if first = second then 1 else 0
+        let e1' = eval e1 env
+        let e2' = eval e2 env
+        if e1' = e2' then 1 else 0
     | Prim _            -> failwith "unknown primitive"
     // Excercise 1.1 (v)
     | If(e1, e2, e3) -> if (eval e1 env) <> 0 then (eval e2 env) else (eval e3 env);;
@@ -79,15 +79,15 @@ let rec eval2 e (env : (string * int) list) : int =
     | CstI i            -> i
     | Var x             -> lookup env x 
     | Prim(ope, e1, e2) ->
-        let il1 = eval2 e1 env
-        let il2 = eval2 e2 env
+        let i1 = eval2 e1 env
+        let i2 = eval2 e2 env
         match ope with
-        | "+"   -> il1 + il2
-        | "-"   -> il1 - il2
-        | "*"   -> il1 * il2
-        | "max" -> if il1 > il2 then il1 else il2
-        | "min" -> if il1 > il2 then il2 else il1
-        | "=="  -> if il1 = il2 then 1 else 0
+        | "+"   -> i1 + i2
+        | "-"   -> i1 - i2
+        | "*"   -> i1 * i2
+        | "max" -> if i1 > i2 then i1 else i2
+        | "min" -> if i1 > i2 then i2 else i1
+        | "=="  -> if i1 = i2 then 1 else 0
         | _     -> failwith "unknown primitive"
     // Excercise 1.1 (v)
     | If(e1, e2, e3) ->
