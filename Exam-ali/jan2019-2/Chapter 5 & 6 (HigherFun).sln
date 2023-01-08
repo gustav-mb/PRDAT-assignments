@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Chapter 5 & 6 (HigherFun)", "Chapter 5 & 6 (HigherFun).fsproj", "{6F5D453A-A74D-4BB1-B61B-1F0E9B0315F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F5D453A-A74D-4BB1-B61B-1F0E9B0315F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F5D453A-A74D-4BB1-B61B-1F0E9B0315F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F5D453A-A74D-4BB1-B61B-1F0E9B0315F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F5D453A-A74D-4BB1-B61B-1F0E9B0315F6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

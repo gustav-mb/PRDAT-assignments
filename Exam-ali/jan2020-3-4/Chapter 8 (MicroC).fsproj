@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Chapter_8__MicroC_</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <fsLex Include=".\MicroC\CLex.fsl">
+      <OtherFlags>--unicode -o ".\MicroC\CLex.fs"</OtherFlags>
+    </fsLex>
+    <fsyacc Include=".\MicroC\CPar.fsy">
+      <OtherFlags>--module CPar -o ".\MicroC\CPar.fs"</OtherFlags>
+    </fsyacc>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include=".\MicroC\Absyn.fs" />
+    <Compile Include=".\MicroC\CPar.fsi" />
+    <Compile Include=".\MicroC\CPar.fs" />
+    <Compile Include=".\MicroC\CLex.fs" />
+    <Compile Include=".\MicroC\Parse.fs" />
+    <Compile Include=".\MicroC\Interp.fs" />
+    <Compile Include=".\MicroC\ParseAndRun.fs" />
+    <Compile Include=".\MicroC\Machine.fs" />
+    <Compile Include=".\MicroC\Comp.fs" />
+    <Compile Include=".\MicroC\Contcomp.fs" />
+    <Compile Include=".\MicroC\ParseAndComp.fs" />
+    <Compile Include=".\MicroC\ParseAndContcomp.fs" />
+    <Compile Include=".\MicroC\MicroCC.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="fslexyacc" Version="10.2.0" />
+    <PackageReference Include="fslexyacc.Runtime" Version="10.2.0" />
+  </ItemGroup>
+
+</Project>
